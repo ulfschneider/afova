@@ -1,0 +1,19 @@
+{
+  "name": "custom-form-validate",
+  "version": "0.1.0",
+  "description": "",
+  "main": "cfv.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ulfschneider/cfv.git"
+  },
+  "author": "Ulf Schneider",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ulfschneider/cfv/issues"
+  },
+  "homepage": "https://github.com/ulfschneider/cfv#readme"
+}
