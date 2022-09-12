@@ -1,10 +1,12 @@
 {
-  "name": "custom-form-validate",
+  "name": "accessible-form-validation",
   "version": "0.1.0",
   "description": "",
-  "main": "cfv.js",
+  "main": "afv.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "browser-sync start --server --files 'cfv.*' 'index.html'",
+    "build": "minify afv.js > afv.min.js && documentation build afv.js -f md > README.md"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,11 @@
   "bugs": {
     "url": "https://github.com/ulfschneider/cfv/issues"
   },
-  "homepage": "https://github.com/ulfschneider/cfv#readme"
+  "homepage": "https://github.com/ulfschneider/cfv#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "browser-sync": "^2.27.10",
+    "documentation": "^12.3.0",
+    "minify": "^5.1.1"
+  }
 }
