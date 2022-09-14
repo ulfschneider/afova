@@ -5,7 +5,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Cache-Control" content="no-store, max-age=0">
-        <link rel="stylesheet" href="/afv.css"/>
         <title>
             Accessible Form Validation
         </title>
@@ -16,6 +15,28 @@
             font-size: 18px;
             line-height: 1.5;
             font-family: sans-serif;
+            --afv-error-message-color: red;
+            --afv-error-message-font-weight: bold;
+            --form-validation-indicator-width: 3px;
+            --form-valdiation-indicator-outdent: 0.5rem;
+            --form-validation-field-indicator-width: 1px;
+        }
+        .afv-group {
+            margin-top: 2em;
+            margin-bottom: 2em;
+        }
+        .afv-group.afv-error {
+            margin-left: calc(-1 * var(--form-valdiation-indicator-outdent));
+            border-left: var(--form-validation-indicator-width) solid var(--afv-error-message-color);
+            padding-left: calc(var(--form-valdiation-indicator-outdent) - var(--form-validation-indicator-width));
+        }
+        .afv-field.afv-error:not(.afv-field.afv-error:focus) {
+            border: var(--form-validation-field-indicator-width) solid var(--afv-error-message-color);
+        }
+        .afv-message.afv-error {
+            color: var(--afv-error-message-color);
+            display: block;
+            font-weight: var(--afv-error-message-font-weight);
         }
         label {
             font-weight: bold;
@@ -26,9 +47,6 @@
             font-size: 18px;
             padding: 5px;
         }
-        .afv-group {
-            margin: 2em 0;
-        }
     </style>
     <body style="padding:1rem">
         <h1>Accessible Form Validation with <code>afv.js</code>
@@ -36,13 +54,13 @@
         <form>
             <div class="afv-group">
                 <label for="requiredInput">A reqired input</label>
-                <input id="requiredInput" type="text" required/>
+                <input id="requiredInput" type="text" required>
             </div>
 
             <div class="afv-group">
                 <label for="patternInput">A pattern input</label>
                 <div>The input must be provided by following the pattern [A-Za-z]{3}</div>
-                <input id="patternInput" type="text" pattern="[A-Za-z]{3}"/>
+                <input id="patternInput" type="text" pattern="[A-Za-z]{3}">
             </div>
 
             <div class="afv-group">
@@ -50,13 +68,13 @@
                 <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
                 <input id="customPatternInput" type="text" 
                 pattern="[A-Za-z]{3}" 
-                data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example."/>
+                data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
             </div>
 
             <div class="afv-group">
                 <label for="minMaxNumber">A number</label>
                 <div>Please provide a integer number in a range of 100 – 999</div>
-                <input id="minMaxNumber" type="number" min="100" max="999" step="1"/>
+                <input id="minMaxNumber" type="number" min="100" max="999" step="1">
             </div>
 
             <div class="afv-group">
@@ -68,10 +86,19 @@
                 min="100"
                 data-range-underflow="The value is too small. It cannot be below 100."
                 step="1"
-                data-step-mismatch="The value must be an integer number."
+                data-step-mismatch="The value must be a integer number"
                 required
-                data-value-missing="It is required to provide this number"
-                />
+                data-value-missing="It is required to provide this number">
+            </div>
+
+            <div class="afv-group">
+                <label for="email">Please provide your email address</label>
+                <input id="email" type="email"/>
+            </div>
+
+            <div class="afv-group">
+                <label for="customEmail">Please provide your email address (will produce a custom error message)</label>
+                <input id="customEEail" type="email" data-type-mismatch="Please provide an email adress in the format mickey@mouse.com"/>
             </div>
 
             <input type="submit" value="Submit the form"/>

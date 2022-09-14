@@ -56,7 +56,9 @@ The following <code>data</code> attribute are available to define custom validat
 
 ### Parameters
 
--   `focus` **[boolean][6]** optional: If false, the first errored field will not be focused. If true, the first errored field will receive focus. Default is true. (optional, default `true`)
+-   `settings` **[Object][6]?** optional: the settings for afv
+    -   `settings.focusOnFirstError` **[boolean][7]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
+    -   `settings.validateOnChange` **[boolean][7]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
 
 [1]: #afv
 
@@ -68,4 +70,6 @@ The following <code>data</code> attribute are available to define custom validat
 
 [5]: https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
 
-[6]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[6]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[7]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean

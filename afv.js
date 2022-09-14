@@ -5,10 +5,10 @@
  */
 AFV = (function () {
     'use strict';
+    let settings;
     let idCounter = 0;
-    let focusOnFirstError = true; //if true the first error will be focused
     let errorMessageTemplate = document.createElement('div');
-    errorMessageTemplate.className = 'afv-error-message';
+    errorMessageTemplate.classList.add('afv-message', 'afv-error');
 
     //they keys of this map correspond to the property names the validity object
     let defaultErrorMessages = new Map([
@@ -18,9 +18,13 @@ AFV = (function () {
         ['rangeOverflow', { message: 'The number is too big. It cannot be bigger than {{constraint}}.', constraintAttr: 'max' }],
         ['rangeUnderflow', { message: 'The number is too small. It must be at least {{constraint}}.', constraintAttr: 'min' }],
         ['stepMismatch', { message: 'The number is not evenly divisible by {{constraint}}', constraintAttr: 'step' }],
+        ['stepMismatch[1]', { message: 'The number is not must be an integer', constraintAttr: 'step' }],
         ['tooLong', { message: 'The text is too long. It cannot be longer than {{constraint}} characters.', constraintAttr: 'maxlength' }],
         ['tooShort', { message: 'The text is too short. It must me at least {{constraint}} characters long.', constraintAttr: 'minlength' }],
-        ['typeMismatch', { message: 'The value must be a {{constraint}}', constraintAttr: 'type' }],
+        ['typeMismatch', { message: 'The value must be of type {{constraint}}', constraintAttr: 'type' }],
+        ['typeMismatch[email]', { message: 'The value must be an email in the format mickey@mouse.com', constraintAttr: 'type' }],
+        ['typeMismatch[url]', { message: 'The value must be a URL in the format http://url.com', constraintAttr: 'type' }],
+        ['typeMismatch[tel]', { message: 'The value must be a phone number', constraintAttr: 'type' }],
         ['valid', { message: ':-)', }],
         ['valueMissing', { message: 'Please provide a value', constraintAttr: 'required' }]
     ]);
@@ -29,8 +33,20 @@ AFV = (function () {
         return defaultErrorMessages.get(errorType);
     }
 
+    function getSpecificDefaultErrorMessage(errorType, constraint) {
+        return defaultErrorMessages.get(`${errorType}[${constraint.toLowerCase()}]`);
+    }
+
     function getErrorTypes() {
         return defaultErrorMessages.keys();
+    }
+
+    function extractSettings(s) {
+        settings = Object.assign({
+            focusOnFirstError: true,
+            validateOnChange: false
+        }, s);
+        console.log(`afv settings \n${JSON.stringify(settings, null, 4)}`);
     }
 
     function getGroup(field) {
@@ -48,14 +64,14 @@ AFV = (function () {
         let group = getGroup(field);
 
         if (group) {
-            group.classList.remove('afv-error-group');
+            group.classList.remove('afv-error');
         }
-        field.classList.remove('afv-error-field');
+        field.classList.remove('afv-error');
         field.removeAttribute('aria-invalid');
         field.removeAttribute('aria-errormessage');
 
         parent.querySelectorAll(`#${field.id}-afv-error`)
-            .forEach(function (element) {        
+            .forEach(function (element) {
                 parent.removeChild(element);
             });
     }
@@ -67,14 +83,18 @@ AFV = (function () {
         errorMessage.id = errorMessageId;
 
         for (let errorType of getErrorTypes()) {
-            if (validity[errorType]) { //there is an error of type errorType
-                let defaultMessage = getDefaultErrorMessage(errorType);
+            if (validity[errorType]) { //there is an error of type errorType                
 
+                let defaultMessage = getDefaultErrorMessage(errorType);
                 errorMessage.innerText = field.dataset[errorType] || defaultMessage.message;
 
                 if (defaultMessage.constraintAttr) {
                     let constraint = field.getAttribute(defaultMessage.constraintAttr);
                     if (constraint) {
+                        defaultMessage = getSpecificDefaultErrorMessage(errorType, constraint);
+                        if (defaultMessage) {
+                            errorMessage.innerText = field.dataset[errorType] || defaultMessage.message;
+                        }
                         errorMessage.innerText = errorMessage.innerText.replaceAll('{{constraint}}', constraint);
                     }
                 }
@@ -93,9 +113,9 @@ AFV = (function () {
 
 
         if (group) {
-            group.classList.add('afv-error-group');
+            group.classList.add('afv-error');
         }
-        field.classList.add('afv-error-field');
+        field.classList.add('afv-field', 'afv-error');
 
         let errorMessage = defineErrorMessage(field);
 
@@ -135,7 +155,7 @@ AFV = (function () {
         }
         if (firstError) {
             event.preventDefault();
-            if (focusOnFirstError) {
+            if (settings.focusOnFirstError) {
                 firstError.focus();
             }
         }
@@ -147,10 +167,12 @@ AFV = (function () {
         forms.forEach(function (form) {
             form.setAttribute('novalidate', '');
             form.addEventListener('submit', validateForm);
-            for (let field of form.elements) {
-                field.addEventListener('change', function (event) {
-                    validateField(event.target, true); // validate the field on change and refocus if invalid
-                })
+            if (settings.validateOnChange) {
+                for (let field of form.elements) {
+                    field.addEventListener('change', function (event) {
+                        validateField(event.target, true); // validate the field on change and refocus if invalid
+                    });
+                }
             }
         });
     }
@@ -194,10 +216,12 @@ AFV = (function () {
          * <dd>A value of a field that is required due to the <code>required</code> attribute is missing</dd>
          * </dl>
          *  
-         * @param {boolean} focus - optional: If false, the first errored field will not be focused. If true, the first errored field will receive focus. Default is true.
+         * @param {Object} [settings] - optional: the settings for afv
+         * @param {boolean} [settings.focusOnFirstError=true] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
+         * @param {boolean} [settings.validateOnChange=false] - If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form.
          */
-        init: function (focus = true) {
-            focusOnFirstError = focus;
+        init: function (settings) {
+            extractSettings(settings);
             adjustForms();
         }
     }
