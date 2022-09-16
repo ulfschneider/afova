@@ -83,13 +83,17 @@ AFV = (function () {
     }
 
     function putErrorMessage(field, errorMessage) {
-        let parent = field.parentNode;
+
+        //innerGroup is useful to group multiple checkBoxes or radioButtons        
+        //and display the error message above all of them
+        let innerGroup = getInnerGroup(field);
+        let parent = innerGroup ? innerGroup.parentNode : field.parentNode;
         let newContainer = false;
 
-        let container = document.querySelector(`#${field.id}-afv-error`);
+        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}-afv-error`);
         if (!container) {
             newContainer = true;
-            container = cloneErrorContainerTemplate(field);
+            container = cloneErrorContainerTemplate(innerGroup || field);
         }
 
         let firstInjectedMessage = container.querySelector('.injected');
@@ -102,7 +106,7 @@ AFV = (function () {
         }
 
         if (newContainer) {
-            parent.insertBefore(container, field);
+            parent.insertBefore(container, innerGroup || field);
         }
         return container.id;
     }
@@ -111,18 +115,28 @@ AFV = (function () {
         return parent.querySelectorAll(`.afv-message`).length;
     }
 
-    function getGroup(field) {
-        let parent = field.parentNode;
-        while (parent) {
-            if (parent.classList && parent.classList.contains('afv-group')) {
-                return parent;
+    function moveUpUntil(element, cssClass) {
+        let node = element.parentNode;
+        while (node) {
+            if (node.classList && node.classList.contains(cssClass)) {
+                return node;
             }
-            parent = parent.parentNode;
+            node = node.parentNode;
         }
     }
 
+    function getInnerGroup(field) {
+        return moveUpUntil(field, 'afv-inner-group');
+    }
+
+
+    function getGroup(field) {
+        return moveUpUntil(field, 'afv-group');
+    }
+
     function clearIfNoMessage(field) {
-        let parent = field.parentNode;
+        let innerGroup = getInnerGroup(field);
+        let parent = innerGroup ? innerGroup.parentNode : field.parentNode;
         let group = getGroup(field);
 
         if (!hasErrorMessage(parent)) {
@@ -139,9 +153,9 @@ AFV = (function () {
         }
     }
 
-    function clearErrorMessage(identifier, injected) {
+    function clearErrorMessage(identifier, injected) {        
         let field = getField(identifier);
-        
+
         let fieldId = field.dataset.fieldId;
         if (fieldId && field.classList.contains('afv-message')) {
             //field indicates an error message element
@@ -213,9 +227,14 @@ AFV = (function () {
         let field = getField(identifier);
         let group = getGroup(field);
 
+        console.log(field);
+        console.log(group);
+        console.log('--');
         if (group) {
+            console.log('add error');
             group.classList.add('afv-error');
         }
+        console.log(group);
         field.classList.add('afv-field', 'afv-error');
 
         let errorMessage = prepareErrorMessage({ field: field, message: message, messageId: messageId });

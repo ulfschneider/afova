@@ -108,6 +108,17 @@
                 </label>
             </div>
 
+            <div class="afv-group">
+                <fieldset>
+                    <legend>Check 1 is required</legend>
+                    <div class="afv-inner-group">
+                        <label><input type="checkbox" required name="check1" id="check1">Check 1</label>
+                        <label><input type="checkbox" name="check2" id="check2">Check 2</label>
+                        <label><input type="checkbox" name="check3" id="check3">Check 3</label>
+                    </div>
+                </fieldset>
+            </div>
+
             <input type="submit" value="Submit the form"/>
 
         </form>
@@ -117,6 +128,7 @@
         <script>
             AFV.init();
             AFV.injectMessage({identifier: "requiredInput", message: "hello world"});
+            AFV.injectMessage({identifier: "check3", message: "hello world"});
         </script>
 
     </body>
