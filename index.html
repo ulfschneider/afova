@@ -109,13 +109,11 @@
             </div>
 
             <div class="afv-group">
-                <fieldset>
-                    <legend>Check 1 is required</legend>
-                    <div class="afv-inner-group">
-                        <label><input type="checkbox" required name="check1" id="check1">Check 1</label>
-                        <label><input type="checkbox" name="check2" id="check2">Check 2</label>
-                        <label><input type="checkbox" name="check3" id="check3">Check 3</label>
-                    </div>
+                <fieldset class="afv-inner-group">
+                    <legend>Radio</legend>
+                    <label><input type="radio" name="radio" id="radio1">Radio 1</label>
+                    <label><input type="radio" name="radio" id="radio2">Radio 2</label>
+                    <label><input type="radio" name="radio" required id="radio3">Radio 3</label>
                 </fieldset>
             </div>
 
@@ -123,11 +121,11 @@
 
         </form>
 
-        <button onclick="AFV.clearMessage('requiredInput check3');">Clear Injected Messages</button>
+        <button onclick="AFV.clearMessage('requiredInput radio3');">Clear Injected Messages</button>
         <script>
             AFV.init();
             AFV.injectMessage({identifier: "requiredInput", message: "hello world"});
-            AFV.injectMessage({identifier: "check3", message: "hello world"});
+            AFV.injectMessage({identifier: "radio3", message: "hello world"});
         </script>
 
     </body>

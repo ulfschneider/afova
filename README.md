@@ -57,7 +57,7 @@ If the default error messages from AFV shouldn´t be used, custom error messages
 can be defined as `data` attributes for each field. For example:
 
 ```html
-<div class="group">
+<div class="afv-group">
     <label for="customPatternInput">A pattern input with custom failure message</label>
     <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
     <input id="customPatternInput" type="text" 
@@ -66,7 +66,7 @@ can be defined as `data` attributes for each field. For example:
  </div>
 ```
 
-The following `data` attributes are available to define custom validation error messages:
+The following `data` attributes are available to define validation error messages:
 
 <dl>
 <dt>data-bad-input</dt>

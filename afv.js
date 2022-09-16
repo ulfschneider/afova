@@ -113,7 +113,7 @@ AFV = (function () {
 
     function putErrorMessage(field, errorMessage) {
 
-        //innerGroup is useful to group multiple checkBoxes or radioButtons        
+        //innerGroup is useful for radio groups (radio inputs with all the same name)
         //and display the error message above all of them
         let innerGroup = getInnerGroup(field);
         let parent = innerGroup ? innerGroup.parentNode : field.parentNode;
@@ -163,11 +163,30 @@ AFV = (function () {
         return ensureId(innerGroup);
     }
 
-
     function getGroup(field) {
         let group = moveUpUntil(field, 'afv-group');
 
         return ensureId(group);
+    }
+
+    function isValidatedRadioGroup(field) {
+        let name = field.name;
+        let container = field.form || document;
+        let type = field.type;
+
+        if (type == 'radio' && name) {
+            let group = container.querySelectorAll(`input[name="${name}"][type="radio"]`);
+            for (let radio of group) {
+                if (radio.id != field.id) {
+                    //that means the radio group is already been validated
+                    return true;
+                } else {
+                    //that means the radio group needs to be validated
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 
     function clearIfNoMessage(field) {
@@ -227,9 +246,15 @@ AFV = (function () {
         let errorMessage = cloneMessageTemplate(field);
         errorMessage.classList.add('derived');
 
+        if (validity.valueMissing && isValidatedRadioGroup(field)) {
+            //the radio group has already been validated
+            //in this case no errormessage is created
+            return;
+        }
+
         for (let errorType of getErrorTypes()) {
             if (validity[errorType]) {
-                //there is an error of type errorType                
+                //there is an error of type errorType                  
 
                 let defaultMessage = getDefaultErrorMessage(errorType);
                 errorMessage.innerHTML = field.dataset[errorType] || defaultMessage.message;
@@ -270,19 +295,20 @@ AFV = (function () {
         field.classList.add('afv-field', 'afv-error');
 
         let errorMessage = prepareErrorMessage({ field: field, message: message, messageId: messageId });
+        if (errorMessage) {
+            //the container holds all error messages for the field
+            let containerId = putErrorMessage(field, errorMessage);
 
-        //the container holds all error messages for the field
-        let containerId = putErrorMessage(field, errorMessage);
+            field.setAttribute('aria-errormessage', containerId);
+            field.setAttribute('aria-invalid', 'true');
 
-        field.setAttribute('aria-errormessage', containerId);
-        field.setAttribute('aria-invalid', 'true');
+            if (focus) {
+                field.focus();
+            }
 
-        if (focus) {
-            field.focus();
+            //errorMessage.id is the id of the message that has been created
+            return errorMessage.id;
         }
-
-        //errorMessage.id is the id of the message that has been created
-        return errorMessage.id;
     }
 
     function validateField(field, focus) {
@@ -341,7 +367,7 @@ AFV = (function () {
          * If the default error messages from AFV shouldn´t be used, custom error messages 
          * can be defined as `data` attributes for each field. For example:
          * ```html
-         * <div class="group">
+         * <div class="afv-group">
          *     <label for="customPatternInput">A pattern input with custom failure message</label>
          *     <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
          *     <input id="customPatternInput" type="text" 
@@ -349,7 +375,7 @@ AFV = (function () {
          *     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
          *  </div>
          * ```
-         * The following `data` attributes are available to define custom validation error messages:
+         * The following `data` attributes are available to define validation error messages:
          * <dl>
          * <dt>data-bad-input</dt>
          * <dd>The browser is unable to handle the input value</dd>
