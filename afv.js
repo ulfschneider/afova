@@ -329,11 +329,11 @@ AFV = (function () {
 
     return {
         /**
-         * Initialize afv.
+         * Initialize AFV.
          * The script will iterate through all forms on a web page and deactivate browser validation 
-         * in favor of afv. The form validation will occur on submit of a form and on change of a field.
-         * All errors that can be checked with the Constraint Validation API are validated by afv. 
-         * If the default error messages from afv shouldn´t be used, custom error messages 
+         * in favor of AFV. The form validation will occur on submit of a form and on change of a field.
+         * All errors that can be checked with the Constraint Validation API are validated by AFV. 
+         * If the default error messages from AFV shouldn´t be used, custom error messages 
          * can be defined as <code>data</code> attributes for each field. For example:
          * ```html
          * <div class="group">
@@ -366,7 +366,7 @@ AFV = (function () {
          * <dd>A value of a field that is required due to the <code>required</code> attribute is missing</dd>
          * </dl>
          *  
-         * @param {Object} [settings] - The settings for afv
+         * @param {Object} [settings] - The settings for AFV
          * @param {boolean} [settings.focusOnFirstError=true] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
          * @param {boolean} [settings.validateOnChange=false] - If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form.
          */
