@@ -129,6 +129,12 @@ Returns **[string][14]** The id of the injected message und undefined if no mess
 ## clearMessage
 
 Remove all injected messages that are linked to a form element, or remove a message that is identified by its id.
+Sample call:
+
+```js
+AFV.clearMessage('requiredInput check3');
+//will clear messages for id´s requiredInput and check3
+```
 
 ### Parameters
 

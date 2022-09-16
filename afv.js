@@ -410,6 +410,11 @@ AFV = (function () {
         },
         /**
          * Remove all injected messages that are linked to a form element, or remove a message that is identified by its id.
+         * Sample call:
+         * ```js
+         * AFV.clearMessage('requiredInput check3');
+         * //will clear messages for id´s requiredInput and check3
+         * ```
          * @param {Element|string} identifier <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
          * <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
          * <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
