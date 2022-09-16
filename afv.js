@@ -51,33 +51,38 @@ AFV = (function () {
         console.log(`afv settings \n${JSON.stringify(settings, null, 4)}`);
     }
 
-    function getField(field) {
-        if (typeof field === 'string' || field instanceof String) {
-            //assume field is an id
-            let element = document.querySelector(`#${field}`);
+    function ensureId(identifier) {
+        if (identifier && !identifier.id) {
+            identifier.id = `afv-${idCounter++}`;
+        }
+        return identifier;
+    }
+
+    function getField(identifier) {
+        if (typeof identifier === 'string' || identifier instanceof String) {
+            //assume field describes an id
+            let element = document.querySelector(`#${identifier}`);
             if (!element) {
-                throw Error(`The field with id=${field} could not be found`);
+                throw Error(`The field with id=${identifier} could not be found`);
             }
-            field = element;
+            identifier = element;
         }
 
-        if (field && !field.id) {
-            field.id = `afv-${idCounter++}`;
-        }
-
-        return field;
+        return ensureId(identifier);
     }
 
     function cloneErrorContainerTemplate(field) {
+        let innerGroup = getInnerGroup(field);
         let container = errorContainerTemplate.cloneNode(true);
-        container.id = `${field.id}-afv-error`;
+        container.id = `${innerGroup ? innerGroup.id : field.id}:afv-error`;
         return container;
     }
 
     function cloneMessageTemplate(field, id) {
-        let container = document.querySelector(`#${field.id}-afv-error`);
+        let innerGroup = getInnerGroup(field);
+        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afv-error`);
         let errorMessage = errorMessageTemplate.cloneNode(true);
-        errorMessage.id = id ? id : `${field.id}-afv-error-${container ? container.childElementCount : 0}`;
+        errorMessage.id = id ? id : `${field.id}:afv-error-${container ? container.childElementCount : 0}`;
         errorMessage.dataset.fieldId = field.id;
         return errorMessage;
     }
@@ -90,15 +95,17 @@ AFV = (function () {
         let parent = innerGroup ? innerGroup.parentNode : field.parentNode;
         let newContainer = false;
 
-        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}-afv-error`);
+        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afv-error`);
         if (!container) {
             newContainer = true;
-            container = cloneErrorContainerTemplate(innerGroup || field);
+            container = cloneErrorContainerTemplate(field);
         }
 
         let firstInjectedMessage = container.querySelector('.injected');
         if (errorMessage.classList.contains('injected') || !firstInjectedMessage) {
-            //put injected messages to the bottom of the message list
+            //add injected messages to the bottom of the message list
+            //if no injected message exist, add the derived message also 
+            //to the bottom of the message list
             container.appendChild(errorMessage);
         } else {
             //insert derived messages before the first injected message
@@ -108,6 +115,7 @@ AFV = (function () {
         if (newContainer) {
             parent.insertBefore(container, innerGroup || field);
         }
+
         return container.id;
     }
 
@@ -126,12 +134,16 @@ AFV = (function () {
     }
 
     function getInnerGroup(field) {
-        return moveUpUntil(field, 'afv-inner-group');
+        let innerGroup = moveUpUntil(field, 'afv-inner-group');
+
+        return ensureId(innerGroup);
     }
 
 
     function getGroup(field) {
-        return moveUpUntil(field, 'afv-group');
+        let group = moveUpUntil(field, 'afv-group');
+
+        return ensureId(group);
     }
 
     function clearIfNoMessage(field) {
@@ -146,14 +158,14 @@ AFV = (function () {
             field.classList.remove('afv-error');
             field.removeAttribute('aria-invalid');
             field.removeAttribute('aria-errormessage');
-            parent.querySelectorAll(`#${field.id}-afv-error`)
-                .forEach(function (element) {
-                    element.remove();
-                });
+            let messageContainer = parent.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afv-error`);
+            if (messageContainer) {
+                messageContainer.remove();
+            }
         }
     }
 
-    function clearErrorMessage(identifier, injected) {        
+    function clearErrorMessage(identifier, injected) {
         let field = getField(identifier);
 
         let fieldId = field.dataset.fieldId;
@@ -164,11 +176,12 @@ AFV = (function () {
             field = getField(fieldId); //now we have a field and not a message
         } else {
             //field really indicates a field
-            let parent = field.parentNode;
+            let innerGroup = getInnerGroup(field);
+            let parent = innerGroup ? innerGroup.parentNode : field.parentNode;
             //remove error messages
             //depending on the value of the injected parameter
             //choose to remove only injected or only derived messages
-            parent.querySelectorAll(`#${field.id}-afv-error ${injected ? '.injected' : '.derived'}`)
+            parent.querySelectorAll(`[id^=${field.id}\\:afv-error]${injected ? '.injected' : '.derived'}`)
                 .forEach(function (element) {
                     element.remove();
                 });
@@ -227,14 +240,9 @@ AFV = (function () {
         let field = getField(identifier);
         let group = getGroup(field);
 
-        console.log(field);
-        console.log(group);
-        console.log('--');
         if (group) {
-            console.log('add error');
             group.classList.add('afv-error');
         }
-        console.log(group);
         field.classList.add('afv-field', 'afv-error');
 
         let errorMessage = prepareErrorMessage({ field: field, message: message, messageId: messageId });
@@ -361,10 +369,18 @@ AFV = (function () {
          * @param {Element|string} [identifier] <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
          * <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
          * <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
+         * <li>If identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
          * </ul>
          */
         clearMessage: function (identifier) {
-            clearErrorMessage(identifier, true);
+            if (typeof identifier === 'string' || identifier instanceof String) {
+                let idList = identifier.split(/[ ,]+/);
+                for (let id of idList) {
+                    clearErrorMessage(id, true);
+                }
+            } else {
+                clearErrorMessage(identifier, true);
+            }
         }
     }
 })();
