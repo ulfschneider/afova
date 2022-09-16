@@ -350,35 +350,36 @@ AFV = (function () {
          *  </div>
          * ```
          * The following `data` attributes are available to define custom validation error messages:
+         * <dl>
+         * <dt>data-bad-input</dt>
+         * <dd>The browser is unable to handle the input value</dd>
          * 
-         * `data-bad-input`
-         * :The browser is unable to handle the input value
+         * <dt>data-pattern-mismatch</dt>
+         * <dd>The value of a field doesn´t comply to the pattern of the <code>pattern</code> attribute</dd>
          * 
-         * `data-pattern-mismatch`
-         * :The value of a field doesn´t comply to the pattern of the `pattern` attribute
+         * <dt>data-range-overflow</dt>
+         * <dd>The value of a field is bigger than the value of the <code>max</code> attribute</dd>
          * 
-         * `data-range-overflow`
-         * :The value of a field is bigger than the value of the `max` attribute
+         * <dt>data-range-underflow</dt>
+         * <dd>The value of a field is smaller than the value of the <code>min</code> attribute</dd>
          * 
-         * `data-range-underflow`
-         * :The value of a field is smaller than the value of the `min` attribute
+         * <dt>data-step-mismatch</dt>
+         * <dd>The value of field is not evenly divisable by the value of the <code>step</code> attribute</dd>
          * 
-         * `data-step-mismatch`
-         * :The value of field is not evenly divisable by the value of the `step` attribute
+         * <dt>data-too-long</dt>
+         * <dd>The value of a field has more characters than defined by the attribute <code>maxlength</code></dd>
          * 
-         * `data-too-long`
-         * :The value of a field has more characters than defined by the attribute `maxlength`
+         * <dt>data-too-short</dt>
+         * <dd>The value of a field has less characters than defined by the attribute <code>minlength</code></dd>
          * 
-         * `data-too-short`
-         * :The value of a field has less characters than defined by the attribute `minlength`
+         * <dt>data-type-mismatch</dt>
+         * <dd>The value of a field dosn´t comply to the type of the <code>type</code> attribute</dd>
          * 
-         * `data-type-mismatch`
-         * :The value of a field dosn´t comply to the type of the `type` attribute
+         * <dt>data-value-missing</dd>
+         * <dd>A value of a field that is required due to the <code>required</code> attribute is missing</dd>
+         * </dl>
          * 
-         * `data-value-missing`
-         * :A value of a field that is required due to the `required` attribute is missing
-         * 
-         * Messages that could be derived from the HTML data attribute settings will have the CSS class `derived` assigned to them.
+         * Messages that can be derived from the HTML data attribute settings, like above, will have the CSS class `derived` assigned to them.
          *  
          * @param {Object} [settings] - The settings for AFV
          * @param {boolean} [settings.focusOnFirstError=true] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
