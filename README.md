@@ -25,7 +25,7 @@ All errors that can be checked with the Constraint Validation API are validated 
 If the default error messages from afv shouldn´t be used, custom error messages 
 can be defined as <code>data</code> attributes for each field. For example:
 
-<pre><code>
+```html
 <div class="group">
     <label for="customPatternInput">A pattern input with custom failure message</label>
     <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
@@ -33,9 +33,9 @@ can be defined as <code>data</code> attributes for each field. For example:
     pattern="[A-Za-z]{3}" 
     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
  </div>
-</code></pre>
+```
 
-The following <code>data</code> attribute are available to define custom validation error messages:
+The following <code>data</code> attributes are available to define custom validation error messages:
 
 <dl>
 <dt>data-bad-input</dt>
