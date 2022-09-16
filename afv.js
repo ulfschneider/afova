@@ -1,7 +1,29 @@
 /**
  * Accessible Form Validation (AFV)
- * https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation
- * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
+ * 
+ * AFV is leveraging the Constraint Validation API to do client-side form validation. Please refer to:
+ * <ul>
+ * <li>https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation</li>
+ * <li>https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation</li>
+ * </ul>
+ * 
+ * ## Usage
+ * 
+ * Put the script afv.min.js into your HTML page head:
+ * ```html
+ * <head>
+ * .
+ * <script src="/js/afv.min.js"</script>
+ * .
+ * </head>
+ * ```
+ * 
+ * Initialize AFV
+ * ```html
+ * <script>
+ * AFV.init();
+ * </script>
+ * ```
  */
 AFV = (function () {
     'use strict';

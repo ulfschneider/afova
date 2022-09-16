@@ -3,18 +3,44 @@
 ### Table of Contents
 
 -   [AFV][1]
--   [init][2]
-    -   [Parameters][3]
--   [injectMessage][4]
-    -   [Parameters][5]
--   [clearMessage][6]
-    -   [Parameters][7]
+-   [Usage][2]
+-   [init][3]
+    -   [Parameters][4]
+-   [injectMessage][5]
+    -   [Parameters][6]
+-   [clearMessage][7]
+    -   [Parameters][8]
 
 ## AFV
 
 Accessible Form Validation (AFV)
-[https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation][8]
-[https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation][9]
+
+AFV is leveraging the Constraint Validation API to do client-side form validation. Please refer to:
+
+<ul>
+<li>https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation</li>
+<li>https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation</li>
+</ul>
+
+## Usage
+
+Put the script afv.min.js into your HTML page head:
+
+```html
+<head>
+.
+<script src="/js/afv.min.js"</script>
+.
+</head>
+```
+
+Initialize AFV
+
+```html
+<script>
+AFV.init();
+</script>
+```
 
 ## init
 
@@ -60,9 +86,9 @@ The following <code>data</code> attributes are available to define custom valida
 
 ### Parameters
 
--   `settings` **[Object][10]?** The settings for afv
-    -   `settings.focusOnFirstError` **[boolean][11]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
-    -   `settings.validateOnChange` **[boolean][11]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
+-   `settings` **[Object][9]?** The settings for afv
+    -   `settings.focusOnFirstError` **[boolean][10]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
+    -   `settings.validateOnChange` **[boolean][10]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
 
 ## injectMessage
 
@@ -70,13 +96,13 @@ Inject a message and bind it to a form element. Injected messages will have the 
 
 ### Parameters
 
--   `data` **[Object][10]** 
-    -   `data.identifier` **([Element][12] \| [string][13])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
-    -   `data.message` **[string][13]** The message to set.
-    -   `data.messageId` **[string][13]** The id for the error message. If this id is not provided, a new id will be generated. (optional, default `undefined`)
-    -   `data.focus` **[boolean][11]** If true the focus will be set to the field. (optional, default `false`)
+-   `data` **[Object][9]** 
+    -   `data.identifier` **([Element][11] \| [string][12])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
+    -   `data.message` **[string][12]** The message to set.
+    -   `data.messageId` **[string][12]** The id for the error message. If this id is not provided, a new id will be generated. (optional, default `undefined`)
+    -   `data.focus` **[boolean][10]** If true the focus will be set to the field. (optional, default `false`)
 
-Returns **[string][13]** The id of the injected message und undefined if no message was set.
+Returns **[string][12]** The id of the injected message und undefined if no message was set.
 
 ## clearMessage
 
@@ -84,7 +110,7 @@ Remove a single or all injected messages that are linked to a form element, or r
 
 ### Parameters
 
--   `identifier` **([Element][12] \| [string][13])?** <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
+-   `identifier` **([Element][11] \| [string][12])?** <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
     <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
     <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
     <li>If identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
@@ -92,26 +118,24 @@ Remove a single or all injected messages that are linked to a form element, or r
 
 [1]: #afv
 
-[2]: #init
+[2]: #usage
 
-[3]: #parameters
+[3]: #init
 
-[4]: #injectmessage
+[4]: #parameters
 
-[5]: #parameters-1
+[5]: #injectmessage
 
-[6]: #clearmessage
+[6]: #parameters-1
 
-[7]: #parameters-2
+[7]: #clearmessage
 
-[8]: https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation
+[8]: #parameters-2
 
-[9]: https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
+[9]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[10]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[10]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[11]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[11]: https://developer.mozilla.org/docs/Web/API/Element
 
-[12]: https://developer.mozilla.org/docs/Web/API/Element
-
-[13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[12]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
