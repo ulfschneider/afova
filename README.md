@@ -5,12 +5,16 @@
 -   [AFV][1]
 -   [init][2]
     -   [Parameters][3]
+-   [injectMessage][4]
+    -   [Parameters][5]
+-   [clearMessage][6]
+    -   [Parameters][7]
 
 ## AFV
 
 Accessible Form Validation (AFV)
-[https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation][4]
-[https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation][5]
+[https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation][8]
+[https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation][9]
 
 ## init
 
@@ -56,9 +60,34 @@ The following <code>data</code> attribute are available to define custom validat
 
 ### Parameters
 
--   `settings` **[Object][6]?** optional: the settings for afv
-    -   `settings.focusOnFirstError` **[boolean][7]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
-    -   `settings.validateOnChange` **[boolean][7]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
+-   `settings` **[Object][10]?** The settings for afv
+    -   `settings.focusOnFirstError` **[boolean][11]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
+    -   `settings.validateOnChange` **[boolean][11]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
+
+## injectMessage
+
+Inject a message and bind it to a form element. Injected messages will have the CSS class <code>injected</code>.
+
+### Parameters
+
+-   `data` **[Object][10]** 
+    -   `data.identifier` **([Element][12] \| [string][13])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
+    -   `data.message` **[string][13]** The message to set.
+    -   `data.messageId` **[string][13]** The id for the error message. If this id is not provided, a new id will be generated. (optional, default `undefined`)
+    -   `data.focus` **[boolean][11]** If true the focus will be set to the field. (optional, default `false`)
+
+Returns **[string][13]** The id of the injected message und undefined if no message was set.
+
+## clearMessage
+
+Remove a single or all injected messages that are linked to a form element, or remove a message that is identified by its id.
+
+### Parameters
+
+-   `identifier` **([Element][12] \| [string][13])?** <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
+    <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
+    <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
+    </ul>
 
 [1]: #afv
 
@@ -66,10 +95,22 @@ The following <code>data</code> attribute are available to define custom validat
 
 [3]: #parameters
 
-[4]: https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation
+[4]: #injectmessage
 
-[5]: https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
+[5]: #parameters-1
 
-[6]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[6]: #clearmessage
 
-[7]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[7]: #parameters-2
+
+[8]: https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation
+
+[9]: https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
+
+[10]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[11]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[12]: https://developer.mozilla.org/docs/Web/API/Element
+
+[13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String

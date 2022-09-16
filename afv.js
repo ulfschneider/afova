@@ -7,6 +7,8 @@ AFV = (function () {
     'use strict';
     let settings;
     let idCounter = 0;
+    let errorContainerTemplate = document.createElement('div');
+    errorContainerTemplate.classList.add('afv-message-container');
     let errorMessageTemplate = document.createElement('div');
     errorMessageTemplate.classList.add('afv-message', 'afv-error');
 
@@ -49,6 +51,66 @@ AFV = (function () {
         console.log(`afv settings \n${JSON.stringify(settings, null, 4)}`);
     }
 
+    function getField(field) {
+        if (typeof field === 'string' || field instanceof String) {
+            //assume field is an id
+            let element = document.querySelector(`#${field}`);
+            if (!element) {
+                throw Error(`The field with id=${field} could not be found`);
+            }
+            field = element;
+        }
+
+        if (field && !field.id) {
+            field.id = `afv-${idCounter++}`;
+        }
+
+        return field;
+    }
+
+    function cloneErrorContainerTemplate(field) {
+        let container = errorContainerTemplate.cloneNode(true);
+        container.id = `${field.id}-afv-error`;
+        return container;
+    }
+
+    function cloneMessageTemplate(field, id) {
+        let container = document.querySelector(`#${field.id}-afv-error`);
+        let errorMessage = errorMessageTemplate.cloneNode(true);
+        errorMessage.id = id ? id : `${field.id}-afv-error-${container ? container.childElementCount : 0}`;
+        errorMessage.dataset.fieldId = field.id;
+        return errorMessage;
+    }
+
+    function putErrorMessage(field, errorMessage) {
+        let parent = field.parentNode;
+        let newContainer = false;
+
+        let container = document.querySelector(`#${field.id}-afv-error`);
+        if (!container) {
+            newContainer = true;
+            container = cloneErrorContainerTemplate(field);
+        }
+
+        let firstInjectedMessage = container.querySelector('.injected');
+        if (errorMessage.classList.contains('injected') || !firstInjectedMessage) {
+            //put injected messages to the bottom of the message list
+            container.appendChild(errorMessage);
+        } else {
+            //insert derived messages before the first injected message
+            container.insertBefore(errorMessage, firstInjectedMessage);
+        }
+
+        if (newContainer) {
+            parent.insertBefore(container, field);
+        }
+        return container.id;
+    }
+
+    function hasErrorMessage(parent) {
+        return parent.querySelectorAll(`.afv-message`).length;
+    }
+
     function getGroup(field) {
         let parent = field.parentNode;
         while (parent) {
@@ -59,86 +121,125 @@ AFV = (function () {
         }
     }
 
-    function clearErrorMessage(field) {
+    function clearIfNoMessage(field) {
         let parent = field.parentNode;
         let group = getGroup(field);
 
-        if (group) {
-            group.classList.remove('afv-error');
+        if (!hasErrorMessage(parent)) {
+            if (group) {
+                group.classList.remove('afv-error');
+            }
+            field.classList.remove('afv-error');
+            field.removeAttribute('aria-invalid');
+            field.removeAttribute('aria-errormessage');
+            parent.querySelectorAll(`#${field.id}-afv-error`)
+                .forEach(function (element) {
+                    element.remove();
+                });
         }
-        field.classList.remove('afv-error');
-        field.removeAttribute('aria-invalid');
-        field.removeAttribute('aria-errormessage');
-
-        parent.querySelectorAll(`#${field.id}-afv-error`)
-            .forEach(function (element) {
-                parent.removeChild(element);
-            });
     }
 
-    function defineErrorMessage(field) {
+    function clearErrorMessage(identifier, injected) {
+        let field = getField(identifier);
+        
+        let fieldId = field.dataset.fieldId;
+        if (fieldId && field.classList.contains('afv-message')) {
+            //field indicates an error message element
+            //therefore that single error message will be removed
+            field.remove();
+            field = getField(fieldId); //now we have a field and not a message
+        } else {
+            //field really indicates a field
+            let parent = field.parentNode;
+            //remove error messages
+            //depending on the value of the injected parameter
+            //choose to remove only injected or only derived messages
+            parent.querySelectorAll(`#${field.id}-afv-error ${injected ? '.injected' : '.derived'}`)
+                .forEach(function (element) {
+                    element.remove();
+                });
+        }
+
+        //if no message is left, remove all error message indications
+        clearIfNoMessage(field);
+    }
+
+    function injectErrorMessage({ field, message, messageId }) {
+        let errorMessage = cloneMessageTemplate(field, messageId);
+        errorMessage.classList.add('injected');
+        errorMessage.innerHTML = message;
+        return errorMessage;
+    }
+
+    function deriveErrorMessage(field) {
         let validity = field.validity;
-        let errorMessage = errorMessageTemplate.cloneNode(true);
-        let errorMessageId = `${field.id}-afv-error`;
-        errorMessage.id = errorMessageId;
+        let errorMessage = cloneMessageTemplate(field);
+        errorMessage.classList.add('derived');
 
         for (let errorType of getErrorTypes()) {
-            if (validity[errorType]) { //there is an error of type errorType                
+            if (validity[errorType]) {
+                //there is an error of type errorType                
 
                 let defaultMessage = getDefaultErrorMessage(errorType);
-                errorMessage.innerText = field.dataset[errorType] || defaultMessage.message;
+                errorMessage.innerHTML = field.dataset[errorType] || defaultMessage.message;
 
                 if (defaultMessage.constraintAttr) {
                     let constraint = field.getAttribute(defaultMessage.constraintAttr);
                     if (constraint) {
                         defaultMessage = getSpecificDefaultErrorMessage(errorType, constraint);
                         if (defaultMessage) {
-                            errorMessage.innerText = field.dataset[errorType] || defaultMessage.message;
+                            errorMessage.innerHTML = field.dataset[errorType] || defaultMessage.message;
                         }
-                        errorMessage.innerText = errorMessage.innerText.replaceAll('{{constraint}}', constraint);
+                        errorMessage.innerHTML = errorMessage.innerHTML.replaceAll('{{constraint}}', constraint);
                     }
                 }
             }
         }
-
-        if (!errorMessage.innerText) {
-            errorMessage.innerText = field.dataset.errorInvalid || 'The value is not correct';
+        if (!errorMessage.innerHTML) {
+            errorMessage.innerHTML = field.dataset.errorInvalid || 'The value is not correct';
         }
         return errorMessage;
     }
 
-    function setErrorMessage(field, refocus) {
-        let parent = field.parentNode;
-        let group = getGroup(field);
+    function prepareErrorMessage({ field, message, messageId }) {
+        if (message) {
+            return injectErrorMessage({ field, message, messageId });
+        } else {
+            return deriveErrorMessage(field);
+        }
+    }
 
+    function setErrorMessage({ identifier, message, messageId, focus }) {
+        let field = getField(identifier);
+        let group = getGroup(field);
 
         if (group) {
             group.classList.add('afv-error');
         }
         field.classList.add('afv-field', 'afv-error');
 
-        let errorMessage = defineErrorMessage(field);
+        let errorMessage = prepareErrorMessage({ field: field, message: message, messageId: messageId });
 
-        parent.insertBefore(errorMessage, field);
+        //the container holds all error messages for the field
+        let containerId = putErrorMessage(field, errorMessage);
 
-        field.setAttribute('aria-errormessage', errorMessage.id);
+        field.setAttribute('aria-errormessage', containerId);
         field.setAttribute('aria-invalid', 'true');
 
-        if (refocus) {
+        if (focus) {
             field.focus();
         }
+
+        //errorMessage.id is the id of the message that has been created
+        return errorMessage.id;
     }
 
-    function validateField(field, refocus) {
-        refocus = refocus || false;
-
-        if (!field.id) {
-            field.id = `afv-${idCounter++}`;
-        }
+    function validateField(field, focus) {
+        focus = focus || false;
 
         clearErrorMessage(field);
         if (!field.validity.valid) {
-            setErrorMessage(field, refocus);
+            setErrorMessage({ identifier: field, focus: focus });
         }
 
         return field.validity.valid;
@@ -170,7 +271,7 @@ AFV = (function () {
             if (settings.validateOnChange) {
                 for (let field of form.elements) {
                     field.addEventListener('change', function (event) {
-                        validateField(event.target, true); // validate the field on change and refocus if invalid
+                        validateField(event.target, true); // validate the field on change and focus if invalid
                     });
                 }
             }
@@ -216,14 +317,35 @@ AFV = (function () {
          * <dd>A value of a field that is required due to the <code>required</code> attribute is missing</dd>
          * </dl>
          *  
-         * @param {Object} [settings] - optional: the settings for afv
+         * @param {Object} [settings] - The settings for afv
          * @param {boolean} [settings.focusOnFirstError=true] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
          * @param {boolean} [settings.validateOnChange=false] - If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form.
          */
         init: function (settings) {
             extractSettings(settings);
             adjustForms();
+        },
+        /**
+         * Inject a message and bind it to a form element. Injected messages will have the CSS class <code>injected</code>.
+         * @param {Object} data
+         * @param {Element|string} data.identifier - Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
+         * @param {string} data.message - The message to set.
+         * @param {string} [data.messageId=undefined] - The id for the error message. If this id is not provided, a new id will be generated.
+         * @param {boolean} [data.focus=false] - If true the focus will be set to the field.
+         * @returns {string} - The id of the injected message und undefined if no message was set.
+         */
+        injectMessage: function ({ identifier, message, messageId, focus = false }) {
+            return setErrorMessage({ identifier: identifier, message: message, messageId: messageId, focus: focus });
+        },
+        /**
+         * Remove a single or all injected messages that are linked to a form element, or remove a message that is identified by its id.
+         * @param {Element|string} [identifier] <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
+         * <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
+         * <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
+         * </ul>
+         */
+        clearMessage: function (identifier) {
+            clearErrorMessage(identifier, true);
         }
     }
-
 })();

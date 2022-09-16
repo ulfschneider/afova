@@ -53,8 +53,9 @@
         </h1>
         <form>
             <div class="afv-group">
-                <label for="requiredInput">A reqired input</label>
+                <label>A reqired input
                 <input id="requiredInput" type="text" required>
+                </label>
             </div>
 
             <div class="afv-group">
@@ -98,14 +99,24 @@
 
             <div class="afv-group">
                 <label for="customEmail">Please provide your email address (will produce a custom error message)</label>
-                <input id="customEEail" type="email" data-type-mismatch="Please provide an email adress in the format mickey@mouse.com"/>
+                <input id="customEail" type="email" data-type-mismatch="Please provide an email adress in the format mickey@mouse.com"/>
+            </div>
+
+            <div class="afv-group">
+                <label>Please provide credit card number
+                <input type="tel" autocomplete="cc-number" data-type-mismatch="This doesn´t seem to be a credit card number"/>
+                </label>
             </div>
 
             <input type="submit" value="Submit the form"/>
+
         </form>
+
+        <button onclick="AFV.clearMessage('requiredInput');">Clear Message</button>
 
         <script>
             AFV.init();
+            AFV.injectMessage({identifier: "requiredInput", message: "hello world"});
         </script>
 
     </body>
