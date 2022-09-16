@@ -394,7 +394,8 @@ AFV = (function () {
          * Typically it shouldn´t be necessary to inject a message for anything that can be solved with the derived messages (see the init() method above).
          * Sample call:
          * ```js
-         * AFV.injectMessage({identifier: "requiredInput", message: "This input is required"}); //A validation of the a required field might be better with a derived message
+         * AFV.injectMessage({identifier: "requiredInput", message: "This input is required"}); 
+         * //A validation of the a required field might be better with a derived message
          * ```
          * 
          * @param {Object} data
