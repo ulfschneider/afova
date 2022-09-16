@@ -2,10 +2,10 @@
  * Accessible Form Validation (AFV)
  * 
  * AFV is leveraging the Constraint Validation API to do client-side form validation. Please refer to:
- * <ul>
- * <li>https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation</li>
- * <li>https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation</li>
- * </ul>
+ * 
+ * - https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation
+ * - https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
+ * 
  * 
  * ## Usage
  * 
@@ -336,7 +336,7 @@ AFV = (function () {
          * in favor of AFV. The form validation will occur on submit of a form and on change of a field.
          * All errors that can be checked with the Constraint Validation API are validated by AFV. 
          * If the default error messages from AFV shouldn´t be used, custom error messages 
-         * can be defined as <code>data</code> attributes for each field. For example:
+         * can be defined as `data` attributes for each field. For example:
          * ```html
          * <div class="group">
          *     <label for="customPatternInput">A pattern input with custom failure message</label>
@@ -346,27 +346,35 @@ AFV = (function () {
          *     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
          *  </div>
          * ```
-         * The following <code>data</code> attributes are available to define custom validation error messages:
-         * <dl>
-         * <dt>data-bad-input</dt>
-         * <dd>The browser is unable to handle the input value</dd>
-         * <dt>data-pattern-mismatch</dt>
-         * <dd>The value of a field doesn´t comply to the pattern of the <code>pattern</code> attribute</dd>
-         * <dt>data-range-overflow</dt>
-         * <dd>The value of a field is bigger than the value of the <code>max</code> attribute</dd>
-         * <dt>data-range-underflow</dt>
-         * <dd>The value of a field is smaller than the value of the <code>min</code> attribute</dd>
-         * <dt>data-step-mismatch</dt>
-         * <dd></dd>
-         * <dt>data-too-long</dt>
-         * <dd>The value of a field has more characters than defined by the attribute <code>maxlength</code></dd>
-         * <dt>data-too-short</dt>
-         * <dd>The value of a field has less characters than defined by the attribute <code>minlength</code></dd>
-         * <dt>data-type-mismatch</dt>
-         * <dd>The value of a field dosn´t comply to the type of the <code>type</code> attribute</dd>
-         * <dt>data-value-missing</dt>
-         * <dd>A value of a field that is required due to the <code>required</code> attribute is missing</dd>
-         * </dl>
+         * The following `data` attributes are available to define custom validation error messages:
+         * 
+         * `data-bad-input`
+         * :The browser is unable to handle the input value
+         * 
+         * `data-pattern-mismatch`
+         * :The value of a field doesn´t comply to the pattern of the `pattern` attribute
+         * 
+         * `data-range-overflow`
+         * :The value of a field is bigger than the value of the `max` attribute
+         * 
+         * `data-range-underflow`
+         * :The value of a field is smaller than the value of the `min` attribute
+         * 
+         * `data-step-mismatch`
+         * :The value of field is not evenly divisable by the value of the `step` attribute
+         * 
+         * `data-too-long`
+         * :The value of a field has more characters than defined by the attribute `maxlength`
+         * 
+         * `data-too-short`
+         * :The value of a field has less characters than defined by the attribute `minlength`
+         * 
+         * `data-type-mismatch`
+         * :The value of a field dosn´t comply to the type of the `type` attribute
+         * 
+         * `data-value-missing`
+         * :A value of a field that is required due to the `required` attribute is missing
+         * 
          *  
          * @param {Object} [settings] - The settings for AFV
          * @param {boolean} [settings.focusOnFirstError=true] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
@@ -377,7 +385,7 @@ AFV = (function () {
             adjustForms();
         },
         /**
-         * Inject a message and bind it to a form element. Injected messages will have the CSS class <code>injected</code>.
+         * Inject a message and bind it to a form element. Injected messages will have the CSS class `injected` assigned to them.
          * @param {Object} data
          * @param {Element|string} data.identifier - Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
          * @param {string} data.message - The message to set.

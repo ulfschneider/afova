@@ -17,10 +17,8 @@ Accessible Form Validation (AFV)
 
 AFV is leveraging the Constraint Validation API to do client-side form validation. Please refer to:
 
-<ul>
-<li>https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation</li>
-<li>https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation</li>
-</ul>
+-   [https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation][9]
+-   [https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation][10]
 
 ## Usage
 
@@ -51,7 +49,7 @@ The script will iterate through all forms on a web page and deactivate browser v
 in favor of AFV. The form validation will occur on submit of a form and on change of a field.
 All errors that can be checked with the Constraint Validation API are validated by AFV. 
 If the default error messages from AFV shouldn´t be used, custom error messages 
-can be defined as <code>data</code> attributes for each field. For example:
+can be defined as `data` attributes for each field. For example:
 
 ```html
 <div class="group">
@@ -63,48 +61,54 @@ can be defined as <code>data</code> attributes for each field. For example:
  </div>
 ```
 
-The following <code>data</code> attributes are available to define custom validation error messages:
+The following `data` attributes are available to define custom validation error messages:
 
-<dl>
-<dt>data-bad-input</dt>
-<dd>The browser is unable to handle the input value</dd>
-<dt>data-pattern-mismatch</dt>
-<dd>The value of a field doesn´t comply to the pattern of the <code>pattern</code> attribute</dd>
-<dt>data-range-overflow</dt>
-<dd>The value of a field is bigger than the value of the <code>max</code> attribute</dd>
-<dt>data-range-underflow</dt>
-<dd>The value of a field is smaller than the value of the <code>min</code> attribute</dd>
-<dt>data-step-mismatch</dt>
-<dd></dd>
-<dt>data-too-long</dt>
-<dd>The value of a field has more characters than defined by the attribute <code>maxlength</code></dd>
-<dt>data-too-short</dt>
-<dd>The value of a field has less characters than defined by the attribute <code>minlength</code></dd>
-<dt>data-type-mismatch</dt>
-<dd>The value of a field dosn´t comply to the type of the <code>type</code> attribute</dd>
-<dt>data-value-missing</dt>
-<dd>A value of a field that is required due to the <code>required</code> attribute is missing</dd>
-</dl>
+`data-bad-input`
+:The browser is unable to handle the input value
+
+`data-pattern-mismatch`
+:The value of a field doesn´t comply to the pattern of the `pattern` attribute
+
+`data-range-overflow`
+:The value of a field is bigger than the value of the `max` attribute
+
+`data-range-underflow`
+:The value of a field is smaller than the value of the `min` attribute
+
+`data-step-mismatch`
+:The value of field is not evenly divisable by the value of the `step` attribute
+
+`data-too-long`
+:The value of a field has more characters than defined by the attribute `maxlength`
+
+`data-too-short`
+:The value of a field has less characters than defined by the attribute `minlength`
+
+`data-type-mismatch`
+:The value of a field dosn´t comply to the type of the `type` attribute
+
+`data-value-missing`
+:A value of a field that is required due to the `required` attribute is missing
 
 ### Parameters
 
--   `settings` **[Object][9]?** The settings for AFV
-    -   `settings.focusOnFirstError` **[boolean][10]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
-    -   `settings.validateOnChange` **[boolean][10]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
+-   `settings` **[Object][11]?** The settings for AFV
+    -   `settings.focusOnFirstError` **[boolean][12]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
+    -   `settings.validateOnChange` **[boolean][12]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
 
 ## injectMessage
 
-Inject a message and bind it to a form element. Injected messages will have the CSS class <code>injected</code>.
+Inject a message and bind it to a form element. Injected messages will have the CSS class `injected` assigned to them.
 
 ### Parameters
 
--   `data` **[Object][9]** 
-    -   `data.identifier` **([Element][11] \| [string][12])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
-    -   `data.message` **[string][12]** The message to set.
-    -   `data.messageId` **[string][12]** The id for the error message. If this id is not provided, a new id will be generated. (optional, default `undefined`)
-    -   `data.focus` **[boolean][10]** If true the focus will be set to the field. (optional, default `false`)
+-   `data` **[Object][11]** 
+    -   `data.identifier` **([Element][13] \| [string][14])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
+    -   `data.message` **[string][14]** The message to set.
+    -   `data.messageId` **[string][14]** The id for the error message. If this id is not provided, a new id will be generated. (optional, default `undefined`)
+    -   `data.focus` **[boolean][12]** If true the focus will be set to the field. (optional, default `false`)
 
-Returns **[string][12]** The id of the injected message und undefined if no message was set.
+Returns **[string][14]** The id of the injected message und undefined if no message was set.
 
 ## clearMessage
 
@@ -112,7 +116,7 @@ Remove a single or all injected messages that are linked to a form element, or r
 
 ### Parameters
 
--   `identifier` **([Element][11] \| [string][12])?** <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
+-   `identifier` **([Element][13] \| [string][14])?** <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
     <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
     <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
     <li>If identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
@@ -134,10 +138,14 @@ Remove a single or all injected messages that are linked to a form element, or r
 
 [8]: #parameters-2
 
-[9]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[9]: https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation
 
-[10]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[10]: https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
 
-[11]: https://developer.mozilla.org/docs/Web/API/Element
+[11]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[12]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[12]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[13]: https://developer.mozilla.org/docs/Web/API/Element
+
+[14]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
