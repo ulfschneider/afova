@@ -12,9 +12,9 @@
  * Put the script afv.min.js into your HTML page head:
  * ```html
  * <head>
- * .
+ * …
  * <script src="/js/afv.min.js"</script>
- * .
+ * …
  * </head>
  * ```
  * 
@@ -24,6 +24,8 @@
  * AFV.init();
  * </script>
  * ```
+ * 
+ * AFV offers the following methods:
  */
 AFV = (function () {
     'use strict';

@@ -28,9 +28,9 @@ Put the script afv.min.js into your HTML page head:
 
 ```html
 <head>
-.
+…
 <script src="/js/afv.min.js"</script>
-.
+…
 </head>
 ```
 
@@ -42,13 +42,15 @@ AFV.init();
 </script>
 ```
 
+AFV offers the following methods:
+
 ## init
 
-Initialize afv.
+Initialize AFV.
 The script will iterate through all forms on a web page and deactivate browser validation 
-in favor of afv. The form validation will occur on submit of a form and on change of a field.
-All errors that can be checked with the Constraint Validation API are validated by afv. 
-If the default error messages from afv shouldn´t be used, custom error messages 
+in favor of AFV. The form validation will occur on submit of a form and on change of a field.
+All errors that can be checked with the Constraint Validation API are validated by AFV. 
+If the default error messages from AFV shouldn´t be used, custom error messages 
 can be defined as <code>data</code> attributes for each field. For example:
 
 ```html
@@ -86,7 +88,7 @@ The following <code>data</code> attributes are available to define custom valida
 
 ### Parameters
 
--   `settings` **[Object][9]?** The settings for afv
+-   `settings` **[Object][9]?** The settings for AFV
     -   `settings.focusOnFirstError` **[boolean][10]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
     -   `settings.validateOnChange` **[boolean][10]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
 
