@@ -410,7 +410,7 @@ AFV = (function () {
         },
         /**
          * Remove all injected messages that are linked to a form element, or remove a message that is identified by its id.
-         * @param {Element|string} [identifier] <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
+         * @param {Element|string} identifier <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
          * <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
          * <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
          * <li>If identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
