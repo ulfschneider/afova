@@ -44,7 +44,12 @@ AFV offers the following methods:
 
 ## init
 
-Initialize AFV.
+Initialize AFV. Sample call:
+
+```js
+AFV.init({focusOnFirstError: true, validateOnChange: false});
+```
+
 The script will iterate through all forms on a web page and deactivate browser validation 
 in favor of AFV. The form validation will occur on submit of a form and on change of a field.
 All errors that can be checked with the Constraint Validation API are validated by AFV. 
@@ -90,6 +95,8 @@ The following `data` attributes are available to define custom validation error 
 `data-value-missing`
 :A value of a field that is required due to the `required` attribute is missing
 
+Messages that could be derived from the HTML data attribute settings will have the CSS class `derived` assigned to them.
+
 ### Parameters
 
 -   `settings` **[Object][11]?** The settings for AFV
@@ -99,6 +106,12 @@ The following `data` attributes are available to define custom validation error 
 ## injectMessage
 
 Inject a message and bind it to a form element. Injected messages will have the CSS class `injected` assigned to them.
+Typically it shouldn´t be necessary to inject a message for anything that can be solved with the derived messages (see the init() method above).
+Sample call:
+
+```js
+AFV.injectMessage({identifier: "requiredInput", message: "This input is required"}); //A validation of the a required field might be better with a derived message
+```
 
 ### Parameters
 
@@ -112,7 +125,7 @@ Returns **[string][14]** The id of the injected message und undefined if no mess
 
 ## clearMessage
 
-Remove a single or all injected messages that are linked to a form element, or remove a message that is identified by its id.
+Remove all injected messages that are linked to a form element, or remove a message that is identified by its id.
 
 ### Parameters
 
