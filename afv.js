@@ -424,11 +424,11 @@ AFV = (function () {
          * //A validation of the a required field might be better with a derived message
          * ```
          * 
-         * @param {Object} data
-         * @param {Element|string} data.identifier - Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
-         * @param {string} data.message - The message to set.
-         * @param {string} [data.messageId=undefined] - The id for the error message. If this id is not provided, a new id will be generated.
-         * @param {boolean} [data.focus=false] - If true the focus will be set to the field.
+         * @param {Object} messageDefinition
+         * @param {Element|string} messageDefinition.identifier - Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
+         * @param {string} messageDefinition.message - The message to set.
+         * @param {string} [messageDefinition.messageId=undefined] - The id for the error message. If this id is not provided, a new id will be generated.
+         * @param {boolean} [messageDefinition.focus=false] - If true the focus will be set to the field.
          * @returns {string} - The id of the injected message und undefined if no message was set.
          */
         injectMessage: function ({ identifier, message, messageId, focus = false }) {
@@ -436,25 +436,32 @@ AFV = (function () {
         },
         /**
          * Remove all injected messages that are linked to a form element, or remove a message that is identified by its id.
-         * Sample call:
+         * Sample calls:
          * ```js
          * AFV.clearMessage('requiredInput check3');
          * //will clear messages for id´s requiredInput and check3
+         * 
+         * AFV.clearMessage('requiredInput', 'check3');
+         * //this call has the same outcome as the previous call
          * ```
-         * @param {Element|string} identifier <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
-         * <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
-         * <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
-         * <li>If identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
+         * @param {...Element|string} identifiers - Will remove one or multiple messages
+         * <ul>
+         * <li>If an identifier is a form element, all injected error messages of that form element will be removed</li>
+         * <li>If an identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
+         * <li>If an identifier is a string that contains the id of a message, that message will be removed, no matter if it is an injected or a derived message.</li>
+         * <li>If an identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
          * </ul>
          */
-        clearMessage: function (identifier) {
-            if (typeof identifier === 'string' || identifier instanceof String) {
-                let idList = identifier.split(/[ ,]+/);
-                for (let id of idList) {
-                    clearErrorMessage(id, true);
+        clearMessage: function (...identifiers) {
+            for (let ident of identifiers) {
+                if (typeof ident === 'string' || ident instanceof String) {
+                    let idList = ident.split(/[ ,]+/);
+                    for (let id of idList) {
+                        clearErrorMessage(id, true);
+                    }
+                } else {
+                    clearErrorMessage(ident, true);
                 }
-            } else {
-                clearErrorMessage(identifier, true);
             }
         }
     }

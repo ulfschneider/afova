@@ -118,30 +118,34 @@ AFV.injectMessage({identifier: "requiredInput", message: "This input is required
 
 ### Parameters
 
--   `data` **[Object][11]** 
-    -   `data.identifier` **([Element][13] \| [string][14])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
-    -   `data.message` **[string][14]** The message to set.
-    -   `data.messageId` **[string][14]** The id for the error message. If this id is not provided, a new id will be generated. (optional, default `undefined`)
-    -   `data.focus` **[boolean][12]** If true the focus will be set to the field. (optional, default `false`)
+-   `messageDefinition` **[Object][11]** 
+    -   `messageDefinition.identifier` **([Element][13] \| [string][14])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
+    -   `messageDefinition.message` **[string][14]** The message to set.
+    -   `messageDefinition.messageId` **[string][14]** The id for the error message. If this id is not provided, a new id will be generated. (optional, default `undefined`)
+    -   `messageDefinition.focus` **[boolean][12]** If true the focus will be set to the field. (optional, default `false`)
 
 Returns **[string][14]** The id of the injected message und undefined if no message was set.
 
 ## clearMessage
 
 Remove all injected messages that are linked to a form element, or remove a message that is identified by its id.
-Sample call:
+Sample calls:
 
 ```js
 AFV.clearMessage('requiredInput check3');
 //will clear messages for id´s requiredInput and check3
+
+AFV.clearMessage('requiredInput', 'check3');
+//this call has the same outcome as the previous call
 ```
 
 ### Parameters
 
--   `identifier` **([Element][13] \| [string][14])** <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
-    <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
-    <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
-    <li>If identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
+-   `identifiers` **...([Element][13] \| [string][14])** Will remove one or multiple messages<ul>
+    <li>If an identifier is a form element, all injected error messages of that form element will be removed</li>
+    <li>If an identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
+    <li>If an identifier is a string that contains the id of a message, that message will be removed, no matter if it is an injected or a derived message.</li>
+    <li>If an identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
     </ul>
 
 [1]: #afv
