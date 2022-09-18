@@ -450,14 +450,16 @@ AFV = (function () {
          * <li>You might also provide a comma-separated list of identifiers (spread/rest operator ...)</li>
          * </ul>
          */
-        clearMessage: function (identifier) {
-            if (typeof identifier === 'string' || identifier instanceof String) {
-                let idList = identifier.split(/[ ,]+/);
-                for (let id of idList) {
-                    clearErrorMessage(id, true);
+        clearMessage: function (...identifier) {
+            for (let ident of identifier) {
+                if (typeof ident === 'string' || idet instanceof String) {
+                    let idList = ident.split(/[ ,]+/);
+                    for (let id of idList) {
+                        clearErrorMessage(id, true);
+                    }
+                } else {
+                    clearErrorMessage(ident, true);
                 }
-            } else {
-                clearErrorMessage(identifier, true);
             }
         }
     }
