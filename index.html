@@ -124,8 +124,8 @@
         <button onclick="AFV.clearMessage('requiredInput radio3');">Clear Injected Messages</button>
         <script>
             AFV.init();
-            AFV.injectMessage({identifier: "requiredInput", message: "hello world"});
-            AFV.injectMessage({identifier: "radio3", message: "hello world"});
+            AFV.injectMessage("requiredInput", "hello world");
+            AFV.injectMessage("radio3", "hello world");
         </script>
 
     </body>

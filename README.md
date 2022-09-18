@@ -97,13 +97,13 @@ The following `data` attributes are available to define validation error message
 <dd>A value of a field that is required due to the <code>required</code> attribute is missing</dd>
 </dl>
 
-Messages that can be derived from the HTML data attribute settings, like above, will have the CSS class `derived` assigned to them.
+Messages that can be derived from the HTML data attributes, like above, will have the CSS class `derived` assigned to them.
 
 ### Parameters
 
--   `settings` **[Object][11]?** The settings for AFV
-    -   `settings.focusOnFirstError` **[boolean][12]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
-    -   `settings.validateOnChange` **[boolean][12]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
+-   `options` **[Object][11]?** The settings for AFV
+    -   `options.focusOnFirstError` **[boolean][12]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
+    -   `options.validateOnChange` **[boolean][12]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
 
 ## injectMessage
 
@@ -112,17 +112,17 @@ Typically it shouldn´t be necessary to inject a message for anything that can b
 Sample call:
 
 ```js
-AFV.injectMessage({identifier: "requiredInput", message: "This input is required"}); 
+AFV.injectMessage('requiredInput', 'This input is required'); 
 //A validation of the a required field might be better with a derived message
 ```
 
 ### Parameters
 
--   `data` **[Object][11]** 
-    -   `data.identifier` **([Element][13] \| [string][14])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
-    -   `data.message` **[string][14]** The message to set.
-    -   `data.messageId` **[string][14]** The id for the error message. If this id is not provided, a new id will be generated. (optional, default `undefined`)
-    -   `data.focus` **[boolean][12]** If true the focus will be set to the field. (optional, default `false`)
+-   `identifier` **([Element][13] \| [string][14])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
+-   `message` **[string][14]** The message to set.
+-   `options` **[Object][11]**  (optional, default `{messageId:undefined,focus:false}`)
+    -   `options.messageId` **[string][14]?** The id for the error message. If this id is not provided, a new id will be generated.
+    -   `options.focus` **[boolean][12]?** If true the focus will be set to the field.
 
 Returns **[string][14]** The id of the injected message und undefined if no message was set.
 
@@ -134,14 +134,18 @@ Sample call:
 ```js
 AFV.clearMessage('requiredInput check3');
 //will clear messages for id´s requiredInput and check3
+
+AFV.clearMessage('requiredInput', 'check3');
+//this call is equivalent to the previos one
 ```
 
 ### Parameters
 
--   `identifier` **([Element][13] \| [string][14])** <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
+-   `identifier` **...([Element][13] \| [string][14])** <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
     <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
     <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
     <li>If identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
+    <li>You might also provide a comma-separated list of identifiers (spread/rest operator ...)</li>
     </ul>
 
 [1]: #afv

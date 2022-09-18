@@ -67,11 +67,11 @@ AFV = (function () {
         return defaultErrorMessages.keys();
     }
 
-    function extractSettings(s) {
+    function extractSettings(options) {
         settings = Object.assign({
             focusOnFirstError: true,
             validateOnChange: false
-        }, s);
+        }, options);
         console.log(`afv settings \n${JSON.stringify(settings, null, 4)}`);
     }
 
@@ -234,7 +234,7 @@ AFV = (function () {
         clearIfNoMessage(field);
     }
 
-    function injectErrorMessage({ field, message, messageId }) {
+    function injectErrorMessage(field, message, messageId) {
         let errorMessage = cloneMessageTemplate(field, messageId);
         errorMessage.classList.add('injected');
         errorMessage.innerHTML = message;
@@ -277,15 +277,16 @@ AFV = (function () {
         return errorMessage;
     }
 
-    function prepareErrorMessage({ field, message, messageId }) {
-        if (message) {
-            return injectErrorMessage({ field, message, messageId });
+    function prepareErrorMessage(field, options = { message: undefined, messageId: undefined }) {
+        if (options.message) {
+            return injectErrorMessage(field, options.message, options.messageId);
         } else {
             return deriveErrorMessage(field);
         }
     }
 
-    function setErrorMessage({ identifier, message, messageId, focus }) {
+
+    function setErrorMessage(identifier, options = { message: undefined, messageId: undefined, focus: false }) {
         let field = getField(identifier);
         let group = getGroup(field);
 
@@ -294,7 +295,7 @@ AFV = (function () {
         }
         field.classList.add('afv-field', 'afv-error');
 
-        let errorMessage = prepareErrorMessage({ field: field, message: message, messageId: messageId });
+        let errorMessage = prepareErrorMessage(field, options);
         if (errorMessage) {
             //the container holds all error messages for the field
             let containerId = putErrorMessage(field, errorMessage);
@@ -302,7 +303,7 @@ AFV = (function () {
             field.setAttribute('aria-errormessage', containerId);
             field.setAttribute('aria-invalid', 'true');
 
-            if (focus) {
+            if (options.focus) {
                 field.focus();
             }
 
@@ -316,7 +317,7 @@ AFV = (function () {
 
         clearErrorMessage(field);
         if (!field.validity.valid) {
-            setErrorMessage({ identifier: field, focus: focus });
+            setErrorMessage(field, { focus: focus });
         }
 
         return field.validity.valid;
@@ -405,14 +406,14 @@ AFV = (function () {
          * <dd>A value of a field that is required due to the <code>required</code> attribute is missing</dd>
          * </dl>
          * 
-         * Messages that can be derived from the HTML data attribute settings, like above, will have the CSS class `derived` assigned to them.
+         * Messages that can be derived from the HTML data attributes, like above, will have the CSS class `derived` assigned to them.
          *  
-         * @param {Object} [settings] - The settings for AFV
-         * @param {boolean} [settings.focusOnFirstError=true] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
-         * @param {boolean} [settings.validateOnChange=false] - If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form.
+         * @param {Object} [options] - The settings for AFV
+         * @param {boolean} [options.focusOnFirstError=true] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
+         * @param {boolean} [options.validateOnChange=false] - If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form.
          */
-        init: function (settings) {
-            extractSettings(settings);
+        init: function (options) {
+            extractSettings(options);
             adjustForms();
         },
         /**
@@ -420,19 +421,20 @@ AFV = (function () {
          * Typically it shouldn´t be necessary to inject a message for anything that can be solved with the derived messages (see the init() method above).
          * Sample call:
          * ```js
-         * AFV.injectMessage({identifier: "requiredInput", message: "This input is required"}); 
+         * AFV.injectMessage('requiredInput', 'This input is required'); 
          * //A validation of the a required field might be better with a derived message
          * ```
          * 
-         * @param {Object} data
-         * @param {Element|string} data.identifier - Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
-         * @param {string} data.message - The message to set.
-         * @param {string} [data.messageId=undefined] - The id for the error message. If this id is not provided, a new id will be generated.
-         * @param {boolean} [data.focus=false] - If true the focus will be set to the field.
+         * @param {Element|string} identifier - Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
+         * @param {string} message - The message to set.
+         * @param {Object} options
+         * @param {string} [options.messageId] - The id for the error message. If this id is not provided, a new id will be generated.
+         * @param {boolean} [options.focus] - If true the focus will be set to the field.
          * @returns {string} - The id of the injected message und undefined if no message was set.
          */
-        injectMessage: function ({ identifier, message, messageId, focus = false }) {
-            return setErrorMessage({ identifier: identifier, message: message, messageId: messageId, focus: focus });
+        injectMessage: function (identifier, message, options = { messageId: undefined, focus: false }) {
+            options.message = message;
+            return setErrorMessage(identifier, options);
         },
         /**
          * Remove all injected messages that are linked to a form element, or remove a message that is identified by its id.
@@ -440,11 +442,15 @@ AFV = (function () {
          * ```js
          * AFV.clearMessage('requiredInput check3');
          * //will clear messages for id´s requiredInput and check3
+         * 
+         * AFV.clearMessage('requiredInput', 'check3');
+         * //this call is equivalent to the previos one
          * ```
-         * @param {Element|string} identifier <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
+         * @param {...Element|string} identifier <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
          * <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>
          * <li>If identifier is a string that contains the id of a message, that message will be removed.</li>
          * <li>If identifier is a string that contains a list of id´s, separated by space or comma, messages will be cleared for those id´s by applying the same rules as for a single id</li>
+         * <li>You might also provide a comma-separated list of identifiers (spread/rest operator ...)</li>
          * </ul>
          */
         clearMessage: function (identifier) {
