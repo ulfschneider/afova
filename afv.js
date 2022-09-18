@@ -67,11 +67,8 @@ AFV = (function () {
         return defaultErrorMessages.keys();
     }
 
-    function extractSettings(options) {
-        settings = Object.assign({
-            focusOnFirstError: true,
-            validateOnChange: false
-        }, options);
+    function extractSettings(options = { focusOnFirstError: true, validateOnChange: false }) {
+        settings = Object.assign({}, options);
         console.log(`afv settings \n${JSON.stringify(settings, null, 4)}`);
     }
 
@@ -409,10 +406,10 @@ AFV = (function () {
          * Messages that can be derived from the HTML data attributes, like above, will have the CSS class `derived` assigned to them.
          *  
          * @param {Object} [options] - The settings for AFV
-         * @param {boolean} [options.focusOnFirstError=true] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
-         * @param {boolean} [options.validateOnChange=false] - If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form.
+         * @param {boolean} [options.focusOnFirstError] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
+         * @param {boolean} [options.validateOnChange] - If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form.
          */
-        init: function (options) {
+        init: function (options = { focusOnFirstError: true, validateOnChange: false }) {
             extractSettings(options);
             adjustForms();
         },

@@ -101,9 +101,9 @@ Messages that can be derived from the HTML data attributes, like above, will hav
 
 ### Parameters
 
--   `options` **[Object][11]?** The settings for AFV
-    -   `options.focusOnFirstError` **[boolean][12]** If true, the first errored field will be focused. If false, the first errored field will not receive focus. (optional, default `true`)
-    -   `options.validateOnChange` **[boolean][12]** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form. (optional, default `false`)
+-   `options` **[Object][11]?** The settings for AFV (optional, default `{focusOnFirstError:true,validateOnChange:false}`)
+    -   `options.focusOnFirstError` **[boolean][12]?** If true, the first errored field will be focused. If false, the first errored field will not receive focus.
+    -   `options.validateOnChange` **[boolean][12]?** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form.
 
 ## injectMessage
 
