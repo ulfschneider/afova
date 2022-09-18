@@ -440,7 +440,7 @@ AFV = (function () {
          * //will clear messages for id´s requiredInput and check3
          * 
          * AFV.clearMessage('requiredInput', 'check3');
-         * //this call is equivalent to the previos one
+         * //this call is equivalent to the previous one
          * ```
          * @param {...Element|string} identifier <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>
          * <li>If identifier is a string that contains the id of a form element, all injected error messages of that form element will be removed.</li>

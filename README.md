@@ -135,7 +135,7 @@ AFV.clearMessage('requiredInput check3');
 //will clear messages for id´s requiredInput and check3
 
 AFV.clearMessage('requiredInput', 'check3');
-//this call is equivalent to the previos one
+//this call is equivalent to the previous one
 ```
 
 ### Parameters
