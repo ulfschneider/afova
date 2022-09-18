@@ -418,8 +418,7 @@ AFV = (function () {
          * Typically it shouldn´t be necessary to inject a message for anything that can be solved with the derived messages (see the init() method above).
          * Sample call:
          * ```js
-         * AFV.injectMessage('requiredInput', 'This input is required'); 
-         * //A validation of the a required field might be better with a derived message
+         * AFV.injectMessage('requiredInput', 'You provided a value but the value is not correct'); 
          * ```
          * 
          * @param {Element|string} identifier - Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
@@ -427,7 +426,7 @@ AFV = (function () {
          * @param {Object} options
          * @param {string} [options.messageId] - The id for the error message. If this id is not provided, a new id will be generated.
          * @param {boolean} [options.focus] - If true the focus will be set to the field.
-         * @returns {string} - The id of the injected message und undefined if no message was set.
+         * @returns {string} - The id of the injected message and undefined if no message was set.
          */
         injectMessage: function (identifier, message, options = { messageId: undefined, focus: false }) {
             options.message = message;

@@ -112,8 +112,7 @@ Typically it shouldn´t be necessary to inject a message for anything that can b
 Sample call:
 
 ```js
-AFV.injectMessage('requiredInput', 'This input is required'); 
-//A validation of the a required field might be better with a derived message
+AFV.injectMessage('requiredInput', 'You provided a value but the value is not correct'); 
 ```
 
 ### Parameters
@@ -124,7 +123,7 @@ AFV.injectMessage('requiredInput', 'This input is required');
     -   `options.messageId` **[string][14]?** The id for the error message. If this id is not provided, a new id will be generated.
     -   `options.focus` **[boolean][12]?** If true the focus will be set to the field.
 
-Returns **[string][14]** The id of the injected message und undefined if no message was set.
+Returns **[string][14]** The id of the injected message and undefined if no message was set.
 
 ## clearMessage
 
