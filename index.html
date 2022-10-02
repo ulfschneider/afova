@@ -8,7 +8,7 @@
         <title>
             Accessible Form Validation
         </title>
-        <script src="/afv.js"></script>
+        <script src="/js/afv.js"></script>
     </head>
     <style>
         :root {
@@ -121,11 +121,10 @@
 
         </form>
 
-        <button onclick="AFV.clearMessage('requiredInput radio3');">Clear Injected Messages</button>
+        <button id="inject" onclick="AFV.injectMessage('requiredInput', 'Hey, this is required!'); AFV.injectMessage('radio3', 'Message for radio group!');">Inject Messages</button>
+        <button id="clear" onclick="AFV.clearMessage('requiredInput radio3');">Clear Injected Messages</button>
         <script>
             AFV.init();
-            AFV.injectMessage("requiredInput", "hello world");
-            AFV.injectMessage("radio3", "hello world");
         </script>
 
     </body>

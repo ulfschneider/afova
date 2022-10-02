@@ -451,7 +451,7 @@ AFV = (function () {
          */
         clearMessage: function (...identifier) {
             for (let ident of identifier) {
-                if (typeof ident === 'string' || idet instanceof String) {
+                if (typeof ident === 'string' || ident instanceof String) {
                     let idList = ident.split(/[ ,]+/);
                     for (let id of idList) {
                         clearErrorMessage(id, true);
