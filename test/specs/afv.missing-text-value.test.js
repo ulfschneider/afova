@@ -1,7 +1,5 @@
 const config = require('../../test-server.config.js');
 const utils = require('../utils/utils.js');
-//require('../../js/afv.js'); //will provice the global AFV object
-
 
 beforeEach(async () => {
     await page.goto(config.testURL + '/missing-text-value.html');
@@ -16,7 +14,7 @@ describe('page title', () => {
 });
 
 describe('default message for provided text value', () => {
-    it('should not raise a failure message', async () => {
+    it('should not raise a failure message', async () => { 
         await page.type('#required-text-input', 'hello world');
         await page.click('form input[type=submit]');
         let field = await page.$('#required-text-input');
