@@ -24,16 +24,20 @@
         <input type="submit" value="Submit the form" />
 
         <div class="afv-group">
-            <label for="patternTextInput">A pattern text input</label>
-            <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
-            <input id="patternTextInput" type="text" pattern="[A-Za-z]{3}">
+            <label for="patternTextInput">A pattern text input
+                <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of
+                    3 charactes.</div>
+                <input id="patternTextInput" type="text" pattern="[A-Za-z]{3}">
+            </label>
         </div>
 
         <div class="afv-group">
-            <label for="patternCustomTextInput">A pattern text input with custom failure message</label>
-            <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
-            <input id="patternCustomTextInput" type="text" pattern="[A-Za-z]{3}"
-                data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
+            <label for="patternCustomTextInput">A pattern text input with custom failure message
+                <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of
+                    3 charactes.</div>
+                <input id="patternCustomTextInput" type="text" pattern="[A-Za-z]{3}"
+                    data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz, for example.">
+            </label>
         </div>
 
     </form>

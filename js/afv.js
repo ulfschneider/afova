@@ -49,7 +49,7 @@ AFV = (function () {
         ['typeMismatch[email]', { message: 'The value must be an email in the format mickey@mouse.com', constraintAttr: 'type' }],
         ['typeMismatch[url]', { message: 'The value must be a URL in the format http://url.com', constraintAttr: 'type' }],
         ['typeMismatch[tel]', { message: 'The value must be a phone number', constraintAttr: 'type' }],
-        ['valid', { message: ':-)', }],
+        ['valid', { message: '', }],
         ['valueMissing', { message: 'Please provide a value', constraintAttr: 'required' }]
     ]);
 
@@ -377,7 +377,7 @@ AFV = (function () {
          *     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
          *  </div>
          * ```
-         * The following `data` attributes are available to define validation error messages:
+         * The following attributes are available to define validation error messages:
          * <dl>
          * <dt>data-bad-input</dt>
          * <dd>The browser is unable to handle the input value</dd>

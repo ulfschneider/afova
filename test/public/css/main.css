@@ -3,6 +3,7 @@
     line-height: 1.5;
     font-family: sans-serif;
     --afv-message-color: red;
+    --description-color: grey;
     --afv-message-font-weight: bold;
     --form-validation-indicator-width: 3px;
     --form-valdiation-indicator-outdent: 0.5rem;
@@ -32,6 +33,11 @@
 
 label {
     font-weight: bold;
+}
+
+label .description {
+    font-weight: normal;
+    color: var(--description-color);
 }
 
 input,
