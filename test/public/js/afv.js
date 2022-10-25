@@ -161,25 +161,13 @@ AFV = (function () {
         return parent.querySelectorAll('.afv-message').length;
     }
 
-    function moveUpUntil(element, cssClass) {
-        let node = element.parentNode;
-        while (node) {
-            if (node.classList && node.classList.contains(cssClass)) {
-                return node;
-            }
-            node = node.parentNode;
-        }
-    }
-
     function getInnerGroup(field) {
-        let innerGroup = moveUpUntil(field, 'afv-inner-group');
-
+        let innerGroup = field.closest('.afv-inner-group');
         return ensureId(innerGroup);
     }
 
     function getGroup(field) {
-        let group = moveUpUntil(field, 'afv-group');
-
+        let group = field.closest('.afv-group');
         return ensureId(group);
     }
 

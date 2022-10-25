@@ -161,25 +161,13 @@ AFV = (function () {
         return parent.querySelectorAll('.afv-message').length;
     }
 
-    function moveUpUntil(element, cssClass) {
-        let node = element.parentNode;
-        while (node) {
-            if (node.classList && node.classList.contains(cssClass)) {
-                return node;
-            }
-            node = node.parentNode;
-        }
-    }
-
     function getInnerGroup(field) {
-        let innerGroup = moveUpUntil(field, 'afv-inner-group');
-
+        let innerGroup = field.closest('.afv-inner-group');
         return ensureId(innerGroup);
     }
 
     function getGroup(field) {
-        let group = moveUpUntil(field, 'afv-group');
-
+        let group = field.closest('.afv-group');
         return ensureId(group);
     }
 
@@ -429,7 +417,7 @@ AFV = (function () {
             prepareTemplates();
             extractSettings(options);
             adjustForms();
-        },
+        },        
         /**
          * Inject a message and bind it to a form element. Injected messages will have the CSS class `injected` assigned to them.
          * Typically it shouldn´t be necessary to inject a message for anything that can be solved with the derived messages (see the init() method above).
