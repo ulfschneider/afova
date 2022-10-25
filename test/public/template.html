@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-store, max-age=0">
+    <title>
+        Accessible Form Validation
+    </title>
+    <script defer src="/js/afv.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<style>
+
+</style>
+
+<body>
+    <h1>Accessible Form Validation with <code>afv.js</code>
+    </h1>
+    <button id="inject"
+        onclick="AFV.injectMessage('requiredInput', 'Hey, this is required!'); AFV.injectMessage('radio3', 'Message for radio group!');">Inject
+        Messages</button>
+    <button id="clear" onclick="AFV.clearMessage('requiredInput radio3');">Clear Injected Messages</button>
+
+    <form>
+        <input type="submit" value="Submit the form" />
+
+        <h2>Testing for missing text value</h2>
+        <div class="afv-group">
+            <label>A reqired text input
+                <input id="requiredTextInput" type="text" required>
+            </label>
+        </div>
+
+        <div class="afv-group">
+            <label>A reqired text input with custom failure message
+                <input id="requiredCustomTextInput" type="text" required
+                    data-value-missing="You have to provide a value for this text input field">
+            </label>
+        </div>
+
+        <h2>Testing for text pattern</h2>
+
+        <div class="afv-group">
+            <label for="patternTextInput">A pattern text input</label>
+            <div>The input must be provided by following the pattern [A-Za-z]{3}</div>
+            <input id="patternTextInput" type="text" pattern="[A-Za-z]{3}">
+        </div>
+
+        <div class="afv-group">
+            <label for="patternCustomTextInput">A pattern text input with custom failure message</label>
+            <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
+            <input id="patternCustomTextInput" type="text" pattern="[A-Za-z]{3}"
+                data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
+        </div>
+
+        <h2>Testing for text length</h2>
+
+        <div class="afv-group">
+            <label for="minLengthTextInput">A min length text input</label>
+            <div>The text must be at least 5 characters of length</div>
+            <input id="minLengthTextInput" type="text" minlength="5">
+        </div>
+
+        <div class="afv-group">
+            <label for="minLengthCustomTextInput">A min length text input with custom failure message</label>
+            <div>The text must be at least 5 characters of length</div>
+            <input id="minLengthCustomTextInput" type="text" minlength="5"
+                data-too-short="Hey, this should have at least 5 characters">
+        </div>
+
+        <div class="afv-group">
+            <label for="maxLengthTextInput">A max length text input</label>
+            <div>The text must be at max 5 characters of length</div>
+            <input id="maxLengthTextInput" type="text" maxlength="5">
+        </div>
+
+        <div class="afv-group">
+            <label for="maxLengthCustomTextInput">A max length text input with custom failure message</label>
+            <div>The text must be at max 5 characters of length</div>
+            <input id="maxLengthCustomTextInput" type="text" maxlength="5"
+                data-too-long="Hey, this should have at max 5 characters">
+        </div>
+
+        <div class="afv-group">
+            <label for="minMaxNumber">A number</label>
+            <div>Please provide a integer number in a range of 100 – 999</div>
+            <input id="minMaxNumber" type="number" min="100" max="999" step="1">
+        </div>
+
+        <div class="afv-group">
+            <label for="customMinMaxNumber">A number with custom failure message</label>
+            <div>Please provide a integer number in a range of 100 – 999</div>
+            <input id="customMinMaxNumber" type="number" max="999"
+                data-range-overflow="The value is too big. It cannot be above 999." min="100"
+                data-range-underflow="The value is too small. It cannot be below 100." step="1"
+                data-step-mismatch="The value must be a integer number" required
+                data-value-missing="It is required to provide this number">
+        </div>
+
+        <div class="afv-group">
+            <label for="email">Please provide your email address</label>
+            <input id="email" type="email" />
+        </div>
+
+        <div class="afv-group">
+            <label for="customEmail">Please provide your email address (will produce a custom error message)</label>
+            <input id="customEail" type="email"
+                data-type-mismatch="Please provide an email adress in the format mickey@mouse.com" />
+        </div>
+
+        <div class="afv-group">
+            <label>Please provide credit card number
+                <input type="tel" autocomplete="cc-number"
+                    data-type-mismatch="This doesn´t seem to be a credit card number" />
+            </label>
+        </div>
+
+        <div class="afv-group">
+            <fieldset class="afv-inner-group">
+                <legend>Radio</legend>
+                <label><input type="radio" name="radio" id="radio1">Radio 1</label>
+                <label><input type="radio" name="radio" id="radio2">Radio 2</label>
+                <label><input type="radio" name="radio" required id="radio3">Radio 3</label>
+            </fieldset>
+        </div>
+
+    </form>
+
+    <script>
+        addEventListener('DOMContentLoaded', () => AFV.init());
+    </script>
+</body>
+
+</html>

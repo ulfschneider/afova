@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-store, max-age=0">
+    <title>
+        Test Missing Value
+    </title>
+    <script defer src="/js/afv.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<style>
+
+</style>
+
+<body>
+    <a href="/">Home</a>
+    <h1>Test Missing Text Value
+    </h1>
+    <form>
+        <input type="submit" value="Submit the form" />
+
+        <div class="afv-group">
+            <label>A reqired text input
+                <input id="required-text-input" type="text" required>
+            </label>
+        </div>
+
+        <div class="afv-group">
+            <label>A reqired text input with custom failure message
+                <input id="required-text-input-custom" type="text" required
+                    data-value-missing="You have to provide a value for this text input field">
+            </label>
+        </div>
+
+    </form>
+
+    <script>
+        addEventListener('DOMContentLoaded', () => AFV.init());
+    </script>
+</body>
+
+</html>

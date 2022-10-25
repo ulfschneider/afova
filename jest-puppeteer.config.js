@@ -1,12 +1,13 @@
 const dotenv = require('dotenv');
 dotenv.config();
+const config = require('./test-server.config.js');
 
 module.exports = {
   launch: {
-    headless: process.env.HEADLESS !== 'false'
+    headless: config.headless
   },
   server: {
     command: 'node test-server.js',
-    port: process.env.PORT
+    port: config.port
   }
 }

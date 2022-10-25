@@ -1,0 +1,46 @@
+:root {
+    font-size: 18px;
+    line-height: 1.5;
+    font-family: sans-serif;
+    --afv-message-color: red;
+    --afv-message-font-weight: bold;
+    --form-validation-indicator-width: 3px;
+    --form-valdiation-indicator-outdent: 0.5rem;
+    --form-validation-field-indicator-width: 1px;
+}
+
+.afv-group {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.afv-group.afv-active {
+    margin-left: calc(-1 * var(--form-valdiation-indicator-outdent));
+    border-left: var(--form-validation-indicator-width) solid var(--afv-message-color);
+    padding-left: calc(var(--form-valdiation-indicator-outdent) - var(--form-validation-indicator-width));
+}
+
+.afv-field.afv-active:not(.afv-field.afv-active:focus) {
+    border: var(--form-validation-field-indicator-width) solid var(--afv-message-color);
+}
+
+.afv-group .afv-message {
+    color: var(--afv-message-color);
+    display: block;
+    font-weight: var(--afv-message-font-weight);
+}
+
+label {
+    font-weight: bold;
+}
+
+input,
+textarea {
+    display: block;
+    font-size: 18px;
+    padding: 5px;
+}
+
+body {
+    padding: 1rem;
+}
