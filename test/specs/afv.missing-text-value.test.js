@@ -1,7 +1,7 @@
 const config = require('../../test-server.config.js');
 const utils = require('../utils/utils.js');
 
-beforeEach(async () => {
+beforeEach(async () => {    
     await page.goto(config.testURL + '/missing-text-value.html');
 });
 

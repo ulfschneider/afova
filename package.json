@@ -4,9 +4,9 @@
   "description": "",
   "main": "afv.js",
   "scripts": {
-    "test": "gulp test && jest",
+    "test": "gulp test && jest --runInBand",
     "dev": "gulp test && concurrently \"live-server --host=localhost --port=3000 --mount=/:test/public --watch=test/public\" \"gulp watch\"",
-    "build": "gulp test && jest && gulp build && documentation build js/afv.js -f md --markdown-toc > README.md"
+    "build": "gulp test && jest --runInBand && gulp build && documentation build js/afv.js -f md --markdown-toc > README.md"
   },
   "repository": {
     "type": "git",
