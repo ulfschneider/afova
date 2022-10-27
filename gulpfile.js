@@ -23,7 +23,7 @@ function buildPreparation() {
 }
 
 const watcher = () => {
-    watch(['js/**/*'], testPreparation);
+    watch(['src/*.js'], testPreparation);
 };
 
 exports.default = series([testPreparation]);

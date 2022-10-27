@@ -35,7 +35,7 @@
                 <label for="min-text-length-custom">A min length text input with custom failure message
                 <div class="description">The text must be at least 5 characters of length</div>
                     <input id="min-text-length-custom" type="text" minlength="5"
-                data-too-short="Hey, this should have at least 5 characters">
+                data-too-short="Hey, this should have at least {{constraint}} characters">
                 </label>
             </div>
 
@@ -50,7 +50,7 @@
                 <label for="max-text-length-custom">A max length text input with custom failure message
                 <div class="description">The text must be at max 5 characters of length</div>
                     <input id="max-text-length-custom" type="text" maxlength="5"
-                data-too-long="Hey, this should have at max 5 characters">
+                data-too-long="Hey, this should have at max {{constraint}} characters">
                 </label>
             </div>
 

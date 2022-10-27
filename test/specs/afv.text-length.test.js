@@ -108,6 +108,8 @@ describe('wrong custom min text length', () => {
         await page.click('form input[type=submit]');
         let field = await page.$('#min-text-length-custom');
         let message = await page.evaluate(field => field.getAttribute('data-too-short'), field);
+        let length = await page.evaluate(field => field.getAttribute('minlength'), field);
+        message = message.replaceAll('{{constraint}}', length);
         
         await utils.verifyMessageText(page, field, message);
     });
@@ -116,7 +118,9 @@ describe('wrong custom min text length', () => {
         await page.click('form input[type=submit]');
         let field = await page.$('#min-text-length-custom');
         let message = await page.evaluate(field => field.getAttribute('data-too-short'), field);
-        
+        let length = await page.evaluate(field => field.getAttribute('minlength'), field);
+        message = message.replaceAll('{{constraint}}', length);
+
         await utils.verifyMessageText(page, field, message);
     });
     it('should have the correct element hierarchy', async () => {
@@ -219,6 +223,8 @@ describe('wrong custom max text length', () => {
         await page.click('form input[type=submit]');
 
         let message = await page.evaluate(field => field.getAttribute('data-too-long'), field);
+        let length = await page.evaluate(field => field.getAttribute('maxlength'), field);
+        message = message.replaceAll('{{constraint}}', length);
 
         await utils.verifyMessageText(page, field, message);
     });
@@ -233,6 +239,8 @@ describe('wrong custom max text length', () => {
         await page.click('form input[type=submit]')
 
         let message = await page.evaluate(field => field.getAttribute('data-too-long'), field);
+        let length = await page.evaluate(field => field.getAttribute('maxlength'), field);
+        message = message.replaceAll('{{constraint}}', length);
 
         await utils.verifyMessageText(page, field, message);
     });

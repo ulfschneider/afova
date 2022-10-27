@@ -44,7 +44,7 @@ AFV = (function () {
         ['stepMismatch', { message: 'The number is not evenly divisible by {{constraint}}', constraintAttr: 'step' }],
         ['stepMismatch[1]', { message: 'The number must be an integer', constraintAttr: 'step' }],
         ['tooLong', { message: 'The text is too long. It cannot be longer than {{constraint}} characters.', constraintAttr: 'maxlength' }],
-        ['tooShort', { message: 'The text is too short. It must me at least {{constraint}} characters long.', constraintAttr: 'minlength' }],
+        ['tooShort', { message: 'The text is too short. It must be at least {{constraint}} characters long.', constraintAttr: 'minlength' }],
         ['typeMismatch', { message: 'The value must be of type {{constraint}}', constraintAttr: 'type' }],
         ['typeMismatch[email]', { message: 'The value must be an email in the format mickey@mouse.com', constraintAttr: 'type' }],
         ['typeMismatch[url]', { message: 'The value must be a URL in the format http://url.com', constraintAttr: 'type' }],

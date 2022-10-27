@@ -80,6 +80,8 @@ describe('test custom message for text pattern mismatch', () => {
         await page.click('form input[type=submit]');
         let field = await page.$('#pattern-text-input-custom');
         let message = await page.evaluate(field => field.getAttribute('data-pattern-mismatch'), field);
+        let pattern = await page.evaluate(field => field.getAttribute('pattern'), field);
+        message = message.replaceAll('{{constraint}}', pattern);
         await expect(message).toBeTruthy();
         await utils.verifyMessageText(page, field, message);
     });
