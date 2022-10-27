@@ -6,21 +6,12 @@ beforeEach(async () => {
 });
 
 describe('Page title', () => {
-    it('Title should be "Test Text pattern"', async () => {
+    it('Title should be "Test Text Pattern"', async () => {
         await expect(page.title()).resolves.toMatch('Test Text Pattern');
     });
 });
 
 describe('Default message for empty text pattern', () => {
-    it('should not raise a failure message', async () => {
-        await Promise.all([
-            page.waitForNavigation(), //form will be submitted, therefore we wait for the new form
-            page.click('form input[type=submit]')
-        ]);
-    });
-});
-
-describe('Custom message for empty text pattern', () => {
     it('should not raise a failure message', async () => {
         await Promise.all([
             page.waitForNavigation(), //form will be submitted, therefore we wait for the new form
@@ -85,16 +76,14 @@ describe('text pattern mismatch', () => {
 
 describe('test custom message for text pattern mismatch', () => {
     it('should present validation message', async () => {
-        await page.type('#pattern-text-input', 'AbC');
         await page.type('#pattern-text-input-custom', "wrong pattern");
         await page.click('form input[type=submit]');
         let field = await page.$('#pattern-text-input-custom');
-        let text = await page.evaluate(field => field.getAttribute('data-pattern-mismatch'), field);
-        await expect(text).toBeTruthy();
-        await utils.verifyMessageText(page, field, text);
+        let message = await page.evaluate(field => field.getAttribute('data-pattern-mismatch'), field);
+        await expect(message).toBeTruthy();
+        await utils.verifyMessageText(page, field, message);
     });
     it('should have the correct element hierarchy', async () => {
-        await page.type('#pattern-text-input', 'AbC');
         await page.type('#pattern-text-input-custom', "wrong pattern");
         await page.click('form input[type=submit]')
         let field = await page.$('#pattern-text-input-custom');
@@ -107,10 +96,9 @@ describe('test custom message for text pattern mismatch', () => {
     it('should have the focus', async () => {
         await page.type('#pattern-text-input', 'AbC');
         await page.type('#pattern-text-input-custom', "wrong pattern");
+        await page.click('form input[type=submit]')        
         okField = await page.$('#pattern-text-input');
         await utils.verifyClearance(page, okField);
-
-        await page.click('form input[type=submit]')
         let field = await page.$('#pattern-text-input-custom');
         let focus = await page.$('input:focus');
 

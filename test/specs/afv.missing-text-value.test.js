@@ -66,9 +66,9 @@ describe('test custom message for missing text value', () => {
         await page.type('#required-text-input', 'hello world');
         await page.click('form input[type=submit]');
         let field = await page.$('#required-text-input-custom');
-        let text = await page.evaluate(field => field.getAttribute('data-value-missing'), field);
-        await expect(text).toBeTruthy();
-        await utils.verifyMessageText(page, field, text);
+        let message = await page.evaluate(field => field.getAttribute('data-value-missing'), field);
+        await expect(message).toBeTruthy();
+        await utils.verifyMessageText(page, field, message);
     });
     it('should have the correct element hierarchy', async () => {
         await page.type('#required-text-input', 'hello world');

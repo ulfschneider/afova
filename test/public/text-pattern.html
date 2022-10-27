@@ -1,50 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Cache-Control" content="no-store, max-age=0">
-    <title>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Cache-Control" content="no-store, max-age=0">
+        <title>
         Test Text Pattern
     </title>
-    <script defer src="/js/afv.js"></script>
-    <link rel="stylesheet" href="/css/main.css">
-</head>
-<style>
+        <script defer src="/js/afv.js"></script>
+        <script>
+            addEventListener('DOMContentLoaded', () => AFV.init());
+        </script>
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <style></style>
 
-</style>
-
-<body>
-    <a href="/">Home</a>
-    <h1>Test Text Pattern
+    <body>
+        <a href="/">Home</a>
+        <h1>Test Text Pattern
     </h1>
-    <form>
-        <input type="submit" value="Submit the form" />
+        <form>
+            <input type="submit" value="Submit the form"/>
 
-        <div class="afv-group">
-            <label for="pattern-text-input">A pattern text input
+            <div class="afv-group">
+                <label for="pattern-text-input">A pattern text input
                 <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of
                     3 charactes.</div>
-                <input id="pattern-text-input" type="text" pattern="[A-Za-z]{3}">
-            </label>
-        </div>
+                    <input id="pattern-text-input" type="text" pattern="[A-Za-z]{3}">
+                </label>
+            </div>
 
-        <div class="afv-group">
-            <label for="pattern-text-input-custom">A pattern text input with custom failure message
+            <div class="afv-group">
+                <label for="pattern-text-input-custom">A pattern text input with custom failure message
                 <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of
                     3 charactes.</div>
-                <input id="pattern-text-input-custom" type="text" pattern="[A-Za-z]{3}"
+                    <input id="pattern-text-input-custom" type="text" pattern="[A-Za-z]{3}"
                     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz, for example.">
-            </label>
-        </div>
+                </label>
+            </div>
 
-    </form>
-
-    <script>
-        addEventListener('DOMContentLoaded', () => AFV.init());
-    </script>
-</body>
+        </form>
+    </body>
 
 </html>

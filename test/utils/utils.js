@@ -9,10 +9,19 @@ module.exports = {
     },
 
     verifyMessageElementHierarchy: async function (page, field) {
+
         let fieldId = await page.evaluate(field => field.id, field);
         let messageContainer = await page.evaluateHandle(field => field.previousSibling, field);
+        let containerId = await page.evaluate(messageContainer => messageContainer.id, messageContainer);
         let message = await page.$(`#${fieldId}\\:afv .afv-message`);
         let messageId = await page.evaluate(message => message.id, message);
+
+        //field must have aria-invalid attribute set to true and aria-errormessage attribute container the id of the message container
+        let ariaError = await page.evaluate(field => field.getAttribute('aria-errormessage'), field);
+        let ariaInvalid = await page.evaluate(field => field.getAttribute('aria-invalid'), field);
+        await expect(ariaInvalid).toBe('true');
+        await expect(ariaError).toBeTruthy();
+        await expect(ariaError).toBe(containerId);
 
         let afvGroup = await page.evaluateHandle(field => field.closest('.afv-group'), field);
         let css = await page.evaluate(afvGroup => [...afvGroup.classList.values()], afvGroup);
@@ -29,6 +38,7 @@ module.exports = {
         await expect(childId).toBeTruthy();
         await expect(childId).toBe(messageId);
 
+        //field must have css classes afv-field and afv-active
         css = await page.evaluate(field => [...field.classList.values()], field);
         await expect(css).toContain('afv-field');
         await expect(css).toContain('afv-active');
@@ -54,6 +64,11 @@ module.exports = {
         let css = await page.evaluate(field => [...field.classList.values()], field);
         await expect(css.includes('afv-field')).toBeFalsy();
         await expect(css.includes('afv-active')).toBeFalsy();
+
+        let ariaError = await page.evaluate(field => field.getAttribute('aria-errormessage'), field);
+        let ariaInvalid = await page.evaluate(field => field.getAttribute('aria-invalid'), field);
+        await expect(ariaInvalid).toBeNull()
+        await expect(ariaError).toBeNull();
 
         let fieldId = await page.evaluate(field => field.id, field);
         let messageContainer = await page.$(`#${fieldId}\\:afv`);

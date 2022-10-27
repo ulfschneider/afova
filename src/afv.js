@@ -60,6 +60,10 @@ AFV = (function () {
         messageTemplate.classList.add('afv-message');
     }
 
+    function getValidationMessageTypes() {
+        return [...messages.keys()];
+    }
+
     function getValidationMessage(messageType, field) {
         if (messageType != 'customError') {
             let defaultMessage = messages.get(messageType);
@@ -86,10 +90,6 @@ AFV = (function () {
         } else {
             throw Error('No field defined to determine customError message');
         }
-    }
-
-    function getMessageTypes() {
-        return messages.keys();
     }
 
     function extractSettings(options = { focusOnFirstError: true, validateOnChange: false }) {
@@ -264,7 +264,7 @@ AFV = (function () {
             return;
         }
 
-        for (let messageType of getMessageTypes()) {
+        for (let messageType of getValidationMessageTypes()) {
             if (validity[messageType]) {
                 //there is an error of type messageType                  
                 let message = getValidationMessage(messageType, field);
@@ -467,8 +467,20 @@ AFV = (function () {
                 }
             }
         },
-        getMessage: function (messageType, identifier) {
+        /**
+         * 
+         * @param {string} messageType Describes the messageType to get a message for. For allowed values @see {@link getMessageTypes}.
+         * @param {Element|string} identifier Identify the form element for which the error message should be determined. If the parameter is a string, it will be interpreted as the id of the form element. If the identifier is not provided, the default message for the given messageType will be returned.
+         * @returns The message text for the given message type. If identifier refers to a field, the actual message of the field for the given messageType is returned.
+         */
+        getMessage: function (messageType, identifier = undefined) {
             return getValidationMessage(messageType, getField(identifier));
+        },
+        /**
+         * @returns An array of all supported message types.
+         */
+        getMessageTypes: function () {
+            return getValidationMessageTypes();
         }
     }
 })();
