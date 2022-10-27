@@ -27,7 +27,7 @@ Put the script afv.min.js into your HTML page head:
 ```html
 <head>
 …
-<script src="/js/afv.min.js"</script>
+<script defer src="/js/afv.min.js"</script>
 …
 </head>
 ```
@@ -36,7 +36,7 @@ Initialize AFV
 
 ```html
 <script>
-AFV.init();
+addEventListener('DOMContentLoaded', () => AFV.init());;
 </script>
 ```
 
@@ -58,15 +58,15 @@ can be defined as `data` attributes for each field. For example:
 
 ```html
 <div class="afv-group">
-    <label for="customPatternInput">A pattern input with custom failure message</label>
+    <label for="custom-pattern-input">A pattern input with custom failure message</label>
     <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
-    <input id="customPatternInput" type="text" 
+    <input id="custom-pattern-input" type="text" 
     pattern="[A-Za-z]{3}" 
     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
  </div>
 ```
 
-The following `data` attributes are available to define validation error messages:
+The following attributes are available to define validation error messages:
 
 <dl>
 <dt>data-bad-input</dt>
@@ -103,7 +103,7 @@ Messages that can be derived from the HTML data attributes, like above, will hav
 
 -   `options` **[Object][11]?** The settings for AFV (optional, default `{focusOnFirstError:true,validateOnChange:false}`)
     -   `options.focusOnFirstError` **[boolean][12]?** If true, the first errored field will be focused. If false, the first errored field will not receive focus.
-    -   `options.validateOnChange` **[boolean][12]?** If true, each field will be validate on its change withoug waiting for a form submit. If false the validation will only occurr on submit of the form.
+    -   `options.validateOnChange` **[boolean][12]?** If true, each field will be validate on its change without waiting for a form submit. If false the validation will only occurr on submit of the form.
 
 ## injectMessage
 
@@ -120,7 +120,7 @@ AFV.injectMessage('requiredInput', 'You provided a value but the value is not co
 -   `identifier` **([Element][13] \| [string][14])** Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
 -   `message` **[string][14]** The message to set.
 -   `options` **[Object][11]**  (optional, default `{messageId:undefined,focus:false}`)
-    -   `options.messageId` **[string][14]?** The id for the error message. If this id is not provided, a new id will be generated.
+    -   `options.messageId` **[string][14]?** The id for the message. If this id is not provided, a new id will be generated.
     -   `options.focus` **[boolean][12]?** If true the focus will be set to the field.
 
 Returns **[string][14]** The id of the injected message and undefined if no message was set.

@@ -106,10 +106,12 @@ AFV = (function () {
 
     function getField(identifier) {
         if (typeof identifier === 'string' || identifier instanceof String) {
-            //assume field describes an id
-            let element = document.querySelector(`${identifier}`);
+            //assume identifier describes an id
+
+            let transformedIdentifier = identifier.startsWith('#') ? identifier : `#${identifier}`;
+            let element = document.querySelector(transformedIdentifier);
             if (!element) {
-                throw Error(`The field with identifier=${identifier} could not be found`);
+                throw Error(`The field with identifier=${transformedIdentifier} could not be found`);
             }
             identifier = element;
         }
