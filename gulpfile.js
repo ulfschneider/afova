@@ -3,7 +3,7 @@ const minify = require('gulp-minify');
 
 
 function testPreparation() {
-    return src('./js/*.js')
+    return src('./src/*.js')
         .pipe(minify({
             ext: {
                 min: '.min.js'
@@ -13,7 +13,7 @@ function testPreparation() {
 }
 
 function buildPreparation() {
-    return src('./js/*.js')
+    return src('./src/*.js')
         .pipe(minify({
             ext: {
                 min: '.min.js'
