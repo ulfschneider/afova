@@ -62,19 +62,27 @@ AFV = (function () {
 
     function getValidationMessage(messageType, field) {
         if (messageType != 'customError') {
-            return messages.get(messageType);
-        } else if (field) {
-            return {}.message = field.validationMessage;
-        } else {
-            throw Error('No field defined to determine customError message');
-        }
-    }
+            let defaultMessage = messages.get(messageType);
 
-    function getSpecificValidationMessage(messageType, constraint, field) {
-        if (messageType != 'customError') {
-            return messages.get(`${messageType}[${constraint.toLowerCase()}]`);
+            if (defaultMessage) {
+                let message = defaultMessage.message;
+                let constraintAttr = defaultMessage.constraintAttr;
+
+                if (field) {
+                    let constraint = field.getAttribute(constraintAttr);
+                    message = field.dataset[messageType] || message;
+                    if (constraint) {
+                        defaultMessage = messages.get(`${messageType}[${constraint.toLowerCase()}]`)
+                        if (defaultMessage) {
+                            message = field.dataset[messageType] || defaultMessage.message;
+                        }
+                        message = message.replaceAll('{{constraint}}', constraint)
+                    }
+                }
+                return message;
+            }
         } else if (field) {
-            return {}.message = field.validationMessage;
+            return field.validationMessage;
         } else {
             throw Error('No field defined to determine customError message');
         }
@@ -99,9 +107,9 @@ AFV = (function () {
     function getField(identifier) {
         if (typeof identifier === 'string' || identifier instanceof String) {
             //assume field describes an id
-            let element = document.querySelector(`#${identifier}`);
+            let element = document.querySelector(`${identifier}`);
             if (!element) {
-                throw Error(`The field with id=${identifier} could not be found`);
+                throw Error(`The field with identifier=${identifier} could not be found`);
             }
             identifier = element;
         }
@@ -257,18 +265,9 @@ AFV = (function () {
         for (let messageType of getMessageTypes()) {
             if (validity[messageType]) {
                 //there is an error of type messageType                  
-                let defaultMessage = getValidationMessage(messageType, field);
-                messageElement.innerHTML = field.dataset[messageType] || defaultMessage.message;
-
-                if (defaultMessage.constraintAttr) {
-                    let constraint = field.getAttribute(defaultMessage.constraintAttr);
-                    if (constraint) {
-                        defaultMessage = getSpecificValidationMessage(messageType, constraint);
-                        if (defaultMessage) {
-                            messageElement.innerHTML = field.dataset[messageType] || defaultMessage.message;
-                        }
-                        messageElement.innerHTML = messageElement.innerHTML.replaceAll('{{constraint}}', constraint);
-                    }
+                let message = getValidationMessage(messageType, field);
+                if (message) {
+                    messageElement.innerHTML = message;
                 }
             }
         }
@@ -417,7 +416,7 @@ AFV = (function () {
             prepareTemplates();
             extractSettings(options);
             adjustForms();
-        },        
+        },
         /**
          * Inject a message and bind it to a form element. Injected messages will have the CSS class `injected` assigned to them.
          * Typically it shouldn´t be necessary to inject a message for anything that can be solved with the derived messages (see the init() method above).
@@ -466,9 +465,8 @@ AFV = (function () {
                 }
             }
         },
-        getDefaultMessage: function (messageType) {
-            let message = getValidationMessage(messageType);
-            return message ? message.message : '';
+        getMessage: function (messageType, identifier) {
+            return getValidationMessage(messageType, getField(identifier));
         }
     }
 })();

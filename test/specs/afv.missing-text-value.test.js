@@ -14,7 +14,7 @@ describe('page title', () => {
 });
 
 describe('default message for provided text value', () => {
-    it('should not raise a failure message', async () => { 
+    it('should not raise a failure message', async () => {
         await page.type('#required-text-input', 'hello world');
         await page.click('form input[type=submit]');
         let field = await page.$('#required-text-input');
@@ -22,7 +22,7 @@ describe('default message for provided text value', () => {
     });
 });
 
-describe('Custom message for provided text value', () => {
+describe('custom message for provided text value', () => {
     it('should not raise a failure message', async () => {
         await page.type('#required-text-input-custom', 'hello world');
         await page.click('form input[type=submit]')
@@ -35,7 +35,7 @@ describe('test missing text value', () => {
     it('should present validation message"', async () => {
         await page.click('form input[type=submit]')
         let field = await page.$('#required-text-input');
-        let message = await page.evaluate(() => AFV.getDefaultMessage('valueMissing'));
+        let message = await page.evaluate(() => AFV.getMessage('valueMissing', '#required-text-input'));
 
         await utils.verifyMessageText(page, field, message);
     });
@@ -63,6 +63,7 @@ describe('test missing text value', () => {
 
 describe('test custom message for missing text value', () => {
     it('should present validation message', async () => {
+        await page.type('#required-text-input', 'hello world');
         await page.click('form input[type=submit]');
         let field = await page.$('#required-text-input-custom');
         let text = await page.evaluate(field => field.getAttribute('data-value-missing'), field);
@@ -70,20 +71,27 @@ describe('test custom message for missing text value', () => {
         await utils.verifyMessageText(page, field, text);
     });
     it('should have the correct element hierarchy', async () => {
+        await page.type('#required-text-input', 'hello world');
         await page.click('form input[type=submit]')
         let field = await page.$('#required-text-input-custom');
 
         await utils.verifyMessageElementHierarchy(page, field);
         await utils.verifyDerivedMessage(page, field);
     });
+
+
     it('should have the focus', async () => {
+        await page.type('#required-text-input', 'hello world');
+        okField = await page.$('#required-text-input');
+        await utils.verifyClearance(page, okField);
+
         await page.click('form input[type=submit]')
-        let field = await page.$('#required-text-input'); //intentionally text-input and not text-input-custom!
+        let field = await page.$('#required-text-input-custom');
         let focus = await page.$('input:focus');
 
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
-        //the first errored field needs to have focus
+        //the first errored field (the second on the form) needs to have focus
         await expect(fieldId).toBeTruthy();
         await expect(fieldId).toBe(focusId);
     });

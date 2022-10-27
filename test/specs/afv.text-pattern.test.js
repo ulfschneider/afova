@@ -1,4 +1,5 @@
 const config = require('../../test-server.config.js');
+const utils = require('../utils/utils.js');
 
 beforeEach(async () => {
     await page.goto(config.testURL + '/text-pattern.html');
@@ -30,7 +31,7 @@ describe('Custom message for empty text pattern', () => {
 
 describe('Default message for correct text pattern', () => {
     it('should not raise a failure message', async () => {
-        await page.type('#patternTextInput', "AbC");
+        await page.type('#pattern-text-input', "AbC");
         await Promise.all([
             page.waitForNavigation(),//form will be submitted, therefore we wait for the new form
             page.click('form input[type=submit]')
@@ -40,7 +41,7 @@ describe('Default message for correct text pattern', () => {
 
 describe('Custom message for correct text pattern', () => {
     it('should not raise a failure message', async () => {
-        await page.type('#patternCustomTextInput', "AbC");
+        await page.type('#pattern-text-input-custom', "AbC");
         await Promise.all([
             page.waitForNavigation(),//form will be submitted, therefore we wait for the new form
             page.click('form input[type=submit]')
@@ -48,28 +49,78 @@ describe('Custom message for correct text pattern', () => {
     });
 });
 
-describe('Default message for invalid text pattern', () => {
-    it('should say "The value does not match the required pattern of [A-Za-z]{3}"', async () => {
-        await page.type('#patternTextInput', "AbCC");
+describe('text pattern mismatch', () => {
+    it('should present validation message"', async () => {
+        await page.type('#pattern-text-input', "wrong pattern");
+        await page.click('form input[type=submit]')        
+        let field = await page.$('#pattern-text-input');
+        let message = await page.evaluate(() => AFV.getMessage('patternMismatch', '#pattern-text-input'));
+
+        await utils.verifyMessageText(page, field, message);
+    });
+
+    it('should have the correct element hierarchy', async () => {
+        await page.type('#pattern-text-input', "wrong pattern");
         await page.click('form input[type=submit]')
-        let element = await page.$('#patternTextInput\\:afv-error .afv-message');
-        let text = await page.evaluate(element => element.innerHTML, element);
-        await expect(text).toBe('The value does not match the required pattern of [A-Za-z]{3}');
+        let field = await page.$('#pattern-text-input');
+
+        await utils.verifyMessageElementHierarchy(page, field);
+        await utils.verifyDerivedMessage(page, field);
+    });
+
+    it('should have the focus', async () => {
+        await page.type('#pattern-text-input', "wrong pattern");
+        await page.click('form input[type=submit]')
+        let field = await page.$('#pattern-text-input');
+        let focus = await page.$('input:focus');
+
+        let fieldId = await page.evaluate(field => field.id, field);
+        let focusId = await page.evaluate(focus => focus.id, focus);
+        //the first errored field needs to have focus
+        await expect(fieldId).toBeTruthy();
+        await expect(fieldId).toBe(focusId);
     });
 });
 
 
-describe('Custom message for invalid text pattern', () => {
-    it('should say "The value is not in the correct format. Correct formats are AbC or xyz for example."', async () => {
-        await page.type('#patternCustomTextInput', "AbCC");
+describe('test custom message for text pattern mismatch', () => {
+    it('should present validation message', async () => {
+        await page.type('#pattern-text-input', 'AbC');
+        await page.type('#pattern-text-input-custom', "wrong pattern");
+        await page.click('form input[type=submit]');
+        let field = await page.$('#pattern-text-input-custom');
+        let text = await page.evaluate(field => field.getAttribute('data-pattern-mismatch'), field);
+        await expect(text).toBeTruthy();
+        await utils.verifyMessageText(page, field, text);
+    });
+    it('should have the correct element hierarchy', async () => {
+        await page.type('#pattern-text-input', 'AbC');
+        await page.type('#pattern-text-input-custom', "wrong pattern");
         await page.click('form input[type=submit]')
-        let element = await page.$('#patternCustomTextInput\\:afv-error .afv-message');
-        let text = await page.evaluate(element => element.innerHTML, element);
-        await expect(text).toBe('The value is not in the correct format. Correct formats are AbC or xyz for example.');
+        let field = await page.$('#pattern-text-input-custom');
+
+        await utils.verifyMessageElementHierarchy(page, field);
+        await utils.verifyDerivedMessage(page, field);
+    });
+
+
+    it('should have the focus', async () => {
+        await page.type('#pattern-text-input', 'AbC');
+        await page.type('#pattern-text-input-custom', "wrong pattern");
+        okField = await page.$('#pattern-text-input');
+        await utils.verifyClearance(page, okField);
+
+        await page.click('form input[type=submit]')
+        let field = await page.$('#pattern-text-input-custom');
+        let focus = await page.$('input:focus');
+
+        let fieldId = await page.evaluate(field => field.id, field);
+        let focusId = await page.evaluate(focus => focus.id, focus);
+        //the first errored field (the second on the form) needs to have focus
+        await expect(fieldId).toBeTruthy();
+        await expect(fieldId).toBe(focusId);
     });
 });
-
-
 
 
 

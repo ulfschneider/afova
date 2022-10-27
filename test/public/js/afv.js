@@ -49,7 +49,7 @@ AFV = (function () {
         ['typeMismatch[email]', { message: 'The value must be an email in the format mickey@mouse.com', constraintAttr: 'type' }],
         ['typeMismatch[url]', { message: 'The value must be a URL in the format http://url.com', constraintAttr: 'type' }],
         ['typeMismatch[tel]', { message: 'The value must be a phone number', constraintAttr: 'type' }],
-        ['valid', { message: ':-)', }],
+        ['valid', { message: '', }],
         ['valueMissing', { message: 'Please provide a value', constraintAttr: 'required' }]
     ]);
 
@@ -62,19 +62,27 @@ AFV = (function () {
 
     function getValidationMessage(messageType, field) {
         if (messageType != 'customError') {
-            return messages.get(messageType);
-        } else if (field) {
-            return {}.message = field.validationMessage;
-        } else {
-            throw Error('No field defined to determine customError message');
-        }
-    }
+            let defaultMessage = messages.get(messageType);
 
-    function getSpecificValidationMessage(messageType, constraint, field) {
-        if (messageType != 'customError') {
-            return messages.get(`${messageType}[${constraint.toLowerCase()}]`);
+            if (defaultMessage) {
+                let message = defaultMessage.message;
+                let constraintAttr = defaultMessage.constraintAttr;
+
+                if (field) {
+                    let constraint = field.getAttribute(constraintAttr);
+                    message = field.dataset[messageType] || message;
+                    if (constraint) {
+                        defaultMessage = messages.get(`${messageType}[${constraint.toLowerCase()}]`)
+                        if (defaultMessage) {
+                            message = field.dataset[messageType] || defaultMessage.message;
+                        }
+                        message = message.replaceAll('{{constraint}}', constraint)
+                    }
+                }
+                return message;
+            }
         } else if (field) {
-            return {}.message = field.validationMessage;
+            return field.validationMessage;
         } else {
             throw Error('No field defined to determine customError message');
         }
@@ -99,9 +107,9 @@ AFV = (function () {
     function getField(identifier) {
         if (typeof identifier === 'string' || identifier instanceof String) {
             //assume field describes an id
-            let element = document.querySelector(`#${identifier}`);
+            let element = document.querySelector(`${identifier}`);
             if (!element) {
-                throw Error(`The field with id=${identifier} could not be found`);
+                throw Error(`The field with identifier=${identifier} could not be found`);
             }
             identifier = element;
         }
@@ -257,18 +265,9 @@ AFV = (function () {
         for (let messageType of getMessageTypes()) {
             if (validity[messageType]) {
                 //there is an error of type messageType                  
-                let defaultMessage = getValidationMessage(messageType, field);
-                messageElement.innerHTML = field.dataset[messageType] || defaultMessage.message;
-
-                if (defaultMessage.constraintAttr) {
-                    let constraint = field.getAttribute(defaultMessage.constraintAttr);
-                    if (constraint) {
-                        defaultMessage = getSpecificValidationMessage(messageType, constraint);
-                        if (defaultMessage) {
-                            messageElement.innerHTML = field.dataset[messageType] || defaultMessage.message;
-                        }
-                        messageElement.innerHTML = messageElement.innerHTML.replaceAll('{{constraint}}', constraint);
-                    }
+                let message = getValidationMessage(messageType, field);
+                if (message) {
+                    messageElement.innerHTML = message;
                 }
             }
         }
@@ -377,7 +376,7 @@ AFV = (function () {
          *     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
          *  </div>
          * ```
-         * The following `data` attributes are available to define validation error messages:
+         * The following attributes are available to define validation error messages:
          * <dl>
          * <dt>data-bad-input</dt>
          * <dd>The browser is unable to handle the input value</dd>
@@ -466,9 +465,8 @@ AFV = (function () {
                 }
             }
         },
-        getDefaultMessage: function (messageType) {
-            let message = getValidationMessage(messageType);
-            return message ? message.message : '';
+        getMessage: function (messageType, identifier) {
+            return getValidationMessage(messageType, getField(identifier));
         }
     }
 })();
