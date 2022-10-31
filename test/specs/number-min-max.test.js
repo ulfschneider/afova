@@ -110,8 +110,8 @@ describe('number wrong step', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field (the second on the form) needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 
 });
@@ -217,8 +217,8 @@ describe('number wrong step', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field (the second on the form) needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 
 });

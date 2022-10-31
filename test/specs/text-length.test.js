@@ -92,8 +92,8 @@ describe('wrong min text length', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 });
 
@@ -105,7 +105,7 @@ describe('wrong custom min text length', () => {
         let message = await page.evaluate(field => field.getAttribute('data-too-short'), field);
         let length = await page.evaluate(field => field.getAttribute('minlength'), field);
         message = message.replaceAll('{{constraint}}', length);
-        
+
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
         await utils.verifyDerivedMessage(page, field);
@@ -119,7 +119,7 @@ describe('wrong custom min text length', () => {
         message = message.replaceAll('{{constraint}}', length);
 
         await utils.verifyMessageText(page, field, message);
-        await utils.verifyMessageElementHierarchy(page, field);        
+        await utils.verifyMessageElementHierarchy(page, field);
     });
     it('should have the focus', async () => {
         await page.type('#min-text-length', '12345');
@@ -134,8 +134,8 @@ describe('wrong custom min text length', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field (the second on the form) needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 });
 
@@ -151,7 +151,7 @@ describe('wrong max text length', () => {
         await page.click('form input[type=submit]');
 
         let message = await page.evaluate(() => afova.getMessage('tooLong', '#max-text-length'));
-        
+
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
     });
@@ -197,8 +197,8 @@ describe('wrong max text length', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 });
 
@@ -250,8 +250,8 @@ describe('wrong custom max text length', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 });
 
