@@ -8,6 +8,9 @@
     "dev": "gulp test && concurrently \"live-server --host=localhost --port=3000 --mount=/:test/public --watch=test/public\" \"gulp watch\"",
     "build": "gulp test && jest --runInBand && gulp build && documentation build src/afova.js -f md > README.md"
   },
+  "pre-commit": [
+    "test"
+  ],
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/ulfschneider/afova.git"
@@ -27,6 +30,7 @@
     "jest": "^29.0.3",
     "jest-puppeteer": "^6.1.1",
     "live-server": "^1.2.2",
+    "pre-commit": "^1.2.2",
     "puppeteer": "^17.1.3"
   }
 }
