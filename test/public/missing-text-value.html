@@ -9,9 +9,9 @@
         <title>
         Test Missing Value
     </title>
-        <script defer src="/js/afv.js"></script>
+        <script defer src="/js/afova.js"></script>
         <script>
-            addEventListener('DOMContentLoaded', () => AFV.init());
+            addEventListener('DOMContentLoaded', () => afova.init());
         </script>
         <link rel="stylesheet" href="/css/main.css">
     </head>
@@ -24,13 +24,13 @@
         <form>
             <input type="submit" value="Submit the form"/>
 
-            <div class="afv-group">
+            <div class="afova-group">
                 <label>A reqired text input
                 <input id="required-text-input" type="text" required>
                 </label>
             </div>
 
-            <div class="afv-group">
+            <div class="afova-group">
                 <label>A reqired text input with custom failure message
                 <input id="required-text-input-custom" type="text" required
                     data-value-missing="You have to provide a value for this text input field">

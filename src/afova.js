@@ -1,7 +1,7 @@
 /**
- * Accessible Form Validation (AFV)
+ * Accessible Form Validation (afova)
  * 
- * AFV is leveraging the Constraint Validation API to do client-side form validation. Please refer to:
+ * afova is leveraging the Constraint Validation API to do client-side form validation. Please refer to:
  * 
  * - https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation
  * - https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation
@@ -9,25 +9,25 @@
  * 
  * ## Usage
  * 
- * Put the script afv.min.js into your HTML page head:
+ * Put the script afova.min.js into your HTML page head:
  * ```html
  * <head>
  * …
- * <script defer src="/js/afv.min.js"</script>
+ * <script defer src="/js/afova.min.js"</script>
  * …
  * </head>
  * ```
  * 
- * Initialize AFV
+ * Initialize afova
  * ```html
  * <script>
- * addEventListener('DOMContentLoaded', () => AFV.init());;
+ * addEventListener('DOMContentLoaded', () => afova.init());;
  * </script>
  * ```
  * 
- * AFV offers the following methods:
+ * afova offers the following methods:
  */
-AFV = (function () {
+afova = (function () {
     'use strict';
     let settings;
     let idCounter = 0;
@@ -54,9 +54,9 @@ AFV = (function () {
 
     function prepareTemplates() {
         messageContainerTemplate = document.createElement('div');
-        messageContainerTemplate.classList.add('afv-message-container');
+        messageContainerTemplate.classList.add('afova-message-container');
         messageTemplate = document.createElement('div');
-        messageTemplate.classList.add('afv-message');
+        messageTemplate.classList.add('afova-message');
     }
 
     function getValidationMessageTypes() {
@@ -93,12 +93,12 @@ AFV = (function () {
 
     function extractSettings(options = { focusOnFirstError: true, validateOnChange: false }) {
         settings = Object.assign({}, options);
-        console.log(`afv settings \n${JSON.stringify(settings, null, 4)}`);
+        console.log(`afova settings \n${JSON.stringify(settings, null, 4)}`);
     }
 
     function ensureId(identifier) {
         if (identifier && !identifier.id) {
-            identifier.id = `afv-${idCounter++}`;
+            identifier.id = `afova-${idCounter++}`;
         }
         return identifier;
     }
@@ -121,15 +121,15 @@ AFV = (function () {
     function cloneMessageContainerTemplate(field) {
         let innerGroup = getInnerGroup(field);
         let container = messageContainerTemplate.cloneNode(true);
-        container.id = `${innerGroup ? innerGroup.id : field.id}:afv`;
+        container.id = `${innerGroup ? innerGroup.id : field.id}:afova`;
         return container;
     }
 
     function cloneMessageTemplate(field, id) {
         let innerGroup = getInnerGroup(field);
-        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afv`);
+        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afova`);
         let message = messageTemplate.cloneNode(true);
-        message.id = id ? id : `${field.id}:afv-${container ? container.childElementCount : 0}`;
+        message.id = id ? id : `${field.id}:afova-${container ? container.childElementCount : 0}`;
         message.dataset.fieldId = field.id;
         return message;
     }
@@ -142,7 +142,7 @@ AFV = (function () {
         let parent = innerGroup ? innerGroup.parentNode : field.parentNode;
         let newContainer = false;
 
-        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afv`);
+        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afova`);
         if (!container) {
             newContainer = true;
             container = cloneMessageContainerTemplate(field);
@@ -167,16 +167,16 @@ AFV = (function () {
     }
 
     function hasMessage(parent) {
-        return parent.querySelectorAll('.afv-message').length;
+        return parent.querySelectorAll('.afova-message').length;
     }
 
     function getInnerGroup(field) {
-        let innerGroup = field.closest('.afv-inner-group');
+        let innerGroup = field.closest('.afova-inner-group');
         return ensureId(innerGroup);
     }
 
     function getGroup(field) {
-        let group = field.closest('.afv-group');
+        let group = field.closest('.afova-group');
         return ensureId(group);
     }
 
@@ -207,12 +207,12 @@ AFV = (function () {
 
         if (!hasMessage(parent)) {
             if (group) {
-                group.classList.remove('afv-active');
+                group.classList.remove('afova-active');
             }
-            field.classList.remove('afv-field', 'afv-active');
+            field.classList.remove('afova-field', 'afova-active');
             field.removeAttribute('aria-invalid');
             field.removeAttribute('aria-errormessage');
-            let messageContainer = parent.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afv`);
+            let messageContainer = parent.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afova`);
             if (messageContainer) {
                 messageContainer.remove();
             }
@@ -223,7 +223,7 @@ AFV = (function () {
         let field = getField(identifier);
 
         let fieldId = field.dataset.fieldId;
-        if (fieldId && field.classList.contains('afv-active')) {
+        if (fieldId && field.classList.contains('afova-active')) {
             //field indicates an error message element
             //therefore that single error message will be removed
             field.remove();
@@ -235,7 +235,7 @@ AFV = (function () {
             //remove error messages
             //depending on the value of the injected parameter
             //choose to remove only injected or only derived messages
-            parent.querySelectorAll(`[id^=${field.id}\\:afv]${injected ? '.injected' : '.derived'}`)
+            parent.querySelectorAll(`[id^=${field.id}\\:afova]${injected ? '.injected' : '.derived'}`)
                 .forEach(function (element) {
                     element.remove();
                 });
@@ -292,9 +292,9 @@ AFV = (function () {
         let group = getGroup(field);
 
         if (group) {
-            group.classList.add('afv-active');
+            group.classList.add('afova-active');
         }
-        field.classList.add('afv-field', 'afv-active');
+        field.classList.add('afova-field', 'afova-active');
 
         let messageElement = prepareValidationMessage(field, options);
         if (messageElement) {
@@ -359,17 +359,17 @@ AFV = (function () {
 
     return {
         /**
-         * Initialize AFV. Sample call:
+         * Initialize afova. Sample call:
          * ```js
-         * AFV.init({focusOnFirstError: true, validateOnChange: false});
+         * afova.init({focusOnFirstError: true, validateOnChange: false});
          * ```
          * The script will iterate through all forms on a web page and deactivate browser validation 
-         * in favor of AFV. The form validation will occur on submit of a form and on change of a field.
-         * All errors that can be checked with the Constraint Validation API are validated by AFV. 
-         * If the default error messages from AFV shouldn´t be used, custom error messages 
+         * in favor of afova. The form validation will occur on submit of a form and on change of a field.
+         * All errors that can be checked with the Constraint Validation API are validated by afova. 
+         * If the default error messages from afova shouldn´t be used, custom error messages 
          * can be defined as `data` attributes for each field. For example:
          * ```html
-         * <div class="afv-group">
+         * <div class="afova-group">
          *     <label for="custom-pattern-input">A pattern input with custom failure message</label>
          *     <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
          *     <input id="custom-pattern-input" type="text" 
@@ -409,7 +409,7 @@ AFV = (function () {
          * 
          * Messages that can be derived from the HTML data attributes, like above, will have the CSS class `derived` assigned to them.
          *  
-         * @param {Object} [options] - The settings for AFV
+         * @param {Object} [options] - The settings for afova
          * @param {boolean} [options.focusOnFirstError] - If true, the first errored field will be focused. If false, the first errored field will not receive focus. 
          * @param {boolean} [options.validateOnChange] - If true, each field will be validate on its change without waiting for a form submit. If false the validation will only occurr on submit of the form.
          */
@@ -423,7 +423,7 @@ AFV = (function () {
          * Typically it shouldn´t be necessary to inject a message for anything that can be solved with the derived messages (see the init() method above).
          * Sample call:
          * ```js
-         * AFV.injectMessage('requiredInput', 'You provided a value but the value is not correct'); 
+         * afova.injectMessage('requiredInput', 'You provided a value but the value is not correct'); 
          * ```
          * 
          * @param {Element|string} identifier - Identify the form element for which the error message should be set. If the parameter is a string, it will be interpreted as the id of the form element.
@@ -441,10 +441,10 @@ AFV = (function () {
          * Remove all injected messages that are linked to a form element, or remove a message that is identified by its id.
          * Sample call:
          * ```js
-         * AFV.clearMessage('requiredInput check3');
+         * afova.clearMessage('requiredInput check3');
          * //will clear all injected messages for the form elements that have the id´s requiredInput and check3
          * 
-         * AFV.clearMessage('requiredInput', 'check3');
+         * afova.clearMessage('requiredInput', 'check3');
          * //this call is equivalent to the previous one
          * ```
          * @param {...Element|string} identifier <ul><li>If identifier is a form element, all injected error messages of that form element will be removed.</li>

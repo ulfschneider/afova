@@ -35,7 +35,7 @@ describe('missing text value', () => {
     it('should present validation message"', async () => {
         await page.click('form input[type=submit]')
         let field = await page.$('#required-text-input');
-        let message = await page.evaluate(() => AFV.getMessage('valueMissing', '#required-text-input'));
+        let message = await page.evaluate(() => afova.getMessage('valueMissing', '#required-text-input'));
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
         await utils.verifyDerivedMessage(page, field);

@@ -9,7 +9,7 @@
     <title>
         Accessible Form Validation
     </title>
-    <script defer src="/js/afv.js"></script>
+    <script defer src="/js/afova.js"></script>
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <style>
@@ -17,12 +17,12 @@
 </style>
 
 <body>
-    <h1>Accessible Form Validation with <code>afv.js</code>
+    <h1>Accessible Form Validation with <code>afova.js</code>
     </h1>
     <button id="inject"
-        onclick="AFV.injectMessage('requiredInput', 'Hey, this is required!'); AFV.injectMessage('radio3', 'Message for radio group!');">Inject
+        onclick="afova.injectMessage('requiredInput', 'Hey, this is required!'); afova.injectMessage('radio3', 'Message for radio group!');">Inject
         Messages</button>
-    <button id="clear" onclick="AFV.clearMessage('requiredInput radio3');">Clear Injected Messages</button>
+    <button id="clear" onclick="afova.clearMessage('requiredInput radio3');">Clear Injected Messages</button>
 
     <form>
         <input type="submit" value="Submit the form" />
@@ -32,13 +32,13 @@
 
         <h2>Testing for text pattern</h2>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="patternTextInput">A pattern text input</label>
             <div>The input must be provided by following the pattern [A-Za-z]{3}</div>
             <input id="patternTextInput" type="text" pattern="[A-Za-z]{3}">
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="patternCustomTextInput">A pattern text input with custom failure message</label>
             <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
             <input id="patternCustomTextInput" type="text" pattern="[A-Za-z]{3}"
@@ -47,39 +47,39 @@
 
         <h2>Testing for text length</h2>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="minLengthTextInput">A min length text input</label>
             <div>The text must be at least 5 characters of length</div>
             <input id="minLengthTextInput" type="text" minlength="5">
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="minLengthCustomTextInput">A min length text input with custom failure message</label>
             <div>The text must be at least 5 characters of length</div>
             <input id="minLengthCustomTextInput" type="text" minlength="5"
                 data-too-short="Hey, this should have at least 5 characters">
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="maxLengthTextInput">A max length text input</label>
             <div>The text must be at max 5 characters of length</div>
             <input id="maxLengthTextInput" type="text" maxlength="5">
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="maxLengthCustomTextInput">A max length text input with custom failure message</label>
             <div>The text must be at max 5 characters of length</div>
             <input id="maxLengthCustomTextInput" type="text" maxlength="5"
                 data-too-long="Hey, this should have at max 5 characters">
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="minMaxNumber">A number</label>
             <div>Please provide a integer number in a range of 100 – 999</div>
             <input id="minMaxNumber" type="number" min="100" max="999" step="1">
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="customMinMaxNumber">A number with custom failure message</label>
             <div>Please provide a integer number in a range of 100 – 999</div>
             <input id="customMinMaxNumber" type="number" max="999"
@@ -89,26 +89,26 @@
                 data-value-missing="It is required to provide this number">
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="email">Please provide your email address</label>
             <input id="email" type="email" />
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="customEmail">Please provide your email address (will produce a custom error message)</label>
             <input id="customEail" type="email"
                 data-type-mismatch="Please provide an email adress in the format mickey@mouse.com" />
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label>Please provide credit card number
                 <input type="tel" autocomplete="cc-number"
                     data-type-mismatch="This doesn´t seem to be a credit card number" />
             </label>
         </div>
 
-        <div class="afv-group">
-            <fieldset class="afv-inner-group">
+        <div class="afova-group">
+            <fieldset class="afova-inner-group">
                 <legend>Radio</legend>
                 <label><input type="radio" name="radio" id="radio1">Radio 1</label>
                 <label><input type="radio" name="radio" id="radio2">Radio 2</label>
@@ -119,7 +119,7 @@
     </form>
 
     <script>
-        addEventListener('DOMContentLoaded', () => AFV.init());
+        addEventListener('DOMContentLoaded', () => afova.init());
     </script>
 </body>
 

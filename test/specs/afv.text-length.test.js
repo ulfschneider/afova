@@ -65,7 +65,7 @@ describe('wrong min text length', () => {
         await page.type('#min-text-length', "123");
         await page.click('form input[type=submit]')
         let field = await page.$('#min-text-length');
-        let message = await page.evaluate(() => AFV.getMessage('tooShort', '#min-text-length'));
+        let message = await page.evaluate(() => afova.getMessage('tooShort', '#min-text-length'));
 
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
@@ -76,7 +76,7 @@ describe('wrong min text length', () => {
         await page.type('#min-text-length', "1234");
         await page.click('form input[type=submit]')
         let field = await page.$('#min-text-length');
-        let message = await page.evaluate(() => AFV.getMessage('tooShort', '#min-text-length'));
+        let message = await page.evaluate(() => afova.getMessage('tooShort', '#min-text-length'));
 
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
@@ -150,7 +150,7 @@ describe('wrong max text length', () => {
         await page.evaluate(field => field.setAttribute('type', 'text'), field);
         await page.click('form input[type=submit]');
 
-        let message = await page.evaluate(() => AFV.getMessage('tooLong', '#max-text-length'));
+        let message = await page.evaluate(() => afova.getMessage('tooLong', '#max-text-length'));
         
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
@@ -165,7 +165,7 @@ describe('wrong max text length', () => {
         await page.evaluate(field => field.setAttribute('type', 'text'), field);
         await page.click('form input[type=submit]')
 
-        let message = await page.evaluate(() => AFV.getMessage('tooLong', '#max-text-length'));
+        let message = await page.evaluate(() => afova.getMessage('tooLong', '#max-text-length'));
 
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);

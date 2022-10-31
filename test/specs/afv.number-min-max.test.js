@@ -46,7 +46,7 @@ describe('number too small', () => {
         let wrongMin = (parseInt(min) - 1).toString();
         await page.type('#number-min-max', wrongMin);
         await page.click('form input[type=submit]')
-        let message = await page.evaluate(() => AFV.getMessage('rangeUnderflow', '#number-min-max'));
+        let message = await page.evaluate(() => afova.getMessage('rangeUnderflow', '#number-min-max'));
         message = message.replaceAll('{{constraint}}', min);
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
@@ -61,7 +61,7 @@ describe('number too big', () => {
         let wrongMax = (parseInt(max) + 1).toString();
         await page.type('#number-min-max', wrongMax);
         await page.click('form input[type=submit]')
-        let message = await page.evaluate(() => AFV.getMessage('rangeOverflow', '#number-min-max'));
+        let message = await page.evaluate(() => afova.getMessage('rangeOverflow', '#number-min-max'));
         message = message.replaceAll('{{constraint}}', max);
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
@@ -77,7 +77,7 @@ describe('number wrong step', () => {
         let wrongMax = (parseInt(max) - .5).toString();
         await page.type('#number-min-max', wrongMax);
         await page.click('form input[type=submit]')
-        let message = await page.evaluate(() => AFV.getMessage('stepMismatch', '#number-min-max'));
+        let message = await page.evaluate(() => afova.getMessage('stepMismatch', '#number-min-max'));
         let step = await page.evaluate(field => field.getAttribute('step'), field);
         message = message.replaceAll('{{constraint}}', step);
         await utils.verifyMessageText(page, field, message);
@@ -91,7 +91,7 @@ describe('not a number', () => {
         let field = await page.$('#number-min-max');
         await page.type('#number-min-max', 'hello world');
         await page.click('form input[type=submit]')
-        let message = await page.evaluate(() => AFV.getMessage('badInput', '#number-min-max'));
+        let message = await page.evaluate(() => afova.getMessage('badInput', '#number-min-max'));
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
         await utils.verifyDerivedMessage(page, field);
@@ -121,7 +121,7 @@ describe('empty number', () => {
     it('should raise a failure message', async () => {
         let field = await page.$('#number-min-max-custom');
         await page.click('form input[type=submit]')
-        let message = await page.evaluate(() => AFV.getMessage('valueMissing', '#number-min-max-custom'));
+        let message = await page.evaluate(() => afova.getMessage('valueMissing', '#number-min-max-custom'));
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
     });

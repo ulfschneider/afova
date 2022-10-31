@@ -45,7 +45,7 @@ describe('text pattern mismatch', () => {
         await page.type('#pattern-text-input', "wrong pattern");
         await page.click('form input[type=submit]')        
         let field = await page.$('#pattern-text-input');
-        let message = await page.evaluate(() => AFV.getMessage('patternMismatch', '#pattern-text-input'));
+        let message = await page.evaluate(() => afova.getMessage('patternMismatch', '#pattern-text-input'));
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
         await utils.verifyDerivedMessage(page, field);

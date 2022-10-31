@@ -9,9 +9,9 @@
     <title>
         Test Number Min Max
     </title>
-    <script defer src="/js/afv.js"></script>
+    <script defer src="/js/afova.js"></script>
     <script>
-        addEventListener('DOMContentLoaded', () => AFV.init());
+        addEventListener('DOMContentLoaded', () => afova.init());
     </script>
     <link rel="stylesheet" href="/css/main.css">
 </head>
@@ -24,14 +24,14 @@
     <form>
         <input type="submit" value="Submit the form" />
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="number-min-max">A number
                 <div class="description">Please provide a integer number in the range of 100 – 999</div>
                 <input id="number-min-max" type="number" min="100" max="999" step="1">
             </label>
         </div>
 
-        <div class="afv-group">
+        <div class="afova-group">
             <label for="number-min-max-custom">A required number with custom failure message
                 <div class="description">Please provide a integer number in the range of 100 – 999</div>
                 <input id="number-min-max-custom" type="number"

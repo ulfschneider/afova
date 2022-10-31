@@ -2,22 +2,22 @@
   "name": "accessible-form-validation",
   "version": "0.1.0",
   "description": "",
-  "main": "afv.js",
+  "main": "afova.js",
   "scripts": {
     "test": "gulp test && jest --runInBand",
     "dev": "gulp test && concurrently \"live-server --host=localhost --port=3000 --mount=/:test/public --watch=test/public\" \"gulp watch\"",
-    "build": "gulp test && jest --runInBand && gulp build && documentation build js/afv.js -f md --markdown-toc > README.md"
+    "build": "gulp test && jest --runInBand && gulp build && documentation build js/afova.js -f md --markdown-toc > README.md"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ulfschneider/afv.git"
+    "url": "git+ssh://git@github.com/ulfschneider/afova.git"
   },
   "author": "Ulf Schneider",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ulfschneider/afv/issues"
+    "url": "https://github.com/ulfschneider/afova/issues"
   },
-  "homepage": "https://github.com/ulfschneider/afv#readme",
+  "homepage": "https://github.com/ulfschneider/afova#readme",
   "devDependencies": {
     "concurrently": "^7.5.0",
     "documentation": "^12.3.0",
