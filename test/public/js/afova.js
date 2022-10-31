@@ -361,23 +361,42 @@ afova = (function () {
         /**
          * Initialize afova. Sample call:
          * ```js
-         * afova.init({focusOnFirstError: true, validateOnChange: false});
+         * afova.init({ //default options, you can omit the options object
+         *  focusOnFirstError: true,
+         *  validateOnChange: false,
+         *  });
          * ```
          * The script will iterate through all forms on a web page and deactivate browser validation 
-         * in favor of afova. The form validation will occur on submit of a form and on change of a field.
+         * in favor of afova. The afova form validation will occur on submit of a form and on change of a field 
+         * (if you´ve set `validateOnChange`to `true` in your settings ).
          * All errors that can be checked with the Constraint Validation API are validated by afova. 
-         * If the default error messages from afova shouldn´t be used, custom error messages 
-         * can be defined as `data` attributes for each field. For example:
+         * If the default error messages from afova shouldn´t be used, you can define custom validation error messages 
+         * with `data-…` attributes for each field. For example:
          * ```html
          * <div class="afova-group">
-         *     <label for="custom-pattern-input">A pattern input with custom failure message</label>
-         *     <div>Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
-         *     <input id="custom-pattern-input" type="text" 
+         *     <label for="custom-pattern-input">A pattern input with custom failure message
+         *     <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
+         *     <input id="custom-pattern-input" name="patternInput" type="text" 
          *     pattern="[A-Za-z]{3}" 
-         *     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz for example.">
+         *     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz, for example.">
+         *     </label>
          *  </div>
          * ```
-         * The following attributes are available to define validation error messages:
+         * 
+         * If you don´t have a need for the custom validation error messages and just want to use what 
+         * afova has built in, the above code could be written as follows:
+         * 
+         * ```html
+         * <div class="afova-group">
+         *     <label for="pattern-input">A pattern input with custom failure message
+         *     <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
+         *     <input id="pattern-input" name="patternInput" type="text" 
+         *     pattern="[A-Za-z]{3}">
+         *     </label>
+         *  </div>
+         * ```
+         * 
+         * The following attributes can be used alone or in combination to define custom validation error messages:
          * <dl>
          * <dt>data-bad-input</dt>
          * <dd>The browser is unable to handle the input value</dd>
@@ -386,13 +405,13 @@ afova = (function () {
          * <dd>The value of a field doesn´t comply to the pattern of the <code>pattern</code> attribute</dd>
          * 
          * <dt>data-range-overflow</dt>
-         * <dd>The value of a field is bigger than the value of the <code>max</code> attribute</dd>
+         * <dd>The number value of a field is bigger than the value of the <code>max</code> attribute</dd>
          * 
          * <dt>data-range-underflow</dt>
-         * <dd>The value of a field is smaller than the value of the <code>min</code> attribute</dd>
+         * <dd>The number value of a field is smaller than the value of the <code>min</code> attribute</dd>
          * 
          * <dt>data-step-mismatch</dt>
-         * <dd>The value of field is not evenly divisable by the value of the <code>step</code> attribute</dd>
+         * <dd>The number value of field is not evenly divisable by the value of the <code>step</code> attribute</dd>
          * 
          * <dt>data-too-long</dt>
          * <dd>The value of a field has more characters than defined by the attribute <code>maxlength</code></dd>
@@ -401,7 +420,7 @@ afova = (function () {
          * <dd>The value of a field has less characters than defined by the attribute <code>minlength</code></dd>
          * 
          * <dt>data-type-mismatch</dt>
-         * <dd>The value of a field dosn´t comply to the type of the <code>type</code> attribute</dd>
+         * <dd>The value of a field dosn´t comply to the <code>type</code> attribute</dd>
          * 
          * <dt>data-value-missing</dd>
          * <dd>A value of a field that is required due to the <code>required</code> attribute is missing</dd>
