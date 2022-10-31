@@ -5,13 +5,13 @@ beforeEach(async () => {
     await page.goto(config.testURL + '/text-length.html');
 });
 
-describe('Page title', () => {
-    it('Title should be "Test Text Length"', async () => {
+describe('page title', () => {
+    it('should be "Test Text Length"', async () => {
         await expect(page.title()).resolves.toMatch('Test Text Length');
     });
 });
 
-describe('Default message for empty text length', () => {
+describe('empty text length', () => {
     it('should not raise a failure message', async () => {
         await Promise.all([
             page.waitForNavigation(), //form will be submitted, therefore we wait for the new form
@@ -20,7 +20,7 @@ describe('Default message for empty text length', () => {
     });
 });
 
-describe('Default message for correct min text length', () => {
+describe('correct min text length', () => {
     it('should not raise a failure message', async () => {
         await page.type('#min-text-length', "12345");
         await Promise.all([
@@ -30,7 +30,7 @@ describe('Default message for correct min text length', () => {
     });
 });
 
-describe('Custom message for correct min text length', () => {
+describe('custom message for correct min text length', () => {
     it('should not raise a failure message', async () => {
         await page.type('#min-text-length-custom', "12345");
         await Promise.all([
@@ -40,7 +40,7 @@ describe('Custom message for correct min text length', () => {
     });
 });
 
-describe('Default message for correct max text length', () => {
+describe('correct max text length', () => {
     it('should not raise a failure message', async () => {
         await page.type('#max-text-length', "12345");
         await Promise.all([
@@ -50,7 +50,7 @@ describe('Default message for correct max text length', () => {
     });
 });
 
-describe('Custom message for correct max text length', () => {
+describe('custom message for correct max text length', () => {
     it('should not raise a failure message', async () => {
         await page.type('#max-text-length-custom', "12345");
         await Promise.all([
@@ -68,6 +68,8 @@ describe('wrong min text length', () => {
         let message = await page.evaluate(() => AFV.getMessage('tooShort', '#min-text-length'));
 
         await utils.verifyMessageText(page, field, message);
+        await utils.verifyMessageElementHierarchy(page, field);
+        await utils.verifyDerivedMessage(page, field);
     });
 
     it('should present validation message"', async () => {
@@ -77,13 +79,6 @@ describe('wrong min text length', () => {
         let message = await page.evaluate(() => AFV.getMessage('tooShort', '#min-text-length'));
 
         await utils.verifyMessageText(page, field, message);
-    });
-
-    it('should have the correct element hierarchy', async () => {
-        await page.type('#min-text-length', "123");
-        await page.click('form input[type=submit]')
-        let field = await page.$('#min-text-length');
-
         await utils.verifyMessageElementHierarchy(page, field);
         await utils.verifyDerivedMessage(page, field);
     });
@@ -112,6 +107,8 @@ describe('wrong custom min text length', () => {
         message = message.replaceAll('{{constraint}}', length);
         
         await utils.verifyMessageText(page, field, message);
+        await utils.verifyMessageElementHierarchy(page, field);
+        await utils.verifyDerivedMessage(page, field);
     });
     it('should present validation message', async () => {
         await page.type('#min-text-length-custom', "1234");
@@ -122,14 +119,7 @@ describe('wrong custom min text length', () => {
         message = message.replaceAll('{{constraint}}', length);
 
         await utils.verifyMessageText(page, field, message);
-    });
-    it('should have the correct element hierarchy', async () => {
-        await page.type('#min-text-length-custom', "123");
-        await page.click('form input[type=submit]')
-        let field = await page.$('#min-text-length-custom');
-
-        await utils.verifyMessageElementHierarchy(page, field);
-        await utils.verifyDerivedMessage(page, field);
+        await utils.verifyMessageElementHierarchy(page, field);        
     });
     it('should have the focus', async () => {
         await page.type('#min-text-length', '12345');
@@ -163,6 +153,7 @@ describe('wrong max text length', () => {
         let message = await page.evaluate(() => AFV.getMessage('tooLong', '#max-text-length'));
         
         await utils.verifyMessageText(page, field, message);
+        await utils.verifyMessageElementHierarchy(page, field);
     });
 
     it('should present validation message"', async () => {
@@ -177,6 +168,7 @@ describe('wrong max text length', () => {
         let message = await page.evaluate(() => AFV.getMessage('tooLong', '#max-text-length'));
 
         await utils.verifyMessageText(page, field, message);
+        await utils.verifyMessageElementHierarchy(page, field);
     });
 
     it('should have the correct element hierarchy', async () => {
@@ -187,7 +179,6 @@ describe('wrong max text length', () => {
         //switch back to the correct type text
         await page.evaluate(field => field.setAttribute('type', 'text'), field);
         await page.click('form input[type=submit]')
-
 
         await utils.verifyMessageElementHierarchy(page, field);
         await utils.verifyDerivedMessage(page, field);
@@ -211,7 +202,6 @@ describe('wrong max text length', () => {
     });
 });
 
-
 describe('wrong custom max text length', () => {
     it('should present validation message"', async () => {
         let field = await page.$('#max-text-length-custom');
@@ -227,6 +217,7 @@ describe('wrong custom max text length', () => {
         message = message.replaceAll('{{constraint}}', length);
 
         await utils.verifyMessageText(page, field, message);
+        await utils.verifyMessageElementHierarchy(page, field);
     });
 
     it('should present validation message"', async () => {
@@ -243,20 +234,7 @@ describe('wrong custom max text length', () => {
         message = message.replaceAll('{{constraint}}', length);
 
         await utils.verifyMessageText(page, field, message);
-    });
-
-    it('should have the correct element hierarchy', async () => {
-        let field = await page.$('#max-text-length-custom');
-        //trick: type number allows to set a value that is too long
-        await page.evaluate(field => field.setAttribute('type', 'number'), field);
-        await page.type('#max-text-length-custom', "1234567");
-        //switch back to the correct type text
-        await page.evaluate(field => field.setAttribute('type', 'text'), field);
-        await page.click('form input[type=submit]')
-
-
         await utils.verifyMessageElementHierarchy(page, field);
-        await utils.verifyDerivedMessage(page, field);
     });
 
     it('should have the focus', async () => {
