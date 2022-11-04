@@ -10,6 +10,36 @@
   --form-validation-field-indicator-width: 1px;
 }
 
+label {
+  font-weight: bold;
+}
+
+label .description {
+  font-weight: normal;
+  color: var(--description-color);
+}
+
+input,
+textarea {
+  display: block;
+  font-size: var(--font-size);
+  padding: 5px;
+}
+
+body {
+  padding: 1rem;
+}
+
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+button {
+  font-size: var(--font-size);
+  padding: 0.25rem;
+  margin: 0.5rem 0;
+  display: inline-block;
+}
+
 .afova-group {
   margin-top: 2em;
   margin-bottom: 2em;
@@ -36,24 +66,4 @@
   color: var(--afova-message-color);
   display: block;
   font-weight: var(--afova-message-font-weight);
-}
-
-label {
-  font-weight: bold;
-}
-
-label .description {
-  font-weight: normal;
-  color: var(--description-color);
-}
-
-input,
-textarea {
-  display: block;
-  font-size: 18px;
-  padding: 5px;
-}
-
-body {
-  padding: 1rem;
 }
