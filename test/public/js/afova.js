@@ -54,6 +54,19 @@ afova = (function () {
         ['valueMissing', { message: 'Please provide a value', constraintAttr: 'required' }]
     ]);
 
+    function actionForIdentifiers(action, identifiers) {
+        for (let ident of identifiers) {
+            if (typeof ident === 'string' || ident instanceof String) {
+                let idList = ident.split(/[ ,]+/);
+                for (let id of idList) {
+                    action(id);
+                }
+            } else {
+                action(ident);
+            }
+        }
+    }
+
     function prepareTemplates() {
         messageContainerTemplate = document.createElement('div');
         messageContainerTemplate.classList.add('afova-message-container');
@@ -403,7 +416,9 @@ afova = (function () {
     }
 
     function resetForm(form, event = undefined) {
+        console.log('reset ' + form);
         form = getElement(form);
+        console.log(form);
         for (let field of form.elements) {
             clearAllMessages(field);
         }
@@ -417,10 +432,10 @@ afova = (function () {
         forms.forEach(function (form) {
 
             for (let field of form.elements) {
-                if (fieldIds.has(field.id)) {
+                if (field.id && fieldIds.has(field.id)) {
                     console.error(`Duplicate field id [${field.id}]. Fields with that id will be ignored by afova.\n${field.outerHTML}`);
                     duplicateFieldIds.add(field.id);
-                } else {
+                } else if (field.id) {
                     fieldIds.add(field.id);
                 }
                 replaceConstraintAttributes(field);
@@ -552,28 +567,12 @@ afova = (function () {
          * </ul>
          */
         clearMessage: function (...identifier) {
-            for (let ident of identifier) {
-                if (typeof ident === 'string' || ident instanceof String) {
-                    let idList = ident.split(/[ ,]+/);
-                    for (let id of idList) {
-                        clearValidationMessage(id, true);
-                    }
-                } else {
-                    clearValidationMessage(ident, true);
-                }
-            }
+            actionForIdentifiers(function (id) {
+                clearValidationMessage(id, true);
+            }, identifier);
         },
         clearForm: function (...identifier) {
-            for (let ident of identifier) {
-                if (typeof ident === 'string' || ident instanceof String) {
-                    let idList = ident.split(/[ ,]+/);
-                    for (let id of idList) {
-                        resetForm(id);
-                    }
-                } else {
-                    resetForm(id);
-                }
-            }
+            actionForIdentifiers(resetForm, identifier);
         },
         /**
          * 
