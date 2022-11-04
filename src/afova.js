@@ -105,40 +105,44 @@ afova = (function () {
         return identifier;
     }
 
-    function getField(identifier) {
+    function getElement(identifier) {
         if (typeof identifier === 'string' || identifier instanceof String) {
             //assume identifier describes an id
 
             let transformedIdentifier = identifier.startsWith('#') ? identifier : `#${identifier}`;
             let element = document.querySelector(transformedIdentifier);
             if (!element) {
-                throw Error(`The field with identifier=${transformedIdentifier} could not be found`);
+                throw Error(`The element with identifier=${transformedIdentifier} could not be found`);
             }
             identifier = element;
         }
+        return identifier;
+    }
 
-        return ensureId(identifier);
+    function getField(identifier) {
+        let field = getElement(identifier);
+        return ensureId(field);
     }
 
     function cloneMessageContainerTemplate(field) {
         let innerGroup = getInnerGroup(field);
-        let container = messageContainerTemplate.cloneNode(true);
-        container.id = `${innerGroup ? innerGroup.id : field.id}:afova`;
-        return container;
+        let messageContainer = messageContainerTemplate.cloneNode(true);
+        messageContainer.id = `${innerGroup ? innerGroup.id : field.id}:afova`;
+        return messageContainer;
     }
 
     function cloneMessageTemplate(field, id) {
         let innerGroup = getInnerGroup(field);
-        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afova`);
+        let messageContainer = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afova`);
         let message = messageTemplate.cloneNode(true);
-        message.id = id ? id : `${field.id}:afova-${container ? container.childElementCount : 0}`;
+        message.id = id ? id : `${field.id}:afova-${messageContainer ? messageContainer.childElementCount : 0}`;
         message.dataset.fieldId = field.id;
         return message;
     }
 
     function replaceConstraintAttributes(field) {
-        let container = getGroup(field) || getLabel(field);
-        if (container) {
+        let group = getGroup(field);
+        if (group) {
             let constraintValues = new Map();
             for (let constraint of CONSTRAINT_ATTRIBUTES) {
                 let constraintValue = field.getAttribute(constraint);
@@ -146,12 +150,12 @@ afova = (function () {
                     constraintValues.set(constraint, constraintValue);
                 }
             }
-            let html = container.innerHTML;
+            let html = group.innerHTML;
             for (let constraint of constraintValues.entries()) {
                 let regex = new RegExp(`\{\{${constraint[0]}\}\}`, 'ig');
                 html = html.replaceAll(regex, constraint[1]);
             }
-            container.innerHTML = html;
+            group.innerHTML = html;
         }
     }
 
@@ -163,28 +167,28 @@ afova = (function () {
         let parent = innerGroup ? innerGroup.parentNode : field.parentNode;
         let newContainer = false;
 
-        let container = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afova`);
-        if (!container) {
+        let messageContainer = document.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afova`);
+        if (!messageContainer) {
             newContainer = true;
-            container = cloneMessageContainerTemplate(field);
+            messageContainer = cloneMessageContainerTemplate(field);
         }
 
-        let firstInjectedMessage = container.querySelector('.injected');
+        let firstInjectedMessage = messageContainer.querySelector('.injected');
         if (message.classList.contains('injected') || !firstInjectedMessage) {
             //add injected messages to the bottom of the message list
             //if no injected message exist, add the derived message also 
             //to the bottom of the message list
-            container.appendChild(message);
+            messageContainer.appendChild(message);
         } else {
             //insert derived messages before the first injected message
-            container.insertBefore(message, firstInjectedMessage);
+            messageContainer.insertBefore(message, firstInjectedMessage);
         }
 
         if (newContainer) {
-            parent.insertBefore(container, innerGroup || field);
+            parent.insertBefore(messageContainer, innerGroup || field);
         }
 
-        return container.id;
+        return messageContainer.id;
     }
 
     function hasMessage(parent) {
@@ -200,14 +204,17 @@ afova = (function () {
         return document.querySelector(`#${field.id}\\:afova`);
     }
 
+
     function getGroup(field) {
         let group = field.closest('.afova-group');
-        return ensureId(group);
-    }
 
-    function getLabel(field) {
-        let label = field.closest('label');
-        return ensureId(label);
+        if (!group) {
+            group = field.closest('label');
+            if (group) {
+                group.classList.add('afova-group');
+            }
+        }
+        return ensureId(group);
     }
 
     function isValidatedRadioGroup(field) {
@@ -246,6 +253,22 @@ afova = (function () {
             if (messageContainer) {
                 messageContainer.remove();
             }
+        }
+    }
+
+    function clearAllMessages(field) {
+        let messageContainer = getMessageContainer(field);
+        let group = getGroup(field);
+
+        if (group) {
+            group.classList.remove('afova-active');
+        }
+        field.classList.remove('afova-field', 'afova-active');
+        field.removeAttribute('aria-invalid');
+        field.removeAttribute('aria-errormessage');
+
+        if (messageContainer) {
+            messageContainer.remove();
         }
     }
 
@@ -359,9 +382,10 @@ afova = (function () {
         return field.validity.valid;
     }
 
-    function validateForm(event) {
-        let form = event.target;
+    function validateForm(form, event = undefined) {
+        form = getElement(form);
         let firstError;
+
         for (let field of form.elements) {
             let valid = validateField(field, false);
             if (!firstError && !valid) {
@@ -369,10 +393,19 @@ afova = (function () {
             }
         }
         if (firstError) {
-            event.preventDefault();
+            if (event) {
+                event.preventDefault();
+            }
             if (settings.focusOnFirstError) {
                 firstError.focus();
             }
+        }
+    }
+
+    function resetForm(form, event = undefined) {
+        form = getElement(form);
+        for (let field of form.elements) {
+            clearAllMessages(field);
         }
     }
 
@@ -382,7 +415,7 @@ afova = (function () {
         duplicateFieldIds.clear();
 
         forms.forEach(function (form) {
-            form.setAttribute('novalidate', '');
+
             for (let field of form.elements) {
                 if (fieldIds.has(field.id)) {
                     console.error(`Duplicate field id [${field.id}]. Fields with that id will be ignored by afova.\n${field.outerHTML}`);
@@ -392,7 +425,10 @@ afova = (function () {
                 }
                 replaceConstraintAttributes(field);
             }
-            form.addEventListener('submit', validateForm);
+
+            form.setAttribute('novalidate', '');
+            form.addEventListener('submit', function (event) { validateForm(event.target, event) });
+            form.addEventListener('reset', function (event) { resetForm(event.target) });
 
             if (settings.validateOnChange) {
                 for (let field of form.elements) {
@@ -421,27 +457,21 @@ afova = (function () {
          * If the default error messages from afova shouldn´t be used, you can define custom validation error messages 
          * with `data-…` attributes for each field. For example:
          * ```html
-         * <div class="afova-group">
-         *     <label for="custom-pattern-input">A pattern input with custom failure message
-         *     <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
-         *     <input id="custom-pattern-input" name="patternInput" type="text" 
-         *     pattern="[A-Za-z]{3}" 
+         *   <label for="custom-pattern-input">A pattern input with custom failure message
+         *     <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 characters.</div>
+         *     <input id="custom-pattern-input" name="patternInput" type="text" pattern="[A-Za-z]{3}" 
          *     data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz, for example.">
-         *     </label>
-         *  </div>
+         *   </label>
          * ```
          * 
          * If you don´t have a need for the custom validation error messages and just want to use what 
          * afova has built in, the above code could be written as follows:
          * 
          * ```html
-         * <div class="afova-group">
-         *     <label for="pattern-input">A pattern input with custom failure message
-         *     <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
-         *     <input id="pattern-input" name="patternInput" type="text" 
-         *     pattern="[A-Za-z]{3}">
-         *     </label>
-         *  </div>
+         *   <label for="pattern-input">A pattern input with custom failure message
+         *     <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 characters.</div>
+         *     <input id="pattern-input" name="patternInput" type="text" pattern="[A-Za-z]{3}">
+         *   </label>
          * ```
          * 
          * The following attributes can be used alone or in combination to define custom validation error messages:
@@ -533,6 +563,18 @@ afova = (function () {
                 }
             }
         },
+        clearForm: function (...identifier) {
+            for (let ident of identifier) {
+                if (typeof ident === 'string' || ident instanceof String) {
+                    let idList = ident.split(/[ ,]+/);
+                    for (let id of idList) {
+                        resetForm(id);
+                    }
+                } else {
+                    resetForm(id);
+                }
+            }
+        },
         /**
          * 
          * @param {string} messageType Describes the messageType to get a message for. For allowed values @see {@link getMessageTypes}.
@@ -540,7 +582,7 @@ afova = (function () {
          * @returns The message text for the given message type. If identifier refers to a field, the actual message of the field for the given messageType is returned.
          */
         getMessage: function (messageType, identifier = undefined) {
-            return getValidationMessage(messageType, getField(identifier));
+            return getValidationMessage(messageType, getElement(identifier));
         },
         /**
          * @returns An array of all supported message types.

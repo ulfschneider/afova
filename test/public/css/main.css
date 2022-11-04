@@ -1,52 +1,59 @@
 :root {
-    font-size: 18px;
-    line-height: 1.5;
-    font-family: sans-serif;
-    --afova-message-color: red;
-    --description-color: grey;
-    --afova-message-font-weight: bold;
-    --form-validation-indicator-width: 3px;
-    --form-valdiation-indicator-outdent: 0.5rem;
-    --form-validation-field-indicator-width: 1px;
+  font-size: 18px;
+  line-height: 1.5;
+  font-family: sans-serif;
+  --afova-message-color: red;
+  --description-color: grey;
+  --afova-message-font-weight: bold;
+  --form-validation-indicator-width: 3px;
+  --form-valdiation-indicator-outdent: 0.75rem;
+  --form-validation-field-indicator-width: 1px;
 }
 
 .afova-group {
-    margin-top: 2em;
-    margin-bottom: 2em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  display: block;
+  max-width: 65ch;
 }
 
 .afova-group.afova-active {
-    margin-left: calc(-1 * var(--form-valdiation-indicator-outdent));
-    border-left: var(--form-validation-indicator-width) solid var(--afova-message-color);
-    padding-left: calc(var(--form-valdiation-indicator-outdent) - var(--form-validation-indicator-width));
+  margin-left: calc(-1 * var(--form-valdiation-indicator-outdent));
+  border-left: var(--form-validation-indicator-width) solid
+    var(--afova-message-color);
+  padding-left: calc(
+    var(--form-valdiation-indicator-outdent) -
+      var(--form-validation-indicator-width)
+  );
 }
 
 .afova-field.afova-active:not(.afova-field.afova-active:focus) {
-    border: var(--form-validation-field-indicator-width) solid var(--afova-message-color);
+  border: var(--form-validation-field-indicator-width) solid
+    var(--afova-message-color);
 }
 
 .afova-group .afova-message {
-    color: var(--afova-message-color);
-    display: block;
-    font-weight: var(--afova-message-font-weight);
+  color: var(--afova-message-color);
+  display: block;
+  font-weight: var(--afova-message-font-weight);
 }
 
 label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 label .description {
-    font-weight: normal;
-    color: var(--description-color);
+  font-weight: normal;
+  color: var(--description-color);
 }
 
 input,
 textarea {
-    display: block;
-    font-size: 18px;
-    padding: 5px;
+  display: block;
+  font-size: 18px;
+  padding: 5px;
 }
 
 body {
-    padding: 1rem;
+  padding: 1rem;
 }

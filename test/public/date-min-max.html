@@ -23,23 +23,20 @@
     </h1>
         <form>
             <input type="submit" value="Submit the form"/>
+            <input type="reset" value="Reset the form"/>
 
-            <div class="afova-group">
-                <label for="date-min-max">A date
+            <label for="date-min-max">A date
                 <div class="description">Please provide a date in the range within {{min}} and {{max}}</div>
-                    <input id="date-min-max" type="date" min="2022-01-01" max="2022-12-31">
-                </label>
-            </div>
+                <input id="date-min-max" type="date" min="2022-01-01" max="2022-12-31">
+            </label>
 
-            <div class="afova-group">
-                <label for="date-min-max-custom">A required date with custom failure message
+            <label for="date-min-max-custom">A required date with custom failure message
                 <div class="description">Please provide a date in the range within {{min}} and {{max}}</div>
-                    <input id="date-min-max-custom"  type="date"
+                <input id="date-min-max-custom"  type="date"
                     data-range-overflow="The value is too big. It cannot be above {{constraint}}." max="2022-12-31"
                     data-range-underflow="The value is too small. It cannot be below {{constraint}}." min="2022-01-01"                    
                     data-value-missing="It is required to provide this date" required>
-                </label>
-            </div>
+            </label>
 
         </form>
     </body>

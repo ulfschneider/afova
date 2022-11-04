@@ -23,30 +23,27 @@
     </h1>
         <form>
             <input type="submit" value="Submit the form"/>
+            <input type="reset" value="Reset the form"/>
 
-            <div class="afova-group">
-                <label>A reqired text input with a lot of constraints
+            <label>A reqired text input with a lot of constraints
                     <ul class="description">
-                        <li>The type of the field is {{type}}</li>
-                        <li>The text must have a min length of {{minLength}}</li>
-                        <li>The text must have a max length of {{maxLength}}</li>
-                        <li>The required text pattern is {{pattern}}</li>
-                    </ul>
-                    <input id="required-text-input" type="text" required minlength="8" maxlength="15" pattern="hello world">
-                </label>
-            </div>
+                    <li>The type of the field is {{type}}</li>
+                    <li>The text must have a min length of {{minLength}}</li>
+                    <li>The text must have a max length of {{maxLength}}</li>
+                    <li>The required text pattern is {{pattern}}</li>
+                </ul>
+                <input id="required-text-input" type="text" required minlength="8" maxlength="15" pattern="hello world">
+            </label>
 
-            <div class="afova-group">
-                <label>A reqired number input with a lot of constraints
+            <label>A reqired number input with a lot of constraints
                     <ul class="description">
-                        <li>The type of the field is {{type}}</li>
-                        <li>The text must have a min value of {{min}}</li>
-                        <li>The text must have a max value of {{max}}</li>
-                        <li>The required step is {{step}}</li>
-                    </ul>
-                    <input id="required-number-input" type="number" required min="5" max="10" step="1">
-                </label>
-            </div>
+                    <li>The type of the field is {{type}}</li>
+                    <li>The text must have a min value of {{min}}</li>
+                    <li>The text must have a max value of {{max}}</li>
+                    <li>The required step is {{step}}</li>
+                </ul>
+                <input id="required-number-input" type="number" required min="5" max="10" step="1">
+            </label>
 
             <label>A reqired {{type}} input that is not enclosed by a avova-group and asks for a pattern of {{pattern}}
                 <ul class="description">

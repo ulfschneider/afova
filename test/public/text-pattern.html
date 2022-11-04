@@ -23,23 +23,20 @@
     </h1>
         <form>
             <input type="submit" value="Submit the form"/>
+            <input type="reset" value="Reset the form"/>
 
-            <div class="afova-group">
-                <label for="pattern-text-input">A pattern text input
+            <label for="pattern-text-input">A pattern text input
                 <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of
-                    3 charactes ({{pattern}}).</div>
-                    <input id="pattern-text-input" type="text" pattern="[A-Za-z]{3}">
-                </label>
-            </div>
+                    3 characters ({{pattern}}).</div>
+                <input id="pattern-text-input" type="text" pattern="[A-Za-z]{3}">
+            </label>
 
-            <div class="afova-group">
-                <label for="pattern-text-input-custom">A pattern text input with custom failure message
+            <label for="pattern-text-input-custom">A pattern text input with custom failure message
                 <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of
-                    3 charactes ({{pattern}}).</div>
-                    <input id="pattern-text-input-custom" type="text" pattern="[A-Za-z]{3}"
+                    3 characters ({{pattern}}).</div>
+                <input id="pattern-text-input-custom" type="text" pattern="[A-Za-z]{3}"
                     data-pattern-mismatch="The value is not in the correct format {{constraint}}. Correct formats are AbC or xyz, for example.">
-                </label>
-            </div>
+            </label>
 
         </form>
     </body>
