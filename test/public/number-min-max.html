@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Cache-Control" content="no-store, max-age=0">
-    <title>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Cache-Control" content="no-store, max-age=0">
+        <title>
         Test Number Min Max
     </title>
-    <script defer src="/js/afova.js"></script>
-    <script>
-        addEventListener('DOMContentLoaded', () => afova.init());
-    </script>
-    <link rel="stylesheet" href="/css/main.css">
-</head>
-<style></style>
+        <script defer src="/js/afova.js"></script>
+        <script>
+            addEventListener('DOMContentLoaded', () => afova.init());
+        </script>
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <style></style>
 
-<body>
-    <a href="/">Home</a>
-    <h1>Test Number Min Max
+    <body>
+        <a href="/">Home</a>
+        <h1>Test Number Min Max
     </h1>
-    <form>
-        <input type="submit" value="Submit the form" />
+        <form>
+            <input type="submit" value="Submit the form"/>
 
-        <div class="afova-group">
-            <label for="number-min-max">A number
-                <div class="description">Please provide a integer number in the range of 100 – 999</div>
-                <input id="number-min-max" type="number" min="100" max="999" step="1">
-            </label>
-        </div>
+            <div class="afova-group">
+                <label for="number-min-max">A number
+                <div class="description">Please provide a integer number in the range within {{min}} and {{max}}</div>
+                    <input id="number-min-max" type="number" min="100" max="999" step="1">
+                </label>
+            </div>
 
-        <div class="afova-group">
-            <label for="number-min-max-custom">A required number with custom failure message
-                <div class="description">Please provide a integer number in the range of 100 – 999</div>
-                <input id="number-min-max-custom" type="number"
+            <div class="afova-group">
+                <label for="number-min-max-custom">A required number with custom failure message
+                <div class="description">Please provide a integer number in the range within {{min}} and {{max}}</div>
+                    <input id="number-min-max-custom" type="number"
                     data-range-overflow="The value is too big. It cannot be above {{constraint}}." max="999"
                     data-range-underflow="The value is too small. It cannot be below {{constraint}}." min="100"
                     data-step-mismatch="The value must be a integer number" step="1"
                     data-value-missing="It is required to provide this number" required>
-            </label>
-        </div>
+                </label>
+            </div>
 
-    </form>
-</body>
+        </form>
+    </body>
 
 </html>

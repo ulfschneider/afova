@@ -31,7 +31,9 @@ afova = (function () {
     'use strict';
     let settings;
     let idCounter = 0;
+    let duplicateFieldIds = new Set();
     let messageContainerTemplate, messageTemplate;
+    const CONSTRAINT_ATTRIBUTES = ['min', 'max', 'step', 'minlength', 'maxlength', 'pattern', 'type'];
 
 
     //they keys of this map correspond to the property names the validity object
@@ -39,11 +41,11 @@ afova = (function () {
         ['badInput', { message: 'The input cannot be processed' }],
         ['customError', { message: '' }],
         ['patternMismatch', { message: 'The value does not match the required pattern of {{constraint}}', constraintAttr: 'pattern' }],
-        ['rangeOverflow', { message: 'The number is too big. It cannot be bigger than {{constraint}}.', constraintAttr: 'max' }],
-        ['rangeUnderflow', { message: 'The number is too small. It must be at least {{constraint}}.', constraintAttr: 'min' }],
+        ['rangeOverflow', { message: 'The value is too big. It cannot be bigger than {{constraint}}.', constraintAttr: 'max' }],
+        ['rangeUnderflow', { message: 'The value is too small. It must be at least {{constraint}}.', constraintAttr: 'min' }],
         ['stepMismatch', { message: 'The value is not in within the correct step interval of {{constraint}}', constraintAttr: 'step' }],
-        ['tooLong', { message: 'The text is too long. It cannot be longer than {{constraint}} characters.', constraintAttr: 'maxlength' }],
-        ['tooShort', { message: 'The text is too short. It must be at least {{constraint}} characters long.', constraintAttr: 'minlength' }],
+        ['tooLong', { message: 'The value is too long. It cannot be longer than {{constraint}} characters.', constraintAttr: 'maxlength' }],
+        ['tooShort', { message: 'The value is too short. It must be at least {{constraint}} characters long.', constraintAttr: 'minlength' }],
         ['typeMismatch', { message: 'The value must be of type {{constraint}}', constraintAttr: 'type' }],
         ['typeMismatch[email]', { message: 'The value must be an email in the format mickey@mouse.com', constraintAttr: 'type' }],
         ['typeMismatch[url]', { message: 'The value must be a URL in the format http://url.com', constraintAttr: 'type' }],
@@ -134,6 +136,25 @@ afova = (function () {
         return message;
     }
 
+    function replaceConstraintAttributes(field) {
+        let container = getGroup(field) || getLabel(field);
+        if (container) {
+            let constraintValues = new Map();
+            for (let constraint of CONSTRAINT_ATTRIBUTES) {
+                let constraintValue = field.getAttribute(constraint);
+                if (constraintValue) {
+                    constraintValues.set(constraint, constraintValue);
+                }
+            }
+            let html = container.innerHTML;
+            for (let constraint of constraintValues.entries()) {
+                let regex = new RegExp(`\{\{${constraint[0]}\}\}`, 'ig');
+                html = html.replaceAll(regex, constraint[1]);
+            }
+            container.innerHTML = html;
+        }
+    }
+
     function putMessage(field, message) {
 
         //innerGroup is useful for radio groups (radio inputs with all the same name)
@@ -167,7 +188,7 @@ afova = (function () {
     }
 
     function hasMessage(parent) {
-        return parent.querySelectorAll('.afova-message').length;
+        return parent && parent.querySelectorAll('.afova-message').length;
     }
 
     function getInnerGroup(field) {
@@ -175,9 +196,18 @@ afova = (function () {
         return ensureId(innerGroup);
     }
 
+    function getMessageContainer(field) {
+        return document.querySelector(`#${field.id}\\:afova`);
+    }
+
     function getGroup(field) {
         let group = field.closest('.afova-group');
         return ensureId(group);
+    }
+
+    function getLabel(field) {
+        let label = field.closest('label');
+        return ensureId(label);
     }
 
     function isValidatedRadioGroup(field) {
@@ -201,18 +231,18 @@ afova = (function () {
     }
 
     function clearIfNoMessage(field) {
-        let innerGroup = getInnerGroup(field);
-        let parent = innerGroup ? innerGroup.parentNode : field.parentNode;
+
+        let messageContainer = getMessageContainer(field);
         let group = getGroup(field);
 
-        if (!hasMessage(parent)) {
+        if (!hasMessage(messageContainer)) {
             if (group) {
                 group.classList.remove('afova-active');
             }
             field.classList.remove('afova-field', 'afova-active');
             field.removeAttribute('aria-invalid');
             field.removeAttribute('aria-errormessage');
-            let messageContainer = parent.querySelector(`#${innerGroup ? innerGroup.id : field.id}\\:afova`);
+
             if (messageContainer) {
                 messageContainer.remove();
             }
@@ -230,15 +260,16 @@ afova = (function () {
             field = getField(fieldId); //now we have a field and not a message
         } else {
             //field really indicates a field
-            let innerGroup = getInnerGroup(field);
-            let parent = innerGroup ? innerGroup.parentNode : field.parentNode;
-            //remove error messages
-            //depending on the value of the injected parameter
-            //choose to remove only injected or only derived messages
-            parent.querySelectorAll(`[id^=${field.id}\\:afova]${injected ? '.injected' : '.derived'}`)
-                .forEach(function (element) {
-                    element.remove();
-                });
+            let messageContainer = getMessageContainer(field);
+            if (messageContainer) {
+                //remove error messages
+                //depending on the value of the injected parameter
+                //choose to remove only injected or only derived messages
+                messageContainer.querySelectorAll(`[id^=${field.id}\\:afova]${injected ? '.injected' : '.derived'}`)
+                    .forEach(function (element) {
+                        element.remove();
+                    });
+            }
         }
 
         //if no message is left, remove all error message indications
@@ -314,6 +345,10 @@ afova = (function () {
     }
 
     function validateField(field, focus) {
+        if (duplicateFieldIds.has(field.id)) {
+            console.error(`Cannot validate field with duplicate id [${field.id}]. The field will be ignored by afova.\n${field.outerHTML}`);
+            return true;
+        }
         focus = focus || false;
 
         clearValidationMessage(field);
@@ -343,14 +378,27 @@ afova = (function () {
 
     function adjustForms() {
         let forms = document.querySelectorAll('form');
+        let fieldIds = new Set();
+        duplicateFieldIds.clear();
 
         forms.forEach(function (form) {
             form.setAttribute('novalidate', '');
+            for (let field of form.elements) {
+                if (fieldIds.has(field.id)) {
+                    console.error(`Duplicate field id [${field.id}]. Fields with that id will be ignored by afova.\n${field.outerHTML}`);
+                    duplicateFieldIds.add(field.id);
+                } else {
+                    fieldIds.add(field.id);
+                }
+                replaceConstraintAttributes(field);
+            }
             form.addEventListener('submit', validateForm);
+
             if (settings.validateOnChange) {
                 for (let field of form.elements) {
                     field.addEventListener('change', function (event) {
-                        validateField(event.target, true); // validate the field on change and focus if invalid
+                        // validate the field on change and focus on the field if it is invalid
+                        validateField(event.target, true);
                     });
                 }
             }

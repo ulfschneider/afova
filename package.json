@@ -23,6 +23,7 @@
   "homepage": "https://github.com/ulfschneider/afova#readme",
   "devDependencies": {
     "concurrently": "^7.5.0",
+    "date-fns": "^2.29.3",
     "documentation": "^12.3.0",
     "dotenv": "^16.0.2",
     "gulp": "^4.0.2",

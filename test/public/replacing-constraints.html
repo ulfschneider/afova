@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Cache-Control" content="no-store, max-age=0">
+        <title>
+        Test Replacing Constraint Placeholders
+    </title>
+        <script defer src="/js/afova.js"></script>
+        <script>
+            addEventListener('DOMContentLoaded', () => afova.init());
+        </script>
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <style></style>
+
+    <body>
+        <a href="/">Home</a>
+        <h1>Test Replacing Constraint Placeholders
+    </h1>
+        <form>
+            <input type="submit" value="Submit the form"/>
+
+            <div class="afova-group">
+                <label>A reqired text input with a lot of constraints
+                    <ul class="description">
+                        <li>The type of the field is {{type}}</li>
+                        <li>The text must have a min length of {{minLength}}</li>
+                        <li>The text must have a max length of {{maxLength}}</li>
+                        <li>The required text pattern is {{pattern}}</li>
+                    </ul>
+                    <input id="required-text-input" type="text" required minlength="8" maxlength="15" pattern="hello world">
+                </label>
+            </div>
+
+            <div class="afova-group">
+                <label>A reqired number input with a lot of constraints
+                    <ul class="description">
+                        <li>The type of the field is {{type}}</li>
+                        <li>The text must have a min value of {{min}}</li>
+                        <li>The text must have a max value of {{max}}</li>
+                        <li>The required step is {{step}}</li>
+                    </ul>
+                    <input id="required-number-input" type="number" required min="5" max="10" step="1">
+                </label>
+            </div>
+
+            <label>A reqired {{type}} input that is not enclosed by a avova-group and asks for a pattern of {{pattern}}
+                <ul class="description">
+                    <li>The type of the field is {{type}}</li>
+                    <li>The text must have a min length of {{minLength}}</li>
+                    <li>The text must have a max length of {{maxLength}}</li>
+                    <li>The required text pattern is {{pattern}}</li>
+                </ul>
+                <input id="required-text-input-no-group" type="text" required minlength="8" maxlength="15" pattern="hello world">
+            </label>
+
+        </form>
+    </body>
+
+</html>

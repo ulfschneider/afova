@@ -62,6 +62,7 @@ module.exports = {
 
     verifyClearance: async function (page, field) {
         let css = await page.evaluate(field => [...field.classList.values()], field);
+
         await expect(css.includes('afova-field')).toBeFalsy();
         await expect(css.includes('afova-active')).toBeFalsy();
 
