@@ -12,10 +12,11 @@
         <script defer src="/js/afova.js"></script>
         <script>
             addEventListener('DOMContentLoaded', () => afova.init());
-
+            var counter = 1;
+            var customCounter = 1;
             function injectMessages() {
-                afova.injectMessage('#required-text-input', `${ (new Date()).toLocaleTimeString()} This is an injected message`);
-                afova.injectMessage('#required-text-input-custom', `${ (new Date()).toLocaleTimeString()} This is an injected message`);
+                afova.injectMessage('#required-text-input', `${counter++} This is an injected message`);
+                afova.injectMessage('#required-text-input-custom', `${customCounter++} This is an injected message`);
             }
         </script>
         <link rel="stylesheet" href="/css/main.css">
