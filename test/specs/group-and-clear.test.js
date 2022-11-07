@@ -2,13 +2,13 @@ const config = require('../../test-server.config.js');
 const utils = require('../utils/utils.js');
 
 beforeEach(async () => {
-    await page.goto(config.testURL + '/group.html');
+    await page.goto(config.testURL + '/group-and-clear.html');
 });
 
 
 describe('page title', () => {
-    it('should be "Test Grouping"', async () => {
-        await expect(page.title()).resolves.toMatch('Test Grouping');
+    it('should be "Test Group And Clear"', async () => {
+        await expect(page.title()).resolves.toMatch('Test Group And Clear');
     });
 });
 
