@@ -32,7 +32,7 @@ describe('custom message for provided text value', () => {
 });
 
 describe('missing text value', () => {
-    it('should present validation message"', async () => {
+    it('should present validation message"', async () => {        
         await page.click('form input[type=submit]')
         let field = await page.$('#required-text-input');
         let message = await page.evaluate(() => afova.getMessage('valueMissing', '#required-text-input'));
@@ -55,7 +55,7 @@ describe('missing text value', () => {
 });
 
 describe('custom message for missing text value', () => {
-    it('should present validation message', async () => {
+    it('should present validation message', async () => {        
         await page.type('#required-text-input', 'hello world');
         await page.click('form input[type=submit]');
         let field = await page.$('#required-text-input-custom');
