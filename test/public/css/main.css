@@ -67,3 +67,8 @@ button {
   display: block;
   font-weight: var(--afova-message-font-weight);
 }
+
+.afova-group ul,
+.afova-group ol {
+  margin: 0;
+}
