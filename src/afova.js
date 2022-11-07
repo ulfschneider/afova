@@ -155,6 +155,7 @@ afova = (function () {
 
     function replaceConstraintAttributes(field) {
         let group = getGroup(field);
+        field.classList.add('afova-field');
         if (group) {
             let constraintValues = new Map();
             for (let constraint of CONSTRAINT_ATTRIBUTES) {
@@ -223,11 +224,11 @@ afova = (function () {
 
         if (!group) {
             group = field.closest('label');
-            if (group) {
-                group.classList.add('afova-group');
-            }
         }
-        return ensureId(group);
+        if (group) {
+            group.classList.add('afova-group');
+        }
+        return group;
     }
 
     function isValidatedRadioGroup(field) {
@@ -259,7 +260,7 @@ afova = (function () {
             if (group) {
                 group.classList.remove('afova-active');
             }
-            field.classList.remove('afova-field', 'afova-active');
+            field.classList.remove('afova-active');
             field.removeAttribute('aria-invalid');
             field.removeAttribute('aria-errormessage');
 
@@ -276,7 +277,7 @@ afova = (function () {
         if (group) {
             group.classList.remove('afova-active');
         }
-        field.classList.remove('afova-field', 'afova-active');
+        field.classList.remove('afova-active');
         field.removeAttribute('aria-invalid');
         field.removeAttribute('aria-errormessage');
 
@@ -361,7 +362,7 @@ afova = (function () {
         if (group) {
             group.classList.add('afova-active');
         }
-        field.classList.add('afova-field', 'afova-active');
+        field.classList.add('afova-active');
 
         let messageElement = prepareValidationMessage(field, options);
         if (messageElement) {
@@ -435,7 +436,7 @@ afova = (function () {
                     duplicateFieldIds.add(field.id);
                 } else if (field.id) {
                     fieldIds.add(field.id);
-                }
+                }                
                 replaceConstraintAttributes(field);
             }
 

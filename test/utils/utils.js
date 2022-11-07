@@ -25,8 +25,8 @@ module.exports = {
 
         let afvGroup = await page.evaluateHandle(field => field.closest('.afova-group'), field);
         let css = await page.evaluate(afvGroup => [...afvGroup.classList.values()], afvGroup);
-        await expect(css).toContain('afova-group');
-        await expect(css).toContain('afova-active');
+        await expect(css.includes('afova-group')).toBeTruthy();
+        await expect(css.includes('afova-active')).toBeTruthy();
 
         //message container must have css class afova-message-container
         css = await page.evaluate(messageContainer => [...messageContainer.classList.values()], messageContainer);
@@ -40,30 +40,30 @@ module.exports = {
 
         //field must have css classes afova-field and afova-active
         css = await page.evaluate(field => [...field.classList.values()], field);
-        await expect(css).toContain('afova-field');
-        await expect(css).toContain('afova-active');
+        await expect(css.includes('afova-field')).toBeTruthy();
+        await expect(css.includes('afova-active')).toBeTruthy();
     },
 
     verifyDerivedMessage: async function (page, field) {
         let fieldId = await page.evaluate(field => field.id, field);
         let message = await page.$(`#${fieldId}\\:afova .afova-message`);
         let css = await page.evaluate(message => [...message.classList.values()], message);
-        await expect(css).toContain('afova-message');
-        await expect(css).toContain('derived');
+        await expect(css.includes('afova-message')).toBeTruthy();
+        await expect(css.includes('derived')).toBeTruthy();
     },
 
     verifyInjectedMessage: async function (page, field) {
         let fieldId = await page.evaluate(field => field.id, field);
         let message = await page.$(`#${fieldId}\\:afova .afova-message`);
         let css = await page.evaluate(message => [...message.classList.values()], message);
-        await expect(css).toContain('afova-message');
-        await expect(css).toContain('injected');
+        await expect(css.inlcudes('afova-message')).toBeTruthy();
+        await expect(css.includes('injected')).toBeTruthy();
     },
 
     verifyClearance: async function (page, field) {
         let css = await page.evaluate(field => [...field.classList.values()], field);
 
-        await expect(css.includes('afova-field')).toBeFalsy();
+        await expect(css.includes('afova-field')).toBeTruthy();
         await expect(css.includes('afova-active')).toBeFalsy();
 
         let ariaError = await page.evaluate(field => field.getAttribute('aria-errormessage'), field);
@@ -80,7 +80,14 @@ module.exports = {
 
         let afvGroup = await page.evaluateHandle(field => field.closest('.afova-group'), field);
         css = await page.evaluate(afvGroup => [...afvGroup.classList.values()], afvGroup);
-        await expect(css).toContain('afova-group');
+        await expect(css.includes('afova-group')).toBeTruthy();
         await expect(css.includes('afova-active')).toBeFalsy();
+    },
+
+    preventFormSubmit: async function (page) {
+        await page.evaluate(() => {
+            let form = document.querySelector('form');
+            form.addEventListener('submit', event => event.preventDefault())
+        });
     }
 }
