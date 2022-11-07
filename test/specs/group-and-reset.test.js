@@ -8,7 +8,8 @@ beforeEach(async () => {
 
 describe('page title', () => {
     it('should be "Test Group And Reset"', async () => {
-        await expect(page.title()).resolves.toMatch('Test Group And Reset');
+        let title = await page.title();
+        expect(title).toMatch('Test Group And Reset');
     });
 });
 
@@ -49,8 +50,8 @@ describe('missing text value', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 
     it('should be cleared', async () => {
@@ -86,8 +87,8 @@ describe('missing text value grouped', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 
     it('should be cleared', async () => {

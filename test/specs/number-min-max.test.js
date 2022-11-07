@@ -7,7 +7,8 @@ beforeEach(async () => {
 
 describe('page title', () => {
     it('should be "Test Number Min Max"', async () => {
-        await expect(page.title()).resolves.toMatch('Test Number Min Max');
+        let title = await page.title();
+        expect(title).toMatch('Test Number Min Max');
     });
 });
 

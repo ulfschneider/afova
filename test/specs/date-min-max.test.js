@@ -8,7 +8,8 @@ beforeEach(async () => {
 
 describe('page title', () => {
     it('should be "Test Date Min Max"', async () => {
-        await expect(page.title()).resolves.toMatch('Test Date Min Max');
+        let title = await page.title();
+        expect(title).toMatch('Test Date Min Max');
     });
 });
 

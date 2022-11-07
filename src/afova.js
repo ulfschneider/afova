@@ -436,7 +436,7 @@ afova = (function () {
                     duplicateFieldIds.add(field.id);
                 } else if (field.id) {
                     fieldIds.add(field.id);
-                }                
+                }
                 replaceConstraintAttributes(field);
             }
 

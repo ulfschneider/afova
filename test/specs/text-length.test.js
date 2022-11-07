@@ -7,7 +7,8 @@ beforeEach(async () => {
 
 describe('page title', () => {
     it('should be "Test Text Length"', async () => {
-        await expect(page.title()).resolves.toMatch('Test Text Length');
+        let title = await page.title();
+        expect(title).toMatch('Test Text Length');
     });
 });
 

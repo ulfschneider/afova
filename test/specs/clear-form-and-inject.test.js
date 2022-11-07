@@ -5,10 +5,10 @@ beforeEach(async () => {
     await page.goto(config.testURL + '/clear-form-and-inject.html');
 });
 
-
 describe('page title', () => {
     it('should be "Test Clear Form And Inject"', async () => {
-        await expect(page.title()).resolves.toMatch('Test Clear Form And Inject');
+        let title = await page.title();
+        expect(title).toMatch('Test Clear Form And Inject');
     });
 });
 
@@ -30,8 +30,8 @@ describe('missing text value', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 
     it('should be cleared', async () => {
@@ -66,8 +66,8 @@ describe('inject message', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 
     it('should be cleared', async () => {
@@ -103,8 +103,8 @@ describe('missing text value custom', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 
     it('should be cleared', async () => {

@@ -7,7 +7,8 @@ beforeEach(async () => {
 
 describe('Page title', () => {
     it('should be "Test Text Pattern"', async () => {
-        await expect(page.title()).resolves.toMatch('Test Text Pattern');
+        let title = await page.title();
+        expect(title).toMatch('Test Text Pattern');
     });
 });
 
@@ -43,7 +44,7 @@ describe('custom message for correct text pattern', () => {
 describe('text pattern mismatch', () => {
     it('should present validation message"', async () => {
         await page.type('#pattern-text-input', "wrong pattern");
-        await page.click('form input[type=submit]')        
+        await page.click('form input[type=submit]')
         let field = await page.$('#pattern-text-input');
         let message = await page.evaluate(() => afova.getMessage('patternMismatch', '#pattern-text-input'));
         await utils.verifyMessageText(page, field, message);
@@ -60,8 +61,8 @@ describe('text pattern mismatch', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-         expect(fieldId).toBeTruthy();
-         expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 });
 
@@ -73,7 +74,7 @@ describe('custom message for text pattern mismatch', () => {
         let field = await page.$('#pattern-text-input-custom');
         let message = await page.evaluate(field => field.getAttribute('data-pattern-mismatch'), field);
         let pattern = await page.evaluate(field => field.getAttribute('pattern'), field);
-        message = message.replaceAll('{{constraint}}', pattern);        
+        message = message.replaceAll('{{constraint}}', pattern);
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
         await utils.verifyDerivedMessage(page, field);
@@ -82,7 +83,7 @@ describe('custom message for text pattern mismatch', () => {
     it('should have the focus', async () => {
         await page.type('#pattern-text-input', 'AbC');
         await page.type('#pattern-text-input-custom', "wrong pattern");
-        await page.click('form input[type=submit]')        
+        await page.click('form input[type=submit]')
         okField = await page.$('#pattern-text-input');
         await utils.verifyClearance(page, okField);
         let field = await page.$('#pattern-text-input-custom');
@@ -91,8 +92,8 @@ describe('custom message for text pattern mismatch', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field (the second on the form) needs to have focus
-         expect(fieldId).toBeTruthy();
-         expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 });
 

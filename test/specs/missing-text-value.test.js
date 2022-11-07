@@ -9,7 +9,8 @@ beforeEach(async () => {
 
 describe('page title', () => {
     it('should be "Test Missing Value"', async () => {
-        await expect(page.title()).resolves.toMatch('Test Missing Value');
+        let title = await page.title();
+        expect(title).toMatch('Test Missing Value');
     });
 });
 
@@ -32,7 +33,7 @@ describe('custom message for provided text value', () => {
 });
 
 describe('missing text value', () => {
-    it('should present validation message"', async () => {        
+    it('should present validation message"', async () => {
         await page.click('form input[type=submit]')
         let field = await page.$('#required-text-input');
         let message = await page.evaluate(() => afova.getMessage('valueMissing', '#required-text-input'));
@@ -49,18 +50,18 @@ describe('missing text value', () => {
         let fieldId = await page.evaluate(field => field.id, field);
         let focusId = await page.evaluate(focus => focus.id, focus);
         //the first errored field needs to have focus
-        await expect(fieldId).toBeTruthy();
-        await expect(fieldId).toBe(focusId);
+        expect(fieldId).toBeTruthy();
+        expect(fieldId).toBe(focusId);
     });
 });
 
 describe('custom message for missing text value', () => {
-    it('should present validation message', async () => {        
+    it('should present validation message', async () => {
         await page.type('#required-text-input', 'hello world');
         await page.click('form input[type=submit]');
         let field = await page.$('#required-text-input-custom');
         let message = await page.evaluate(field => field.getAttribute('data-value-missing'), field);
-        await expect(message).toBeTruthy();
+        expect(message).toBeTruthy();
         await utils.verifyMessageText(page, field, message);
         await utils.verifyMessageElementHierarchy(page, field);
         await utils.verifyDerivedMessage(page, field);
