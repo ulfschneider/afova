@@ -315,7 +315,7 @@ afova = (function () {
     function createInjectMessageElement(field, message, messageId) {
         let messageElement = cloneMessageTemplate(field, messageId);
         messageElement.classList.add('injected');
-        messageelement.innerHTML = message;
+        messageElement.innerHTML = message;
         return messageElement;
     }
 
@@ -416,9 +416,7 @@ afova = (function () {
     }
 
     function resetForm(form, event = undefined) {
-        console.log('reset ' + form);
         form = getElement(form);
-        console.log(form);
         for (let field of form.elements) {
             clearAllMessages(field);
         }
