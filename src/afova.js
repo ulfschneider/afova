@@ -94,7 +94,7 @@ afova = (function () {
                         if (defaultMessage) {
                             message = field.dataset[messageType] || defaultMessage.message;
                         }
-                        message = message.replaceAll('{{constraint}}', constraint)
+                        message = message.replace(/\{\{constraint\}\}/ig, constraint)
                     }
                 }
                 return message;
