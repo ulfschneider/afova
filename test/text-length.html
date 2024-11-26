@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="Cache-Control" content="no-store, max-age=0" />
+        <title>Test Text Length</title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <style></style>
+
+    <body>
+        <a href="/">Home</a>
+        <h1>Test Text Length</h1>
+        <form>
+            <input type="submit" value="Submit the form" />
+            <input type="reset" value="Reset the form" />
+
+            <label for="min-text-length"
+                >A min length text input
+                <div class="description">
+                    The text must be at least {{ minlength }} characters of
+                    length
+                </div>
+                <input id="min-text-length" type="text" minlength="5" />
+            </label>
+
+            <label for="min-text-length-custom"
+                >A min length text input with custom failure message
+                <div class="description">
+                    The text must be at least {{ minlength }} characters of
+                    length
+                </div>
+                <input
+                    id="min-text-length-custom"
+                    type="text"
+                    minlength="5"
+                    data-too-short="Hey, this should have at least {{constraint}} characters"
+                />
+            </label>
+
+            <label for="max-text-length"
+                >A max length text input
+                <div class="description">
+                    The text must be at max {{ maxlength }} characters of length
+                </div>
+                <input id="max-text-length" type="text" maxlength="5" />
+            </label>
+
+            <label for="max-text-length-custom"
+                >A max length text input with custom failure message
+                <div class="description">
+                    The text must be at max {{ maxlength }} characters of length
+                </div>
+                <input
+                    id="max-text-length-custom"
+                    type="text"
+                    maxlength="5"
+                    data-too-long="Hey, this should have at max {{constraint}} characters"
+                />
+            </label>
+        </form>
+    </body>
+    <script type="module">
+        import afova from "/dist/afova.js";
+        afova.prepare();
+    </script>
+</html>

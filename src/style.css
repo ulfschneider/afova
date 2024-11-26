@@ -1,0 +1,29 @@
+body {
+    line-height: 1.6;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+
+    .description {
+        display: block;
+        font-weight: normal;
+    }
+
+    input,
+    textarea {
+        display: block;
+    }
+}
+
+.afova-message-container {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    .afova-derived-message {
+        font-weight: bold;
+        color: red;
+    }
+}
