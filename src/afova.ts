@@ -25,6 +25,10 @@ const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
 class Afova {
   private settings: AfovaSettings = DEFAULT_SETTINGS;
 
+  constructor(options?: AfovaSettings) {
+    this.init(options);
+  }
+
   //the keys of the constraints correspond to the property names of the validity object
   private constraints: ConstraintMessages = {
     badInput: {
@@ -331,7 +335,7 @@ class Afova {
     return context;
   }
 
-  init(options?: AfovaSettings): void {
+  private init(options?: AfovaSettings): void {
     this.setOptions(options);
     this.prepareForms();
   }
@@ -364,31 +368,30 @@ class Afova {
   }
 }
 
-export default (function () {
-  const afova = new Afova();
+/**
+ * Create an afova object and initialize it for forms that are identified by the selector given in the options.
+ * Will register event listeners on the form and the input controls of the form.
+ * @param options setting sfor afova, optional
+ */
+export function createAfova(options?: AfovaSettings) {
+  const afova = new Afova(options);
   return {
     /**
-     * Initialize afova for forms that are identified by the selector given in the options.
-     * Will register event listeners on the form and the input controls of the form.
-     * @param options setting sfor afova, optional
-     */
-    init: (options?: AfovaSettings) => afova.init(options),
-
-    /**
-     * Will remove the settings that have been made by afova when call init.
+     * Will remove all event listeners that have been added by afova and
+     * take away the adjustments afova did in the html.
      */
     clear: () => afova.clear(),
 
     /**
     * Trigger the validation. This is in most cases not required, as afova will trigger
-     the validation automatically when submitting a form.
+     the validation automatically when submitting any of the selected forms.
     */
     validate: () => afova.validate(),
 
     /**
-     * Verify if any of forms selected according to the settings object is invalid
+     * Verify if any of the forms selected according to the settings object is invalid
      * @returns true if at least one form is invalid
      */
     isInvalid: () => afova.isInvalid(),
   };
-})();
+}

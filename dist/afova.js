@@ -17,7 +17,7 @@ const DEFAULT_SETTINGS = {
 };
 const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
 class Afova {
-  constructor() {
+  constructor(options) {
     __publicField(this, "settings", DEFAULT_SETTINGS);
     //the keys of the constraints correspond to the property names of the validity object
     __publicField(this, "constraints", {
@@ -72,6 +72,7 @@ class Afova {
         constraintAttr: "required"
       }
     });
+    this.init(options);
   }
   setOptions(options) {
     if (options) {
@@ -308,31 +309,25 @@ class Afova {
     return false;
   }
 }
-const afova = function() {
-  const afova2 = new Afova();
+function createAfova(options) {
+  const afova = new Afova(options);
   return {
-    /**
-     * Initialize afova for forms that are identified by the selector given in the options.
-     * Will register event listeners on the form and the input controls of the form.
-     * @param options setting sfor afova, optional
-     */
-    init: (options) => afova2.init(options),
     /**
      * Will remove the settings that have been made by afova when call init.
      */
-    clear: () => afova2.clear(),
+    clear: () => afova.clear(),
     /**
     * Trigger the validation. This is in most cases not required, as afova will trigger
      the validation automatically when submitting a form.
     */
-    validate: () => afova2.validate(),
+    validate: () => afova.validate(),
     /**
      * Verify if any of forms selected according to the settings object is invalid
      * @returns true if at least one form is invalid
      */
-    isInvalid: () => afova2.isInvalid()
+    isInvalid: () => afova.isInvalid()
   };
-}();
+}
 export {
-  afova as default
+  createAfova
 };

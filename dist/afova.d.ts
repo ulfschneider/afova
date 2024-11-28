@@ -9,13 +9,12 @@ export interface ConstraintMessages {
         constraintAttr?: string;
     };
 }
-declare const _default: {
-    /**
-     * Initialize afova for forms that are identified by the selector given in the options.
-     * Will register event listeners on the form and the input controls of the form.
-     * @param options setting sfor afova, optional
-     */
-    init: (options?: AfovaSettings) => void;
+/**
+ * Create an afova object and initialize it for forms that are identified by the selector given in the options.
+ * Will register event listeners on the form and the input controls of the form.
+ * @param options setting sfor afova, optional
+ */
+export declare function createAfova(options?: AfovaSettings): {
     /**
      * Will remove the settings that have been made by afova when call init.
      */
@@ -31,4 +30,3 @@ declare const _default: {
      */
     isInvalid: () => boolean;
 };
-export default _default;
