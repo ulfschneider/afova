@@ -213,12 +213,14 @@ class Afova {
    * the attribute novalidate assigned to it. Will also prepare all controls contained in each form.
    */
   prepareForms() {
+    console.log("prepare forms");
     let selector = "form";
     if (this.settings.selector) {
       selector = this.settings.selector;
     }
     const forms = document.querySelectorAll(selector);
     for (const form of forms) {
+      console.log("prepare form", form);
       form.setAttribute("novalidate", "");
       this.ensureId(form);
       form.addEventListener("submit", this.formSubmitListener.bind(this));
@@ -256,6 +258,7 @@ class Afova {
    * @param control the control to prepare
    */
   prepareControl(control) {
+    console.log("prepare control", control);
     this.ensureId(control);
     control.classList.add("afova-control");
     if (this.settings.validateOnChange) {
@@ -290,7 +293,7 @@ class Afova {
    */
   prepare(options) {
     this.setOptions(options);
-    this.unprepareForms();
+    console.log("settings", this.settings);
     this.prepareForms();
   }
   clear() {

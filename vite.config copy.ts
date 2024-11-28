@@ -3,7 +3,6 @@ import dts from "vite-plugin-dts";
 
 export default defineConfig({
   build: {
-    emptyOutDir: true,
     lib: {
       entry: "src/afova.ts",
       name: "afova",
