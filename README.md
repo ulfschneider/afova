@@ -1,4 +1,4 @@
-# afova
+# afova – experimental
 
 afova (Accessible Form Validation) is leveraging the Constraint Validation API to do client-side form validation. Please refer to:
 
@@ -11,22 +11,23 @@ Put the script into your HTML page and initialize afova.
 
 ```html
 <script type="module">
-    import afova from "afova.es.js";
-    afova.prepare({ //default options, you can omit the options object
+    import afova from "afova.js";
+
+    //initialize
+    //default options, you can omit the options object
+    afova.prepare({
+     selector: "form",
      focusOnFirstError: true,
      validateOnChange: false,
      });
-</script>
-```
 
-To clear the script from you HTML page do
 
-```html
-<script type="module">
-    import afova from "afova.es.js";
+    //clear the script and remove all event listeners with
     afova.unprepare()
 </script>
 ```
+
+
 
 The script will iterate through all forms on a web page and deactivate browser validation
 in favor of afova. The afova form validation will occur on submit of a form and on change of a field
@@ -76,4 +77,4 @@ data-type
 data-required
 : A value of a field that is required due to the `required` attribute is missing
 
-Messages that can be derived from the HTML data attributes, like above, will have the CSS class `afova-derived-message` assigned to them.
+Messages that can be derived from the HTML data attributes, like in the above example, will have the CSS class `afova-derived-message` assigned to them.

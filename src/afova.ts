@@ -15,7 +15,7 @@ export interface ConstraintMessages {
 [];
 
 const DEFAULT_SETTINGS: AfovaSettings = {
-  selector: "",
+  selector: "form",
   validateOnChange: false,
   focusOnFirstError: true,
 };
@@ -251,7 +251,7 @@ class Afova {
   private prepareForms() {
     let selector = "form";
     if (this.settings.selector) {
-      selector = `form${this.settings.selector}, ${this.settings.selector} form`;
+      selector = this.settings.selector;
     }
 
     const forms = document.querySelectorAll(selector);
@@ -280,7 +280,7 @@ class Afova {
   private unprepareForms() {
     let selector = "form";
     if (this.settings.selector) {
-      selector = `form${this.settings.selector}, ${this.settings.selector} form`;
+      selector = this.settings.selector;
     }
 
     const forms = document.querySelectorAll(selector);
