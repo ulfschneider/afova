@@ -130,7 +130,8 @@ class Afova {
     const messageContainer = this.ensureAndGetMessageContainer(control);
     const validity = control.validity;
     const messageElement = document.createElement("li");
-    messageElement.classList.add("afova-derived-message");
+    messageElement.classList.add("afova-message");
+    messageElement.classList.add("derived");
     messageContainer.appendChild(messageElement);
     for (const constraint of Object.keys(this.constraints)) {
       if (validity[constraint]) {
@@ -292,15 +293,40 @@ class Afova {
     this.unprepareForms();
     this.prepareForms();
   }
-  unprepare() {
+  clear() {
     this.unprepareForms();
+  }
+  validate() {
+    let selector = "form";
+    if (this.settings.selector) {
+      selector = this.settings.selector;
+    }
+    const forms = document.querySelectorAll(selector);
+    for (const form of forms) {
+      this.validateForm(form);
+    }
+  }
+  isInvalid() {
+    let selector = "form";
+    if (this.settings.selector) {
+      selector = this.settings.selector;
+    }
+    const forms = document.querySelectorAll(selector);
+    for (const form of forms) {
+      if (!form.checkValidity()) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 const afova = function() {
   const afova2 = new Afova();
   return {
     prepare: (options) => afova2.prepare(options),
-    unprepare: () => afova2.unprepare()
+    clear: () => afova2.clear(),
+    validate: () => afova2.validate(),
+    isInvalid: () => afova2.isInvalid()
   };
 }();
 export {

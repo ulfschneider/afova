@@ -77,4 +77,4 @@ data-type
 data-required
 : A value of a field that is required due to the `required` attribute is missing
 
-Messages that can be derived from the HTML data attributes, like in the above example, will have the CSS class `afova-derived-message` assigned to them.
+Messages that can be derived from the HTML data attributes, like in the above example, will have the CSS classes `afova-message derived` assigned to them.

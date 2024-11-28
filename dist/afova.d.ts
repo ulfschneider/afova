@@ -11,6 +11,8 @@ export interface ConstraintMessages {
 }
 declare const _default: {
     prepare: (options?: AfovaSettings) => void;
-    unprepare: () => void;
+    clear: () => void;
+    validate: () => void;
+    isInvalid: () => boolean;
 };
 export default _default;

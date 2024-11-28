@@ -21,9 +21,9 @@ label {
     margin: 0;
     padding: 0;
     list-style-type: none;
+}
 
-    .afova-derived-message {
-        font-weight: bold;
-        color: red;
-    }
+.afova-message {
+    font-weight: bold;
+    color: red;
 }
