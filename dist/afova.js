@@ -147,7 +147,7 @@ class Afova {
     }
   }
   clearControlMessages(control) {
-    control.classList.remove("afova-active");
+    control.classList.remove("active");
     control.classList.remove("afova-control");
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
@@ -157,15 +157,16 @@ class Afova {
     }
     let context = this.getContext(control);
     if (context) {
-      context.classList.remove("afova-active");
+      context.classList.remove("afova-context");
+      context.classList.remove("active");
     }
   }
   setControlMessage(control, focus) {
     const context = this.getContext(control);
     if (context) {
-      context.classList.add("afova-active");
+      context.classList.add("active");
     }
-    control.classList.add("afova-active");
+    control.classList.add("active");
     control.setAttribute("aria-invalid", "true");
     this.putMessage(control);
     if (focus) {
@@ -273,6 +274,7 @@ class Afova {
       context = control.closest("label");
       if (context && !context.htmlFor) {
         context.htmlFor = control.id;
+        context.classList.add("afova-context");
       }
     }
     return context;
