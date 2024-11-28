@@ -1,6 +1,6 @@
 {
   "name": "afova",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,6 +16,9 @@
       "require": "./dist/afova.iife.cjs"
     }
   },
+  "files": [
+    "./dist"
+  ],
   "devDependencies": {
     "terser": "^5.36.0",
     "typescript": "~5.6.2",

@@ -15,7 +15,7 @@ Put the script into your HTML page and initialize afova.
 
     //initialize
     //default options, you can omit the options object
-    afova.prepare({
+    afova.init({
      selector: "form",
      focusOnFirstError: true,
      validateOnChange: false,
@@ -23,7 +23,7 @@ Put the script into your HTML page and initialize afova.
 
 
     //clear the script and remove all event listeners with
-    afova.unprepare()
+    afova.clear()
 </script>
 ```
 
@@ -37,14 +37,14 @@ If the default error messages from afova shouldn´t be used, you can define cust
 as `data` attributes for each field. For example:
 
 ```html
-<div class="afova-group">
-    <label for="custom-pattern-input">A pattern input with custom failure message
-    <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
-    <input id="custom-pattern-input" type="text"
+<label for="custom-pattern-input">A pattern input with custom failure message
+  <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
+  <input
+    id="custom-pattern-input"
+    type="text"
     pattern="[A-Za-z]{3}"
     data-pattern="The value is not in the correct format. Correct formats are AbC or xyz, for example.">
-    </label>
- </div>
+</label>
 ```
 
 The following attributes are available to define validation error messages:

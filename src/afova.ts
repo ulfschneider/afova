@@ -83,7 +83,7 @@ class Afova {
     },
   };
 
-  private setOptions(options?: AfovaSettings) {
+  private setOptions(options?: AfovaSettings): void {
     if (options) {
       this.settings = Object.assign(this.settings, options);
     }
@@ -93,7 +93,7 @@ class Afova {
    * Ensure the given element has an id
    * @param element
    */
-  private ensureId(element: Element) {
+  private ensureId(element: Element): void {
     if (!element.id) {
       element.id = `afova-${nanoid()}`;
     }
@@ -144,7 +144,7 @@ class Afova {
     return control.validationMessage;
   }
 
-  private putMessage(control: HTMLObjectElement) {
+  private putMessage(control: HTMLObjectElement): void {
     const messageContainer = this.ensureAndGetMessageContainer(control);
 
     const validity = control.validity;
@@ -170,7 +170,7 @@ class Afova {
     }
   }
 
-  private clearControlMessages(control: HTMLObjectElement) {
+  private clearControlMessages(control: HTMLObjectElement): void {
     control.classList.remove("afova-active");
     control.classList.remove("afova-control");
     control.removeAttribute("aria-invalid");
@@ -187,7 +187,7 @@ class Afova {
     }
   }
 
-  private setControlMessage(control: HTMLObjectElement, focus?: boolean) {
+  private setControlMessage(control: HTMLObjectElement, focus?: boolean): void {
     const context = this.getContext(control);
     if (context) {
       context.classList.add("afova-active");
@@ -223,7 +223,7 @@ class Afova {
     return result;
   }
 
-  private validateForm(form: HTMLFormElement, event?: Event) {
+  private validateForm(form: HTMLFormElement, event?: Event): void {
     let firstError: HTMLObjectElement | undefined;
     for (const control of this.getFormElements(form)) {
       const valid = this.validateControl(control);
@@ -239,7 +239,7 @@ class Afova {
     }
   }
 
-  private resetForm(form: HTMLFormElement) {
+  private resetForm(form: HTMLFormElement): void {
     for (let control of this.getFormElements(form)) {
       this.clearControlMessages(control);
     }
@@ -249,17 +249,9 @@ class Afova {
    * Will prepare all forms by ensuring the forms each have an id asssigned and
    * the attribute novalidate assigned to it. Will also prepare all controls contained in each form.
    */
-  private prepareForms() {
-    console.log("prepare forms");
-    let selector = "form";
-    if (this.settings.selector) {
-      selector = this.settings.selector;
-    }
-
-    const forms = document.querySelectorAll(selector);
+  private prepareForms(): void {
+    const forms = document.querySelectorAll(this.settings.selector || "form");
     for (const form of forms) {
-      console.log("prepare form", form);
-
       //switch off default browser form validation
       form.setAttribute("novalidate", "");
 
@@ -273,21 +265,16 @@ class Afova {
     }
   }
 
-  private formSubmitListener(event: Event) {
+  private formSubmitListener(event: Event): void {
     this.validateForm(event.target as HTMLFormElement, event);
   }
 
-  private formResetListener(event: Event) {
+  private formResetListener(event: Event): void {
     this.resetForm(event.target as HTMLFormElement);
   }
 
-  private unprepareForms() {
-    let selector = "form";
-    if (this.settings.selector) {
-      selector = this.settings.selector;
-    }
-
-    const forms = document.querySelectorAll(selector);
+  private unprepareForms(): void {
+    const forms = document.querySelectorAll(this.settings.selector || "form");
     for (const form of forms) {
       form.removeAttribute("novalidate");
       form.removeEventListener("submit", this.formSubmitListener);
@@ -304,8 +291,7 @@ class Afova {
    * in case the afova settings have set validateOnChange to true
    * @param control the control to prepare
    */
-  private prepareControl(control: HTMLObjectElement) {
-    console.log("prepare control", control);
+  private prepareControl(control: HTMLObjectElement): void {
     this.ensureId(control);
     control.classList.add("afova-control");
     if (this.settings.validateOnChange) {
@@ -313,11 +299,11 @@ class Afova {
     }
   }
 
-  private controlChangeListener(event: Event) {
+  private controlChangeListener(event: Event): void {
     this.validateControl(event.target as HTMLObjectElement, true);
   }
 
-  private unprepareControl(control: HTMLObjectElement) {
+  private unprepareControl(control: HTMLObjectElement): void {
     control.classList.remove("afova-control");
     control.removeEventListener("change", this.controlChangeListener);
   }
@@ -341,31 +327,23 @@ class Afova {
     return context;
   }
 
-  /**
-   * Prepare afova to be ready to validate
-   */
-  prepare(options?: AfovaSettings) {
+  init(options?: AfovaSettings): void {
     this.setOptions(options);
-    console.log("settings", this.settings);
     this.prepareForms();
   }
 
-  clear() {
+  clear(): void {
     this.unprepareForms();
   }
 
-  validate() {
-    let selector = "form";
-    if (this.settings.selector) {
-      selector = this.settings.selector;
-    }
-    const forms = document.querySelectorAll(selector);
+  validate(): void {
+    const forms = document.querySelectorAll(this.settings.selector || "form");
     for (const form of forms) {
       this.validateForm(form as HTMLFormElement);
     }
   }
 
-  isInvalid() {
+  isInvalid(): boolean {
     let selector = "form";
     if (this.settings.selector) {
       selector = this.settings.selector;
@@ -385,9 +363,28 @@ class Afova {
 export default (function () {
   const afova = new Afova();
   return {
-    prepare: (options?: AfovaSettings) => afova.prepare(options),
+    /**
+     * Initialize afova for forms that are identified by the selector given in the options.
+     * Will register event listeners on the form and the input controls of the form.
+     * @param options setting sfor afova, optional
+     */
+    init: (options?: AfovaSettings) => afova.init(options),
+
+    /**
+     * Will remove the settings that have been made by afova when call init.
+     */
     clear: () => afova.clear(),
+
+    /**
+    * Trigger the validation. This is in most cases not required, as afova will trigger
+     the validation automatically when submitting a form.
+    */
     validate: () => afova.validate(),
+
+    /**
+     * Verify if any of forms selected according to the settings object is invalid
+     * @returns true if at least one form is invalid
+     */
     isInvalid: () => afova.isInvalid(),
   };
 })();
