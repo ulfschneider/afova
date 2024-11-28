@@ -23,19 +23,19 @@
             </label>
 
             <label
-                >A reqired text input with custom failure message
+                >A required text input with custom failure message
                 <input
                     id="required-text-input-custom"
                     type="text"
                     required
-                    data-value-missing="You have to provide a value for this text input field"
+                    data-required="You have to provide a value for this text input field"
                 />
             </label>
         </form>
     </body>
 
     <script type="module">
-        import afova from "/src/afova.ts";
+        import afova from "/dist/afova.es.js";
         afova.prepare();
     </script>
 </html>

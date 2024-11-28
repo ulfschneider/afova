@@ -11,11 +11,20 @@ Put the script into your HTML page and initialize afova.
 
 ```html
 <script type="module">
-    import afova from "afova.js";
+    import afova from "afova.es.js";
     afova.prepare({ //default options, you can omit the options object
      focusOnFirstError: true,
      validateOnChange: false,
      });
+</script>
+```
+
+To clear the script from you HTML page do
+
+```html
+<script type="module">
+    import afova from "afova.es.js";
+    afova.unprepare()
 </script>
 ```
 
@@ -32,7 +41,7 @@ as `data` attributes for each field. For example:
     <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
     <input id="custom-pattern-input" type="text"
     pattern="[A-Za-z]{3}"
-    data-pattern-mismatch="The value is not in the correct format. Correct formats are AbC or xyz, for example.">
+    data-pattern="The value is not in the correct format. Correct formats are AbC or xyz, for example.">
     </label>
  </div>
 ```
@@ -43,28 +52,28 @@ The following attributes are available to define validation error messages:
 data-bad-input
 : The browser is unable to handle the input value
 
-data-pattern-mismatch
+data-pattern
 : The value of a field doesn´t comply to the pattern of the `pattern` attribute
 
-data-range-overflow
+data-max
 : The number value of a field is bigger than the value of the `max` attribute
 
-data-range-underflow
+data-min
 : The number value of a field is smaller than the value of the `min` attribute
 
-data-step-mismatch
+data-step
 : The number value of field is not evenly divisable by the value of the `step` attribute
 
-data-too-long
+data-maxlength
 . The value of a field has more characters than defined by the attribute `maxlength`
 
-data-too-short
+data-minlength
 : The value of a field has less characters than defined by the attribute `minlength`
 
-data-type-mismatch
+data-type
 : The value of a field dosn´t comply to the `type` attribute
 
-data-value-missing
+data-required
 : A value of a field that is required due to the `required` attribute is missing
 
 Messages that can be derived from the HTML data attributes, like above, will have the CSS class `afova-derived-message` assigned to them.

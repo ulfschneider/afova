@@ -1,160 +1,139 @@
-import { nanoid } from "nanoid";
-
-export interface AfovaSettings {
-  selector?: string;
-  validateOnChange?: boolean;
-  focusOnFirstError?: boolean;
-}
-
-export interface ConstraintMessages {
-  [key: string]: {
-    message: string;
-    constraintAttr?: string;
-  };
-}
-[];
-
-const DEFAULT_SETTINGS: AfovaSettings = {
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+const urlAlphabet = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
+let nanoid = (size = 21) => {
+  let id = "";
+  let bytes = crypto.getRandomValues(new Uint8Array(size));
+  while (size--) {
+    id += urlAlphabet[bytes[size] & 63];
+  }
+  return id;
+};
+const DEFAULT_SETTINGS = {
   selector: "",
   validateOnChange: false,
-  focusOnFirstError: true,
+  focusOnFirstError: true
 };
-
 const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
-
 class Afova {
-  private settings: AfovaSettings = DEFAULT_SETTINGS;
-
-  //the keys of the constraints correspond to the property names of the validity object
-  private constraints: ConstraintMessages = {
-    badInput: {
-      message: "The input cannot be processed",
-      constraintAttr: undefined,
-    },
-    customError: { message: "" },
-    patternMismatch: {
-      message:
-        "The value does not match the required pattern of {{constraint}}",
-      constraintAttr: "pattern",
-    },
-    rangeOverflow: {
-      message: "The value is too big. It cannot be bigger than {{constraint}}.",
-      constraintAttr: "max",
-    },
-    rangeUnderflow: {
-      message: "The value is too small. It must be at least {{constraint}}.",
-      constraintAttr: "min",
-    },
-    stepMismatch: {
-      message:
-        "The value is not in within the correct step interval of {{constraint}}",
-      constraintAttr: "step",
-    },
-    tooLong: {
-      message:
-        "The value is too long. It cannot be longer than {{constraint}} characters.",
-      constraintAttr: "maxlength",
-    },
-    tooShort: {
-      message:
-        "The value is too short. It must be at least {{constraint}} characters long.",
-      constraintAttr: "minlength",
-    },
-    typeMismatch: {
-      message: "The value must be of type {{constraint}}",
-      constraintAttr: "type",
-    },
-    "typeMismatch[email]": {
-      message: "The value must be an email in the format mickey@mouse.com",
-      constraintAttr: "type",
-    },
-    "typeMismatch[url]": {
-      message: "The value must be a URL in the format http://url.com",
-      constraintAttr: "type",
-    },
-    "typeMismatch[tel]": {
-      message: "The value must be a phone number",
-      constraintAttr: "type",
-    },
-    valid: { message: "" },
-    valueMissing: {
-      message: "Please provide a value",
-      constraintAttr: "required",
-    },
-  };
-
-  private setOptions(options?: AfovaSettings) {
+  constructor() {
+    __publicField(this, "settings", DEFAULT_SETTINGS);
+    //the keys of the constraints correspond to the property names of the validity object
+    __publicField(this, "constraints", {
+      badInput: {
+        message: "The input cannot be processed",
+        constraintAttr: void 0
+      },
+      customError: { message: "" },
+      patternMismatch: {
+        message: "The value does not match the required pattern of {{constraint}}",
+        constraintAttr: "pattern"
+      },
+      rangeOverflow: {
+        message: "The value is too big. It cannot be bigger than {{constraint}}.",
+        constraintAttr: "max"
+      },
+      rangeUnderflow: {
+        message: "The value is too small. It must be at least {{constraint}}.",
+        constraintAttr: "min"
+      },
+      stepMismatch: {
+        message: "The value is not in within the correct step interval of {{constraint}}",
+        constraintAttr: "step"
+      },
+      tooLong: {
+        message: "The value is too long. It cannot be longer than {{constraint}} characters.",
+        constraintAttr: "maxlength"
+      },
+      tooShort: {
+        message: "The value is too short. It must be at least {{constraint}} characters long.",
+        constraintAttr: "minlength"
+      },
+      typeMismatch: {
+        message: "The value must be of type {{constraint}}",
+        constraintAttr: "type"
+      },
+      "typeMismatch[email]": {
+        message: "The value must be an email in the format mickey@mouse.com",
+        constraintAttr: "type"
+      },
+      "typeMismatch[url]": {
+        message: "The value must be a URL in the format http://url.com",
+        constraintAttr: "type"
+      },
+      "typeMismatch[tel]": {
+        message: "The value must be a phone number",
+        constraintAttr: "type"
+      },
+      valid: { message: "" },
+      valueMissing: {
+        message: "Please provide a value",
+        constraintAttr: "required"
+      }
+    });
+  }
+  setOptions(options) {
     if (options) {
       this.settings = Object.assign(this.settings, options);
     }
   }
-
   /**
    * Ensure the given element has an id
    * @param element
    */
-  private ensureId(element: Element) {
+  ensureId(element) {
     if (!element.id) {
       element.id = `afova-${nanoid()}`;
     }
   }
-
-  private findMessageContainer(control: HTMLObjectElement): Element | null {
+  findMessageContainer(control) {
     const messageContainer = document.querySelector(
-      `#${control.id}-afova-message-container`,
+      `#${control.id}-afova-message-container`
     );
     return messageContainer;
   }
-
-  private ensureAndGetMessageContainer(control: HTMLObjectElement): Element {
+  ensureAndGetMessageContainer(control) {
+    var _a;
     let messageContainer = this.findMessageContainer(control);
     if (!messageContainer) {
       messageContainer = document.createElement("ul");
-      control.parentNode?.insertBefore(messageContainer, control);
+      (_a = control.parentNode) == null ? void 0 : _a.insertBefore(messageContainer, control);
       messageContainer.id = `${control.id}-afova-message-container`;
       messageContainer.classList.add("afova-message-container");
       control.setAttribute("aria-errormessage", messageContainer.id);
     }
-
     return messageContainer;
   }
-
-  deriveMessageText(constraint: string, control: HTMLObjectElement): string {
+  deriveMessageText(constraint, control) {
     if (constraint != "customError") {
       let derivedMessage = this.constraints[constraint];
       if (derivedMessage) {
         let message = derivedMessage.message;
         let constraintAttr = derivedMessage.constraintAttr;
         const constraintValue = control.getAttribute(constraintAttr || "");
-
         message = control.dataset[constraintAttr || constraint] || message;
         if (constraintValue) {
-          derivedMessage =
-            this.constraints[`${constraint}[${constraint.toLowerCase()}]`];
+          derivedMessage = this.constraints[`${constraint}[${constraint.toLowerCase()}]`];
           if (derivedMessage) {
             message = control.dataset[constraint] || derivedMessage.message;
           }
-          const regex = new RegExp(`\{\{\\s*constraint\\s*\}\}`, "ig");
+          const regex = new RegExp(`{{\\s*constraint\\s*}}`, "ig");
           message = message.replace(regex, constraintValue);
         }
-
         return message;
       }
     }
     return control.validationMessage;
   }
-
-  private putMessage(control: HTMLObjectElement) {
+  putMessage(control) {
     const messageContainer = this.ensureAndGetMessageContainer(control);
-
     const validity = control.validity;
     const messageElement = document.createElement("li");
     messageElement.classList.add("afova-derived-message");
     messageContainer.appendChild(messageElement);
-
     for (const constraint of Object.keys(this.constraints)) {
-      if ((validity as any)[constraint]) {
-        //there is an error of type constraint
+      if (validity[constraint]) {
         let message = this.deriveMessageText(constraint, control);
         if (message) {
           messageElement.innerHTML = message;
@@ -162,68 +141,54 @@ class Afova {
         break;
       }
     }
-
     if (!messageElement.innerHTML) {
-      messageElement.innerHTML =
-        control.dataset.errorInvalid || "The value is not correct";
+      messageElement.innerHTML = control.dataset.errorInvalid || "The value is not correct";
     }
   }
-
-  private clearControlMessages(control: HTMLObjectElement) {
+  clearControlMessages(control) {
     control.classList.remove("afova-active");
     control.classList.remove("afova-control");
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
-
     const messageContainer = this.findMessageContainer(control);
     if (messageContainer) {
       messageContainer.remove();
     }
-
     let context = this.getContext(control);
     if (context) {
       context.classList.remove("afova-active");
     }
   }
-
-  private setControlMessage(control: HTMLObjectElement, focus?: boolean) {
+  setControlMessage(control, focus) {
     const context = this.getContext(control);
     if (context) {
       context.classList.add("afova-active");
     }
     control.classList.add("afova-active");
     control.setAttribute("aria-invalid", "true");
-
     this.putMessage(control);
-
     if (focus) {
       control.focus();
     }
   }
-
-  private validateControl(
-    control: HTMLObjectElement,
-    focus?: boolean,
-  ): boolean {
+  validateControl(control, focus) {
     this.clearControlMessages(control);
     if (!control.validity.valid) {
       this.setControlMessage(control, focus);
     }
     return control.validity.valid;
   }
-
-  private getFormElements(form: HTMLFormElement): HTMLObjectElement[] {
-    const result: HTMLObjectElement[] = [];
+  getFormElements(form) {
+    const result = [];
     for (const control of form.elements) {
-      if (!IGNORE_CONTROL_TYPES.includes((control as HTMLObjectElement).type)) {
-        result.push(control as HTMLObjectElement);
+      if (!IGNORE_CONTROL_TYPES.includes(control.type)) {
+        result.push(control);
       }
     }
     return result;
   }
-
-  private validateForm(form: HTMLFormElement, event?: Event) {
-    let firstError: HTMLObjectElement | undefined;
+  validateForm(form, event) {
+    let firstError;
     for (const control of this.getFormElements(form)) {
       const valid = this.validateControl(control);
       if (!firstError && !valid) {
@@ -231,129 +196,113 @@ class Afova {
       }
     }
     if (firstError) {
-      event?.preventDefault();
+      event == null ? void 0 : event.preventDefault();
       if (this.settings.focusOnFirstError) {
         firstError.focus();
       }
     }
   }
-
-  private resetForm(form: HTMLFormElement) {
+  resetForm(form) {
     for (let control of this.getFormElements(form)) {
       this.clearControlMessages(control);
     }
   }
-
   /**
    * Will prepare all forms by ensuring the forms each have an id asssigned and
    * the attribute novalidate assigned to it. Will also prepare all controls contained in each form.
    */
-  private prepareForms() {
+  prepareForms() {
     let selector = "form";
     if (this.settings.selector) {
       selector = `form${this.settings.selector}, ${this.settings.selector} form`;
     }
-
     const forms = document.querySelectorAll(selector);
     for (const form of forms) {
-      //switch off default browser form validation
       form.setAttribute("novalidate", "");
-
       this.ensureId(form);
-
       form.addEventListener("submit", this.formSubmitListener.bind(this));
       form.addEventListener("reset", this.formResetListener.bind(this));
-      for (const control of this.getFormElements(form as HTMLFormElement)) {
+      for (const control of this.getFormElements(form)) {
         this.prepareControl(control);
       }
     }
   }
-
-  private formSubmitListener(event: Event) {
-    this.validateForm(event.target as HTMLFormElement, event);
+  formSubmitListener(event) {
+    this.validateForm(event.target, event);
   }
-
-  private formResetListener(event: Event) {
-    this.resetForm(event.target as HTMLFormElement);
+  formResetListener(event) {
+    this.resetForm(event.target);
   }
-
-  private unprepareForms() {
+  unprepareForms() {
     let selector = "form";
     if (this.settings.selector) {
       selector = `form${this.settings.selector}, ${this.settings.selector} form`;
     }
-
     const forms = document.querySelectorAll(selector);
     for (const form of forms) {
       form.removeAttribute("novalidate");
       form.removeEventListener("submit", this.formSubmitListener);
       form.removeEventListener("reset", this.formResetListener);
-      for (const control of this.getFormElements(form as HTMLFormElement)) {
+      for (const control of this.getFormElements(form)) {
         this.unprepareControl(control);
       }
     }
   }
-
   /**
    * Prepare the form control by ensuring an id and assigning the CSS class afova-control.
    * Will adjust textual descriptions within the control´s afova context and assign an event handler
    * in case the afova settings have set validateOnChange to true
    * @param control the control to prepare
    */
-  private prepareControl(control: HTMLObjectElement) {
+  prepareControl(control) {
     this.ensureId(control);
     control.classList.add("afova-control");
     if (this.settings.validateOnChange) {
       control.addEventListener("change", this.controlChangeListener.bind(this));
     }
   }
-
-  private controlChangeListener(event: Event) {
-    this.validateControl(event.target as HTMLObjectElement, true);
+  controlChangeListener(event) {
+    this.validateControl(event.target, true);
   }
-
-  private unprepareControl(control: HTMLObjectElement) {
+  unprepareControl(control) {
     control.classList.remove("afova-control");
     control.removeEventListener("change", this.controlChangeListener);
   }
-
   /**
    * Find the wrapping afova context for a form control by searching the parents
    * The context must be a label or a container with CSS class afova-context assigned
    * @param control the form control to start from
    * @returns the wrapping context or null
    */
-  private getContext(control: HTMLElement): Element | null {
+  getContext(control) {
     let context = control.closest(".afova-context");
-
     if (!context) {
       context = control.closest("label");
-      if (context && !(context as HTMLLabelElement).htmlFor) {
-        (context as HTMLLabelElement).htmlFor = control.id;
+      if (context && !context.htmlFor) {
+        context.htmlFor = control.id;
       }
     }
-
     return context;
   }
-
   /**
    * Prepare afova to be ready to validate
    */
-  prepare(options?: AfovaSettings) {
+  prepare(options) {
     this.setOptions(options);
     this.unprepareForms();
     this.prepareForms();
   }
-
   unprepare() {
     this.unprepareForms();
   }
 }
-
-export default (function () {
-  const afova = new Afova();
+const afova = function() {
+  const afova2 = new Afova();
   return {
-    prepare: (options?: AfovaSettings) => afova.prepare(options),
-    unprepare: () => afova.unprepare(),
+    prepare: (options) => afova2.prepare(options),
+    unprepare: () => afova2.unprepare()
   };
-})();
+}();
+export {
+  afova as default
+};
