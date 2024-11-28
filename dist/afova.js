@@ -11,7 +11,7 @@ let nanoid = (size = 21) => {
   return id;
 };
 const DEFAULT_SETTINGS = {
-  selector: "",
+  selector: "form",
   validateOnChange: false,
   focusOnFirstError: true
 };
@@ -214,7 +214,7 @@ class Afova {
   prepareForms() {
     let selector = "form";
     if (this.settings.selector) {
-      selector = `form${this.settings.selector}, ${this.settings.selector} form`;
+      selector = this.settings.selector;
     }
     const forms = document.querySelectorAll(selector);
     for (const form of forms) {
@@ -236,7 +236,7 @@ class Afova {
   unprepareForms() {
     let selector = "form";
     if (this.settings.selector) {
-      selector = `form${this.settings.selector}, ${this.settings.selector} form`;
+      selector = this.settings.selector;
     }
     const forms = document.querySelectorAll(selector);
     for (const form of forms) {

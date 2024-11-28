@@ -1,6 +1,6 @@
 {
   "name": "afova",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,7 @@
   },
   "main": "./dist/afova.iife.cjs",
   "module": "./dist/afova.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/afova.d.ts",
   "exports": {
     ".": {
       "import": "./dist/afova.js",
