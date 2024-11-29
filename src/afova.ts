@@ -1,4 +1,6 @@
 import { nanoid } from "nanoid";
+import constraints_en from "./locale/en.json";
+import constraints_de from "./locale/de.json";
 
 export interface AfovaSettings {
   selector?: string;
@@ -20,13 +22,48 @@ export interface AfovaObject {
   validate: () => void;
 }
 
+export interface AfovaI18NConstraints {
+  [key: string]: AfovaConstraintMessages;
+}
+
 const DEFAULT_SETTINGS: AfovaSettings = {
   selector: "form",
   validateOnChange: false,
   focusOnFirstError: true,
 };
 
+const I18N_CONSTRAINTS: AfovaI18NConstraints = {
+  en: constraints_en,
+  de: constraints_de,
+};
+
 const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
+
+function getConstraints(): AfovaConstraintMessages {
+  let locale = navigator.language;
+  let constraints = I18N_CONSTRAINTS[locale];
+  if (constraints) {
+    console.log(`afova is using locale=[${locale}]`);
+    return constraints;
+  }
+
+  //extract language
+  const idx = locale.indexOf("-");
+  if (idx) {
+    locale = locale.substring(0, idx);
+    if (locale) {
+      constraints = I18N_CONSTRAINTS[locale];
+    }
+  }
+
+  if (constraints) {
+    console.log(`afova is using language=[${locale}]`);
+    return constraints;
+  } else {
+    console.log(`afova is using language=[en]`);
+    return I18N_CONSTRAINTS.en;
+  }
+}
 
 /**
  * Create an afova object and initialize it for forms that are identified by the selector given in the options.
@@ -34,62 +71,7 @@ const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
  * @param options settings for afova, optional
  */
 export function afova(options?: AfovaSettings): AfovaObject {
-  let constraints: AfovaConstraintMessages = {
-    badInput: {
-      message: "The input cannot be processed",
-      constraintAttr: undefined,
-    },
-    customError: { message: "" },
-    patternMismatch: {
-      message:
-        "The value does not match the required pattern of {{constraint}}",
-      constraintAttr: "pattern",
-    },
-    rangeOverflow: {
-      message: "The value is too big. It cannot be bigger than {{constraint}}.",
-      constraintAttr: "max",
-    },
-    rangeUnderflow: {
-      message: "The value is too small. It must be at least {{constraint}}.",
-      constraintAttr: "min",
-    },
-    stepMismatch: {
-      message:
-        "The value is not in within the correct step interval of {{constraint}}",
-      constraintAttr: "step",
-    },
-    tooLong: {
-      message:
-        "The value is too long. It cannot be longer than {{constraint}} characters.",
-      constraintAttr: "maxlength",
-    },
-    tooShort: {
-      message:
-        "The value is too short. It must be at least {{constraint}} characters long.",
-      constraintAttr: "minlength",
-    },
-    typeMismatch: {
-      message: "The value must be of type {{constraint}}",
-      constraintAttr: "type",
-    },
-    "typeMismatch[email]": {
-      message: "The value must be an email in the format mickey@mouse.com",
-      constraintAttr: "type",
-    },
-    "typeMismatch[url]": {
-      message: "The value must be a URL in the format http://url.com",
-      constraintAttr: "type",
-    },
-    "typeMismatch[tel]": {
-      message: "The value must be a phone number",
-      constraintAttr: "type",
-    },
-    valid: { message: "" },
-    valueMissing: {
-      message: "Please provide a value",
-      constraintAttr: "required",
-    },
-  };
+  let constraints: AfovaConstraintMessages = getConstraints();
 
   function _ensureId(element: Element): void {
     if (!element.id) {

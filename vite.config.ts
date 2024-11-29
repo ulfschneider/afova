@@ -11,11 +11,7 @@ export default defineConfig({
       formats: ["es"],
     },
     minify: "terser",
-    terserOptions: {
-      toplevel: true,
-      mangle: true,
-      keep_fnames: false,
-    },
+    sourcemap: true,
   },
   plugins: [dts()],
 });

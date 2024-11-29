@@ -7,65 +7,172 @@ let nanoid = (size = 21) => {
   }
   return id;
 };
+const badInput$1 = {
+  message: "The input cannot be processed"
+};
+const customError$1 = {
+  message: ""
+};
+const patternMismatch$1 = {
+  message: "The value does not match the required pattern of {{constraint}}",
+  constraintAttr: "pattern"
+};
+const rangeOverflow$1 = {
+  message: "The value is too big. It cannot be bigger than {{constraint}}.",
+  constraintAttr: "max"
+};
+const rangeUnderflow$1 = {
+  message: "The value is too small. It must be at least {{constraint}}.",
+  constraintAttr: "min"
+};
+const stepMismatch$1 = {
+  message: "The value is not in within the correct step interval of {{constraint}}",
+  constraintAttr: "step"
+};
+const tooLong$1 = {
+  message: "The value is too long. It cannot be longer than {{constraint}} characters.",
+  constraintAttr: "maxlength"
+};
+const tooShort$1 = {
+  message: "The value is too short. It must be at least {{constraint}} characters long.",
+  constraintAttr: "minlength"
+};
+const typeMismatch$1 = {
+  message: "The value must be of type {{constraint}}",
+  constraintAttr: "type"
+};
+const valid$1 = {
+  message: ""
+};
+const valueMissing$1 = {
+  message: "Please provide a value",
+  constraintAttr: "required"
+};
+const constraints_en = {
+  badInput: badInput$1,
+  customError: customError$1,
+  patternMismatch: patternMismatch$1,
+  rangeOverflow: rangeOverflow$1,
+  rangeUnderflow: rangeUnderflow$1,
+  stepMismatch: stepMismatch$1,
+  tooLong: tooLong$1,
+  tooShort: tooShort$1,
+  typeMismatch: typeMismatch$1,
+  "typeMismatch[email]": {
+    message: "The value must be an email in the format mickey@mouse.com",
+    constraintAttr: "type"
+  },
+  "typeMismatch[url]": {
+    message: "The value must be a URL in the format http://url.com",
+    constraintAttr: "type"
+  },
+  "typeMismatch[tel]": {
+    message: "The value must be a phone number",
+    constraintAttr: "type"
+  },
+  valid: valid$1,
+  valueMissing: valueMissing$1
+};
+const badInput = {
+  message: "Die Eingabe kann nicht verarbeitet werden"
+};
+const customError = {
+  message: ""
+};
+const patternMismatch = {
+  message: "Der Eingabewert entspricht nicht dem erforderlichen Format {{constraint}}",
+  constraintAttr: "pattern"
+};
+const rangeOverflow = {
+  message: "Der Eingabewert ist zu groß. Der Wert darf nicht größer sein als {{constraint}}.",
+  constraintAttr: "max"
+};
+const rangeUnderflow = {
+  message: "Der Eingabewert ist zu klein. Der Wert darf nicht kleiner sein als {{constraint}}.",
+  constraintAttr: "min"
+};
+const stepMismatch = {
+  message: "Der Eingabewert ist nicht in der richtigen Schrittfolge von {{constraint}}",
+  constraintAttr: "step"
+};
+const tooLong = {
+  message: "Der Eingabewert ist zu lang. Der Wert darf nicht mehr als {{constraint}} Zeichen haben.",
+  constraintAttr: "maxlength"
+};
+const tooShort = {
+  message: "Der Eingabewert ist zu kurz. Der Wert muss mindestens {{constraint}} Zeichen lang sein.",
+  constraintAttr: "minlength"
+};
+const typeMismatch = {
+  message: "Der Eingabewert muss vom Typ {{constraint}} sein",
+  constraintAttr: "type"
+};
+const valid = {
+  message: ""
+};
+const valueMissing = {
+  message: "Bitte machen Sie eine Eingabe",
+  constraintAttr: "required"
+};
+const constraints_de = {
+  badInput,
+  customError,
+  patternMismatch,
+  rangeOverflow,
+  rangeUnderflow,
+  stepMismatch,
+  tooLong,
+  tooShort,
+  typeMismatch,
+  "typeMismatch[email]": {
+    message: "Der Eingabewert muss eine E-Mail Adresse sein",
+    constraintAttr: "type"
+  },
+  "typeMismatch[url]": {
+    message: "Der Eingabewert muss eine URL im Format http://url.com sein",
+    constraintAttr: "type"
+  },
+  "typeMismatch[tel]": {
+    message: "Der Eingabewert muss eine Telefonnummer sein",
+    constraintAttr: "type"
+  },
+  valid,
+  valueMissing
+};
 const DEFAULT_SETTINGS = {
   selector: "form",
   validateOnChange: false,
   focusOnFirstError: true
 };
+const I18N_CONSTRAINTS = {
+  en: constraints_en,
+  de: constraints_de
+};
 const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
-function afova(options) {
-  let constraints = {
-    badInput: {
-      message: "The input cannot be processed",
-      constraintAttr: void 0
-    },
-    customError: { message: "" },
-    patternMismatch: {
-      message: "The value does not match the required pattern of {{constraint}}",
-      constraintAttr: "pattern"
-    },
-    rangeOverflow: {
-      message: "The value is too big. It cannot be bigger than {{constraint}}.",
-      constraintAttr: "max"
-    },
-    rangeUnderflow: {
-      message: "The value is too small. It must be at least {{constraint}}.",
-      constraintAttr: "min"
-    },
-    stepMismatch: {
-      message: "The value is not in within the correct step interval of {{constraint}}",
-      constraintAttr: "step"
-    },
-    tooLong: {
-      message: "The value is too long. It cannot be longer than {{constraint}} characters.",
-      constraintAttr: "maxlength"
-    },
-    tooShort: {
-      message: "The value is too short. It must be at least {{constraint}} characters long.",
-      constraintAttr: "minlength"
-    },
-    typeMismatch: {
-      message: "The value must be of type {{constraint}}",
-      constraintAttr: "type"
-    },
-    "typeMismatch[email]": {
-      message: "The value must be an email in the format mickey@mouse.com",
-      constraintAttr: "type"
-    },
-    "typeMismatch[url]": {
-      message: "The value must be a URL in the format http://url.com",
-      constraintAttr: "type"
-    },
-    "typeMismatch[tel]": {
-      message: "The value must be a phone number",
-      constraintAttr: "type"
-    },
-    valid: { message: "" },
-    valueMissing: {
-      message: "Please provide a value",
-      constraintAttr: "required"
+function getConstraints() {
+  let locale = navigator.language;
+  let constraints = I18N_CONSTRAINTS[locale];
+  if (constraints) {
+    console.log(`afova is using locale=[${locale}]`);
+    return constraints;
+  }
+  const idx = locale.indexOf("-");
+  if (idx) {
+    locale = locale.substring(0, idx);
+    if (locale) {
+      constraints = I18N_CONSTRAINTS[locale];
     }
-  };
+  }
+  if (constraints) {
+    console.log(`afova is using language=[${locale}]`);
+    return constraints;
+  } else {
+    console.log(`afova is using language=[en]`);
+    return I18N_CONSTRAINTS.en;
+  }
+}
+function afova(options) {
+  let constraints = getConstraints();
   function _ensureId(element) {
     if (!element.id) {
       element.id = `afova-${nanoid()}`;
@@ -174,8 +281,8 @@ function afova(options) {
   function _validateForm(form, event) {
     let firstError;
     for (const control of _getFormElements(form)) {
-      const valid = _validateControl(control);
-      if (!firstError && !valid) {
+      const valid2 = _validateControl(control);
+      if (!firstError && !valid2) {
         firstError = control;
       }
     }
@@ -285,3 +392,4 @@ function afova(options) {
 export {
   afova
 };
+//# sourceMappingURL=afova.js.map

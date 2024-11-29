@@ -14,6 +14,9 @@ export interface AfovaObject {
     isInvalid: () => boolean;
     validate: () => void;
 }
+export interface AfovaI18NConstraints {
+    [key: string]: AfovaConstraintMessages;
+}
 /**
  * Create an afova object and initialize it for forms that are identified by the selector given in the options.
  * Will register event listeners on the form and the input controls of the form.
