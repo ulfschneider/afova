@@ -9,7 +9,7 @@ export interface AfovaConstraintMessages {
         constraintAttr?: string;
     };
 }
-export interface AfovaActions {
+export interface AfovaObject {
     clear: () => void;
     isInvalid: () => boolean;
     validate: () => void;
@@ -19,4 +19,4 @@ export interface AfovaActions {
  * Will register event listeners on the form and the input controls of the form.
  * @param options settings for afova, optional
  */
-export declare function afova(options?: AfovaSettings): AfovaActions;
+export declare function afova(options?: AfovaSettings): AfovaObject;

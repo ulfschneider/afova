@@ -14,7 +14,7 @@ export interface AfovaConstraintMessages {
 }
 [];
 
-export interface AfovaActions {
+export interface AfovaObject {
   clear: () => void;
   isInvalid: () => boolean;
   validate: () => void;
@@ -33,7 +33,7 @@ const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
  * Will register event listeners on the form and the input controls of the form.
  * @param options settings for afova, optional
  */
-export function afova(options?: AfovaSettings): AfovaActions {
+export function afova(options?: AfovaSettings): AfovaObject {
   let constraints: AfovaConstraintMessages = {
     badInput: {
       message: "The input cannot be processed",
