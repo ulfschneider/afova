@@ -7,24 +7,15 @@ export default defineConfig({
     lib: {
       entry: "src/afova.ts",
       name: "afova",
-      fileName: (format) => {
-        if (format == "iife") {
-          return `afova.iife.cjs`;
-        } else {
-          return "afova.js";
-        }
-      },
-      formats: ["es", "iife"],
+      fileName: (format) => "afova.js",
+      formats: ["es"],
     },
     minify: "terser",
     terserOptions: {
       toplevel: true,
       mangle: true,
-      keep_classnames: false,
       keep_fnames: false,
     },
-
-    watch: {},
   },
   plugins: [dts()],
 });

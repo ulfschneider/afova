@@ -1,19 +1,19 @@
 {
   "name": "afova",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "main": "./dist/afova.iife.cjs",
+  "main": "./dist/afova.js",
   "module": "./dist/afova.js",
   "types": "./dist/afova.d.ts",
   "exports": {
     ".": {
       "import": "./dist/afova.js",
-      "require": "./dist/afova.iife.cjs"
+      "browser": "./dist/afova.js"
     }
   },
   "files": [

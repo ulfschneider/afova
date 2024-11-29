@@ -3,7 +3,7 @@ export interface AfovaSettings {
     validateOnChange?: boolean;
     focusOnFirstError?: boolean;
 }
-export interface ConstraintMessages {
+export interface AfovaConstraintMessages {
     [key: string]: {
         message: string;
         constraintAttr?: string;
@@ -14,18 +14,19 @@ export interface ConstraintMessages {
  * Will register event listeners on the form and the input controls of the form.
  * @param options setting sfor afova, optional
  */
-export declare function createAfova(options?: AfovaSettings): {
+export declare function afova(options?: AfovaSettings): {
     /**
-     * Will remove the settings that have been made by afova when call init.
+     * Will remove all event listeners that have been added by afova and
+     * take away the adjustments afova has introduced into the html.
      */
     clear: () => void;
     /**
-    * Trigger the validation. This is in most cases not required, as afova will trigger
-     the validation automatically when submitting a form.
+    * Trigger the validation. In most cases not required, as afova will trigger
+     the validation automatically when submitting any of the selected forms.
     */
     validate: () => void;
     /**
-     * Verify if any of forms selected according to the settings object is invalid
+     * Verify if any of the forms selected according to the settings object is invalid
      * @returns true if at least one form is invalid
      */
     isInvalid: () => boolean;

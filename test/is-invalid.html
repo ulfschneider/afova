@@ -62,15 +62,15 @@
         </form>
     </body>
     <script type="module">
-        import { createAfova } from "/src/afova.ts";
-        const afova = createAfova();
+        import { afova } from "/src/afova.ts";
+        const afv = afova();
 
         const form = document.querySelector("form");
         form.addEventListener("submit", () => {
             event.preventDefault();
             const validState = document.querySelector("#valid-state");
 
-            validState.innerText = afova.isInvalid()
+            validState.innerText = afv.isInvalid()
                 ? "invalid form"
                 : "valid form";
         });

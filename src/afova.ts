@@ -6,7 +6,7 @@ export interface AfovaSettings {
   focusOnFirstError?: boolean;
 }
 
-export interface ConstraintMessages {
+export interface AfovaConstraintMessages {
   [key: string]: {
     message: string;
     constraintAttr?: string;
@@ -22,15 +22,13 @@ const DEFAULT_SETTINGS: AfovaSettings = {
 
 const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
 
-class Afova {
-  private settings: AfovaSettings = DEFAULT_SETTINGS;
-
-  constructor(options?: AfovaSettings) {
-    this.init(options);
-  }
-
-  //the keys of the constraints correspond to the property names of the validity object
-  private constraints: ConstraintMessages = {
+/**
+ * Create an afova object and initialize it for forms that are identified by the selector given in the options.
+ * Will register event listeners on the form and the input controls of the form.
+ * @param options setting sfor afova, optional
+ */
+export function afova(options?: AfovaSettings) {
+  let constraints: AfovaConstraintMessages = {
     badInput: {
       message: "The input cannot be processed",
       constraintAttr: undefined,
@@ -87,31 +85,25 @@ class Afova {
     },
   };
 
-  private setOptions(options?: AfovaSettings): void {
-    if (options) {
-      this.settings = Object.assign(this.settings, options);
-    }
-  }
-
   /**
    * Ensure the given element has an id
    * @param element
    */
-  private ensureId(element: Element): void {
+  function _ensureId(element: Element): void {
     if (!element.id) {
       element.id = `afova-${nanoid()}`;
     }
   }
 
-  private findMessageContainer(control: HTMLObjectElement): Element | null {
+  function _findMessageContainer(control: HTMLObjectElement): Element | null {
     const messageContainer = document.querySelector(
       `#${control.id}-afova-message-container`,
     );
     return messageContainer;
   }
 
-  private ensureAndGetMessageContainer(control: HTMLObjectElement): Element {
-    let messageContainer = this.findMessageContainer(control);
+  function _ensureAndGetMessageContainer(control: HTMLObjectElement): Element {
+    let messageContainer = _findMessageContainer(control);
     if (!messageContainer) {
       messageContainer = document.createElement("ul");
       control.parentNode?.insertBefore(messageContainer, control);
@@ -123,9 +115,12 @@ class Afova {
     return messageContainer;
   }
 
-  deriveMessageText(constraint: string, control: HTMLObjectElement): string {
+  function _deriveMessageText(
+    constraint: string,
+    control: HTMLObjectElement,
+  ): string {
     if (constraint != "customError") {
-      let derivedMessage = this.constraints[constraint];
+      let derivedMessage = constraints[constraint];
       if (derivedMessage) {
         let message = derivedMessage.message;
         let constraintAttr = derivedMessage.constraintAttr;
@@ -134,7 +129,7 @@ class Afova {
         message = control.dataset[constraintAttr || constraint] || message;
         if (constraintValue) {
           derivedMessage =
-            this.constraints[`${constraint}[${constraint.toLowerCase()}]`];
+            constraints[`${constraint}[${constraint.toLowerCase()}]`];
           if (derivedMessage) {
             message = control.dataset[constraint] || derivedMessage.message;
           }
@@ -148,8 +143,8 @@ class Afova {
     return control.validationMessage;
   }
 
-  private putMessage(control: HTMLObjectElement): void {
-    const messageContainer = this.ensureAndGetMessageContainer(control);
+  function _putMessage(control: HTMLObjectElement): void {
+    const messageContainer = _ensureAndGetMessageContainer(control);
 
     const validity = control.validity;
     const messageElement = document.createElement("li");
@@ -157,10 +152,10 @@ class Afova {
     messageElement.classList.add("afova-derived");
     messageContainer.appendChild(messageElement);
 
-    for (const constraint of Object.keys(this.constraints)) {
+    for (const constraint of Object.keys(constraints)) {
       if ((validity as any)[constraint]) {
         //there is an error of type constraint
-        let message = this.deriveMessageText(constraint, control);
+        let message = _deriveMessageText(constraint, control);
         if (message) {
           messageElement.innerHTML = message;
         }
@@ -174,51 +169,54 @@ class Afova {
     }
   }
 
-  private clearControlMessages(control: HTMLObjectElement): void {
+  function _clearControlMessages(control: HTMLObjectElement): void {
     control.classList.remove("afova-active");
     control.classList.remove("afova-control");
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
 
-    const messageContainer = this.findMessageContainer(control);
+    const messageContainer = _findMessageContainer(control);
     if (messageContainer) {
       messageContainer.remove();
     }
 
-    let context = this.getContext(control);
+    let context = _getContext(control);
     if (context) {
       context.classList.remove("afova-context");
       context.classList.remove("afova-active");
     }
   }
 
-  private setControlMessage(control: HTMLObjectElement, focus?: boolean): void {
-    const context = this.getContext(control);
+  function _setControlMessage(
+    control: HTMLObjectElement,
+    focus?: boolean,
+  ): void {
+    const context = _getContext(control);
     if (context) {
       context.classList.add("afova-active");
     }
     control.classList.add("afova-active");
     control.setAttribute("aria-invalid", "true");
 
-    this.putMessage(control);
+    _putMessage(control);
 
     if (focus) {
       control.focus();
     }
   }
 
-  private validateControl(
+  function _validateControl(
     control: HTMLObjectElement,
     focus?: boolean,
   ): boolean {
-    this.clearControlMessages(control);
+    _clearControlMessages(control);
     if (!control.validity.valid) {
-      this.setControlMessage(control, focus);
+      _setControlMessage(control, focus);
     }
     return control.validity.valid;
   }
 
-  private getFormElements(form: HTMLFormElement): HTMLObjectElement[] {
+  function _getFormElements(form: HTMLFormElement): HTMLObjectElement[] {
     const result: HTMLObjectElement[] = [];
     for (const control of form.elements) {
       if (!IGNORE_CONTROL_TYPES.includes((control as HTMLObjectElement).type)) {
@@ -228,25 +226,25 @@ class Afova {
     return result;
   }
 
-  private validateForm(form: HTMLFormElement, event?: Event): void {
+  function _validateForm(form: HTMLFormElement, event?: Event): void {
     let firstError: HTMLObjectElement | undefined;
-    for (const control of this.getFormElements(form)) {
-      const valid = this.validateControl(control);
+    for (const control of _getFormElements(form)) {
+      const valid = _validateControl(control);
       if (!firstError && !valid) {
         firstError = control;
       }
     }
     if (firstError) {
       event?.preventDefault();
-      if (this.settings.focusOnFirstError) {
+      if (settings.focusOnFirstError) {
         firstError.focus();
       }
     }
   }
 
-  private resetForm(form: HTMLFormElement): void {
-    for (let control of this.getFormElements(form)) {
-      this.clearControlMessages(control);
+  function _resetForm(form: HTMLFormElement): void {
+    for (let control of _getFormElements(form)) {
+      _clearControlMessages(control);
     }
   }
 
@@ -254,38 +252,38 @@ class Afova {
    * Will prepare all forms by ensuring the forms each have an id asssigned and
    * the attribute novalidate assigned to it. Will also prepare all controls contained in each form.
    */
-  private prepareForms(): void {
-    const forms = document.querySelectorAll(this.settings.selector || "form");
+  function _prepareForms(): void {
+    const forms = document.querySelectorAll(settings.selector || "form");
     for (const form of forms) {
       //switch off default browser form validation
       form.setAttribute("novalidate", "");
 
-      this.ensureId(form);
+      _ensureId(form);
 
-      form.addEventListener("submit", this.formSubmitListener.bind(this));
-      form.addEventListener("reset", this.formResetListener.bind(this));
-      for (const control of this.getFormElements(form as HTMLFormElement)) {
-        this.prepareControl(control);
+      form.addEventListener("submit", _formSubmitListener);
+      form.addEventListener("reset", _formResetListener);
+      for (const control of _getFormElements(form as HTMLFormElement)) {
+        _prepareControl(control);
       }
     }
   }
 
-  private formSubmitListener(event: Event): void {
-    this.validateForm(event.target as HTMLFormElement, event);
+  function _formSubmitListener(event: Event): void {
+    _validateForm(event.target as HTMLFormElement, event);
   }
 
-  private formResetListener(event: Event): void {
-    this.resetForm(event.target as HTMLFormElement);
+  function _formResetListener(event: Event): void {
+    _resetForm(event.target as HTMLFormElement);
   }
 
-  private unprepareForms(): void {
-    const forms = document.querySelectorAll(this.settings.selector || "form");
+  function _unprepareForms(): void {
+    const forms = document.querySelectorAll(settings.selector || "form");
     for (const form of forms) {
       form.removeAttribute("novalidate");
-      form.removeEventListener("submit", this.formSubmitListener);
-      form.removeEventListener("reset", this.formResetListener);
-      for (const control of this.getFormElements(form as HTMLFormElement)) {
-        this.unprepareControl(control);
+      form.removeEventListener("submit", _formSubmitListener);
+      form.removeEventListener("reset", _formResetListener);
+      for (const control of _getFormElements(form as HTMLFormElement)) {
+        _unprepareControl(control);
       }
     }
   }
@@ -296,21 +294,21 @@ class Afova {
    * in case the afova settings have set validateOnChange to true
    * @param control the control to prepare
    */
-  private prepareControl(control: HTMLObjectElement): void {
-    this.ensureId(control);
+  function _prepareControl(control: HTMLObjectElement): void {
+    _ensureId(control);
     control.classList.add("afova-control");
-    if (this.settings.validateOnChange) {
-      control.addEventListener("change", this.controlChangeListener.bind(this));
+    if (settings.validateOnChange) {
+      control.addEventListener("change", _controlChangeListener);
     }
   }
 
-  private controlChangeListener(event: Event): void {
-    this.validateControl(event.target as HTMLObjectElement, true);
+  function _controlChangeListener(event: Event): void {
+    _validateControl(event.target as HTMLObjectElement, true);
   }
 
-  private unprepareControl(control: HTMLObjectElement): void {
+  function _unprepareControl(control: HTMLObjectElement): void {
     control.classList.remove("afova-control");
-    control.removeEventListener("change", this.controlChangeListener);
+    control.removeEventListener("change", _controlChangeListener);
   }
 
   /**
@@ -319,7 +317,7 @@ class Afova {
    * @param control the form control to start from
    * @returns the wrapping context or null
    */
-  private getContext(control: HTMLElement): Element | null {
+  function _getContext(control: HTMLElement): Element | null {
     let context = control.closest(".afova-context");
 
     if (!context) {
@@ -335,28 +333,15 @@ class Afova {
     return context;
   }
 
-  private init(options?: AfovaSettings): void {
-    this.setOptions(options);
-    this.prepareForms();
-  }
-
-  clear(): void {
-    this.unprepareForms();
-  }
-
-  validate(): void {
-    const forms = document.querySelectorAll(this.settings.selector || "form");
+  function _validate(): void {
+    const forms = document.querySelectorAll(settings.selector || "form");
     for (const form of forms) {
-      this.validateForm(form as HTMLFormElement);
+      _validateForm(form as HTMLFormElement);
     }
   }
 
-  isInvalid(): boolean {
-    let selector = "form";
-    if (this.settings.selector) {
-      selector = this.settings.selector;
-    }
-    const forms = document.querySelectorAll(selector);
+  function _isInvalid(): boolean {
+    const forms = document.querySelectorAll(settings.selector || "form");
     for (const form of forms) {
       if (!(form as HTMLFormElement).checkValidity()) {
         //form has invalid controls
@@ -366,32 +351,27 @@ class Afova {
 
     return false;
   }
-}
 
-/**
- * Create an afova object and initialize it for forms that are identified by the selector given in the options.
- * Will register event listeners on the form and the input controls of the form.
- * @param options setting sfor afova, optional
- */
-export function createAfova(options?: AfovaSettings) {
-  const afova = new Afova(options);
+  let settings = Object.assign({}, DEFAULT_SETTINGS, options);
+  _prepareForms();
+
   return {
     /**
      * Will remove all event listeners that have been added by afova and
-     * take away the adjustments afova did in the html.
+     * take away the adjustments afova has introduced into the html.
      */
-    clear: () => afova.clear(),
+    clear: () => _unprepareForms(),
 
     /**
-    * Trigger the validation. This is in most cases not required, as afova will trigger
+    * Trigger the validation. In most cases not required, as afova will trigger
      the validation automatically when submitting any of the selected forms.
     */
-    validate: () => afova.validate(),
+    validate: () => _validate(),
 
     /**
      * Verify if any of the forms selected according to the settings object is invalid
      * @returns true if at least one form is invalid
      */
-    isInvalid: () => afova.isInvalid(),
+    isInvalid: () => _isInvalid(),
   };
 }

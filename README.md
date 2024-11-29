@@ -11,19 +11,18 @@ Put the script into your HTML page and initialize afova.
 
 ```html
 <script type="module">
-    import afova from "afova.js";
+    import { afova } from "afova.js";
 
     //initialize
     //default options, you can omit the options object
-    afova.init({
+    afv = afova({
      selector: "form",
      focusOnFirstError: true,
      validateOnChange: false,
      });
 
-
     //clear the script and remove all event listeners with
-    afova.clear()
+    afv.clear()
 </script>
 ```
 
@@ -50,31 +49,31 @@ as `data` attributes for each field. For example:
 The following attributes are available to define validation error messages:
 
 
-data-bad-input
+`data-bad-input`
 : The browser is unable to handle the input value
 
-data-pattern
+`data-pattern`
 : The value of a field doesn´t comply to the pattern of the `pattern` attribute
 
-data-max
+`data-max`
 : The number value of a field is bigger than the value of the `max` attribute
 
-data-min
+`data-min`
 : The number value of a field is smaller than the value of the `min` attribute
 
-data-step
+`data-step`
 : The number value of field is not evenly divisable by the value of the `step` attribute
 
-data-maxlength
+`data-maxlength`
 . The value of a field has more characters than defined by the attribute `maxlength`
 
-data-minlength
+`data-minlength`
 : The value of a field has less characters than defined by the attribute `minlength`
 
-data-type
+`data-type`
 : The value of a field dosn´t comply to the `type` attribute
 
-data-required
+`data-required`
 : A value of a field that is required due to the `required` attribute is missing
 
 Messages that can be derived from the HTML data attributes, like in the above example, will have the CSS classes `afova-message derived` assigned to them.
