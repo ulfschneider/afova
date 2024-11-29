@@ -91,10 +91,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
     },
   };
 
-  /**
-   * Ensure the given element has an id
-   * @param element
-   */
   function _ensureId(element: Element): void {
     if (!element.id) {
       element.id = `afova-${nanoid()}`;
@@ -177,7 +173,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   function _clearControlMessages(control: HTMLObjectElement): void {
     control.classList.remove("afova-active");
-    control.classList.remove("afova-control");
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
 
@@ -188,7 +183,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
     let context = _getContext(control);
     if (context) {
-      context.classList.remove("afova-context");
       context.classList.remove("afova-active");
     }
   }
@@ -288,6 +282,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
       form.removeAttribute("novalidate");
       form.removeEventListener("submit", _formSubmitListener);
       form.removeEventListener("reset", _formResetListener);
+
       for (const control of _getFormElements(form as HTMLFormElement)) {
         _unprepareControl(control);
       }

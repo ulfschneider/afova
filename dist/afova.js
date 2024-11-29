@@ -132,7 +132,6 @@ function afova(options) {
   }
   function _clearControlMessages(control) {
     control.classList.remove("afova-active");
-    control.classList.remove("afova-control");
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
     const messageContainer = _findMessageContainer(control);
@@ -141,7 +140,6 @@ function afova(options) {
     }
     let context = _getContext(control);
     if (context) {
-      context.classList.remove("afova-context");
       context.classList.remove("afova-active");
     }
   }
