@@ -374,7 +374,7 @@ function afova(options) {
   return {
     /**
      * Will remove all event listeners that have been added by afova and
-     * take away the adjustments afova has introduced into the html.
+     * will clear all afova messages.
      */
     clear: () => _unprepareForms(),
     /**

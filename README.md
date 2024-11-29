@@ -1,6 +1,7 @@
 # afova – experimental
 
-afova (Accessible Form Validation) is leveraging the Constraint Validation API to do client-side form validation. Please refer to:
+afova (Accessible Form Validation) is leveraging the Constraint Validation API to do client-side form validation.
+Please refer to:
 
 -   [https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation]
 -   [https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation]
@@ -13,26 +14,27 @@ Put the script into your HTML page and initialize afova.
 <script type="module">
     import { afova } from "afova.js";
 
-    //initialize
-    //default options, you can omit the options object
+    //initialize by creating an afova object
+    //shown are the default options, you can omit the options object
     afv = afova({
      selector: "form",
      focusOnFirstError: true,
      validateOnChange: false,
      });
 
-    //clear the script and remove all event listeners with
+    //clear the script and remove all event listeners
+    //when validation is completed
+    //this step is likely only required for single page applications
     afv.clear()
 </script>
 ```
 
-
-
-The script will iterate through all forms on a web page and deactivate browser validation
-in favor of afova. The afova form validation will occur on submit of a form and on change of a field
+When creating the afova object, all forms described by the selector are traversed
+and the default browser validation of those forms is deactivated.
+afova will take over form validation on each form submit and on change of a field
 (if you´ve set `validateOnChange`to `true` in your settings ).
 All errors that can be checked with the Constraint Validation API are validated by afova.
-If the default error messages from afova shouldn´t be used, you can define custom error messages
+In case the default error messages of afova shouldn´t be used, you can define custom error messages
 as `data` attributes for each field. For example:
 
 ```html
