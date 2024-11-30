@@ -234,7 +234,7 @@ function afova(options) {
       }
     }
     if (!messageElement.innerHTML) {
-      messageElement.innerHTML = control.dataset.errorInvalid || "The value is not correct";
+      messageElement.innerHTML = control.dataset.errorInvalid || constraints.badInput.message;
     }
   }
   function _clearControlMessages(control) {

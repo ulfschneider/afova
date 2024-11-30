@@ -149,7 +149,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
     if (!messageElement.innerHTML) {
       messageElement.innerHTML =
-        control.dataset.errorInvalid || "The value is not correct";
+        control.dataset.errorInvalid || constraints.badInput.message;
     }
   }
 
@@ -230,10 +230,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
-  /**
-   * Will prepare all forms by ensuring the forms each have an id asssigned and
-   * the attribute novalidate assigned to it. Will also prepare all controls contained in each form.
-   */
   function _prepareForms(): void {
     const forms = document.querySelectorAll(settings.selector || "form");
     for (const form of forms) {
@@ -271,12 +267,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
-  /**
-   * Prepare the form control by ensuring an id and assigning the CSS class afova-control.
-   * Will adjust textual descriptions within the control´s afova context and assign an event handler
-   * in case the afova settings have set validateOnChange to true
-   * @param control the control to prepare
-   */
   function _prepareControl(control: HTMLObjectElement): void {
     _ensureId(control);
     control.classList.add("afova-control");
@@ -295,7 +285,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   /**
-   * Find the wrapping afova context for a form control by searching the parents
+   * Find the wrapping afova context for a form control by searching the parents.
    * The context must be a label or a container with CSS class afova-context assigned
    * @param control the form control to start from
    * @returns the wrapping context or null
