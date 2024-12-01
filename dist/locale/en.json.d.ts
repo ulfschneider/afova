@@ -2,7 +2,6 @@ declare const _default: {
   "badInput": {
     "message": "The input cannot be processed"
   },
-  "customError": { "message": "" },
   "patternMismatch": {
     "message": "The value does not match the required pattern of {{constraint}}",
     "constraint": "pattern"

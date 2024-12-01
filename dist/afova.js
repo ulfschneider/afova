@@ -10,9 +10,6 @@ let nanoid = (size = 21) => {
 const badInput$1 = {
   message: "The input cannot be processed"
 };
-const customError$1 = {
-  message: ""
-};
 const patternMismatch$1 = {
   message: "The value does not match the required pattern of {{constraint}}",
   constraint: "pattern"
@@ -50,7 +47,6 @@ const valueMissing$1 = {
 };
 const constraint_violation_messages_en = {
   badInput: badInput$1,
-  customError: customError$1,
   patternMismatch: patternMismatch$1,
   rangeOverflow: rangeOverflow$1,
   rangeUnderflow: rangeUnderflow$1,
@@ -62,9 +58,6 @@ const constraint_violation_messages_en = {
 };
 const badInput = {
   message: "Die Eingabe kann nicht verarbeitet werden"
-};
-const customError = {
-  message: ""
 };
 const patternMismatch = {
   message: "Der Eingabewert entspricht nicht dem erforderlichen Format {{constraint}}",
@@ -103,7 +96,6 @@ const valueMissing = {
 };
 const constraint_violation_messages_de = {
   badInput,
-  customError,
   patternMismatch,
   rangeOverflow,
   rangeUnderflow,

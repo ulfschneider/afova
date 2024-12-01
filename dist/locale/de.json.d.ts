@@ -2,7 +2,6 @@ declare const _default: {
   "badInput": {
     "message": "Die Eingabe kann nicht verarbeitet werden"
   },
-  "customError": { "message": "" },
   "patternMismatch": {
     "message": "Der Eingabewert entspricht nicht dem erforderlichen Format {{constraint}}",
     "constraint": "pattern"
