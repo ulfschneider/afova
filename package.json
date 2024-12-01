@@ -10,12 +10,6 @@
   "main": "./dist/afova.js",
   "module": "./dist/afova.js",
   "types": "./dist/afova.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/afova.js",
-      "browser": "./dist/afova.js"
-    }
-  },
   "files": [
     "./dist"
   ],
