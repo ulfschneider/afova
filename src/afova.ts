@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
-import constraints_en from "./locale/en.json";
-import constraints_de from "./locale/de.json";
+import constraint_violation_messages_en from "./locale/en.json";
+import constraint_violation_messages_de from "./locale/de.json";
 
 export interface AfovaSettings {
   selector?: string;
@@ -8,22 +8,71 @@ export interface AfovaSettings {
   focusOnFirstError?: boolean;
 }
 
-export interface AfovaConstraintMessages {
-  [key: string]: {
-    message: string;
-    constraintAttr?: string;
-  };
+const INPUT_TYPES = [
+  "text",
+  "email",
+  "datetime-local",
+  "file",
+  "image",
+  "month",
+  "number",
+  "password",
+  "range",
+  "search",
+  "tel",
+  "time",
+  "url",
+  "week",
+] as const;
+
+const CONSTRAINTS = [
+  "required",
+  "pattern",
+  "max",
+  "min",
+  "step",
+  "maxlength",
+  "minlength",
+  "type",
+] as const;
+
+const CONSTRAINT_VIOLATIONS = [
+  "badInput",
+  "customError",
+  "patternMismatch",
+  "rangeOverflow",
+  "rangeUnderflow",
+  "stepMismatch",
+  "tooLong",
+  "tooShort",
+  "typeMismatch",
+  "valueMissing",
+] as const;
+
+export type InputType = (typeof INPUT_TYPES)[number];
+
+export type Constraint = (typeof CONSTRAINTS)[number];
+
+export type ConstraintViolation = (typeof CONSTRAINT_VIOLATIONS)[number];
+
+export interface ConstraintViolationMessage extends Record<InputType, string> {
+  message: string;
+  constraint?: Constraint;
 }
-[];
+
+export type AfovaConstraintViolationMessages = Record<
+  ConstraintViolation,
+  ConstraintViolationMessage
+>;
+
+export interface AfovaI18NConstraintViolationMessages {
+  [key: string]: AfovaConstraintViolationMessages;
+}
 
 export interface AfovaObject {
   clear: () => void;
   isInvalid: () => boolean;
   validate: () => void;
-}
-
-export interface AfovaI18NConstraints {
-  [key: string]: AfovaConstraintMessages;
 }
 
 const DEFAULT_SETTINGS: AfovaSettings = {
@@ -32,14 +81,14 @@ const DEFAULT_SETTINGS: AfovaSettings = {
   focusOnFirstError: true,
 };
 
-const I18N_CONSTRAINTS: AfovaI18NConstraints = {
-  en: constraints_en,
-  de: constraints_de,
+const I18N_CONSTRAINTS: AfovaI18NConstraintViolationMessages = {
+  en: constraint_violation_messages_en as unknown as AfovaConstraintViolationMessages,
+  de: constraint_violation_messages_de as unknown as AfovaConstraintViolationMessages,
 };
 
 const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
 
-function getConstraints(): AfovaConstraintMessages {
+function getConstraints(): AfovaConstraintViolationMessages {
   let locale = navigator.language;
   let constraints = I18N_CONSTRAINTS[locale];
   if (constraints) {
@@ -71,7 +120,8 @@ function getConstraints(): AfovaConstraintMessages {
  * @param options settings for afova, optional
  */
 export function afova(options?: AfovaSettings): AfovaObject {
-  let constraints: AfovaConstraintMessages = getConstraints();
+  let constraintViolationMessages: AfovaConstraintViolationMessages =
+    getConstraints();
 
   function _ensureId(element: Element): void {
     if (!element.id) {
@@ -100,23 +150,25 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _deriveMessageText(
-    constraint: string,
+    violation: ConstraintViolation,
     control: HTMLObjectElement,
   ): string {
-    if (constraint != "customError") {
-      let derivedMessage = constraints[constraint];
-      if (derivedMessage) {
-        let message = derivedMessage.message;
-        let constraintAttr = derivedMessage.constraintAttr;
-        const constraintValue = control.getAttribute(constraintAttr || "");
+    if (violation != "customError") {
+      let defaultMessage = constraintViolationMessages[violation];
 
-        message = control.dataset[constraintAttr || constraint] || message;
+      if (defaultMessage) {
+        let constraint = defaultMessage.constraint;
+
+        let message =
+          //a message defined for the control has highest prio
+          control.dataset[constraint || violation] ||
+          //a default message specific for the input type has second hightest prio
+          constraintViolationMessages[violation][control.type as InputType] ||
+          //a default message has last prio
+          defaultMessage.message;
+
+        const constraintValue = control.getAttribute(constraint || "");
         if (constraintValue) {
-          derivedMessage =
-            constraints[`${constraint}[${constraint.toLowerCase()}]`];
-          if (derivedMessage) {
-            message = control.dataset[constraint] || derivedMessage.message;
-          }
           const regex = new RegExp(`\{\{\\s*constraint\\s*\}\}`, "ig");
           message = message.replace(regex, constraintValue);
         }
@@ -136,10 +188,13 @@ export function afova(options?: AfovaSettings): AfovaObject {
     messageElement.classList.add("afova-derived");
     messageContainer.appendChild(messageElement);
 
-    for (const constraint of Object.keys(constraints)) {
-      if ((validity as any)[constraint]) {
+    for (const violation of CONSTRAINT_VIOLATIONS) {
+      if ((validity as any)[violation]) {
         //there is an error of type constraint
-        let message = _deriveMessageText(constraint, control);
+        let message = _deriveMessageText(
+          violation as ConstraintViolation,
+          control,
+        );
         if (message) {
           messageElement.innerHTML = message;
         }
@@ -149,7 +204,8 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
     if (!messageElement.innerHTML) {
       messageElement.innerHTML =
-        control.dataset.errorInvalid || constraints.badInput.message;
+        control.dataset.errorInvalid ||
+        constraintViolationMessages.badInput.message;
     }
   }
 

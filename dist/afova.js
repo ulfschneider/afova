@@ -15,40 +15,40 @@ const customError$1 = {
 };
 const patternMismatch$1 = {
   message: "The value does not match the required pattern of {{constraint}}",
-  constraintAttr: "pattern"
+  constraint: "pattern"
 };
 const rangeOverflow$1 = {
   message: "The value is too big. It cannot be bigger than {{constraint}}.",
-  constraintAttr: "max"
+  constraint: "max"
 };
 const rangeUnderflow$1 = {
   message: "The value is too small. It must be at least {{constraint}}.",
-  constraintAttr: "min"
+  constraint: "min"
 };
 const stepMismatch$1 = {
   message: "The value is not in within the correct step interval of {{constraint}}",
-  constraintAttr: "step"
+  constraint: "step"
 };
 const tooLong$1 = {
   message: "The value is too long. It cannot be longer than {{constraint}} characters.",
-  constraintAttr: "maxlength"
+  constraint: "maxlength"
 };
 const tooShort$1 = {
   message: "The value is too short. It must be at least {{constraint}} characters long.",
-  constraintAttr: "minlength"
+  constraint: "minlength"
 };
 const typeMismatch$1 = {
   message: "The value must be of type {{constraint}}",
-  constraintAttr: "type"
-};
-const valid$1 = {
-  message: ""
+  constraint: "type",
+  email: "The value must be an email address",
+  url: "The value must be a URL in the format http://url.com",
+  tel: "The value must be a phone number"
 };
 const valueMissing$1 = {
   message: "Please provide a value",
-  constraintAttr: "required"
+  constraint: "required"
 };
-const constraints_en = {
+const constraint_violation_messages_en = {
   badInput: badInput$1,
   customError: customError$1,
   patternMismatch: patternMismatch$1,
@@ -58,19 +58,6 @@ const constraints_en = {
   tooLong: tooLong$1,
   tooShort: tooShort$1,
   typeMismatch: typeMismatch$1,
-  "typeMismatch[email]": {
-    message: "The value must be an email in the format mickey@mouse.com",
-    constraintAttr: "type"
-  },
-  "typeMismatch[url]": {
-    message: "The value must be a URL in the format http://url.com",
-    constraintAttr: "type"
-  },
-  "typeMismatch[tel]": {
-    message: "The value must be a phone number",
-    constraintAttr: "type"
-  },
-  valid: valid$1,
   valueMissing: valueMissing$1
 };
 const badInput = {
@@ -81,40 +68,40 @@ const customError = {
 };
 const patternMismatch = {
   message: "Der Eingabewert entspricht nicht dem erforderlichen Format {{constraint}}",
-  constraintAttr: "pattern"
+  constraint: "pattern"
 };
 const rangeOverflow = {
   message: "Der Eingabewert ist zu groß. Der Wert darf nicht größer sein als {{constraint}}.",
-  constraintAttr: "max"
+  constraint: "max"
 };
 const rangeUnderflow = {
   message: "Der Eingabewert ist zu klein. Der Wert darf nicht kleiner sein als {{constraint}}.",
-  constraintAttr: "min"
+  constraint: "min"
 };
 const stepMismatch = {
   message: "Der Eingabewert ist nicht in der richtigen Schrittfolge von {{constraint}}",
-  constraintAttr: "step"
+  constraint: "step"
 };
 const tooLong = {
   message: "Der Eingabewert ist zu lang. Der Wert darf nicht mehr als {{constraint}} Zeichen haben.",
-  constraintAttr: "maxlength"
+  constraint: "maxlength"
 };
 const tooShort = {
   message: "Der Eingabewert ist zu kurz. Der Wert muss mindestens {{constraint}} Zeichen lang sein.",
-  constraintAttr: "minlength"
+  constraint: "minlength"
 };
 const typeMismatch = {
   message: "Der Eingabewert muss vom Typ {{constraint}} sein",
-  constraintAttr: "type"
-};
-const valid = {
-  message: ""
+  constraint: "type",
+  email: "Der Eingabewert muss eine E-Mail Adresse sein",
+  tel: "Der Eingabewert muss eine Telefonnummer sein",
+  url: "Der Eingabewert muss eine URL im Format http://url.com sein"
 };
 const valueMissing = {
   message: "Bitte machen Sie eine Eingabe",
-  constraintAttr: "required"
+  constraint: "required"
 };
-const constraints_de = {
+const constraint_violation_messages_de = {
   badInput,
   customError,
   patternMismatch,
@@ -124,29 +111,28 @@ const constraints_de = {
   tooLong,
   tooShort,
   typeMismatch,
-  "typeMismatch[email]": {
-    message: "Der Eingabewert muss eine E-Mail Adresse sein",
-    constraintAttr: "type"
-  },
-  "typeMismatch[url]": {
-    message: "Der Eingabewert muss eine URL im Format http://url.com sein",
-    constraintAttr: "type"
-  },
-  "typeMismatch[tel]": {
-    message: "Der Eingabewert muss eine Telefonnummer sein",
-    constraintAttr: "type"
-  },
-  valid,
   valueMissing
 };
+const CONSTRAINT_VIOLATIONS = [
+  "badInput",
+  "customError",
+  "patternMismatch",
+  "rangeOverflow",
+  "rangeUnderflow",
+  "stepMismatch",
+  "tooLong",
+  "tooShort",
+  "typeMismatch",
+  "valueMissing"
+];
 const DEFAULT_SETTINGS = {
   selector: "form",
   validateOnChange: false,
   focusOnFirstError: true
 };
 const I18N_CONSTRAINTS = {
-  en: constraints_en,
-  de: constraints_de
+  en: constraint_violation_messages_en,
+  de: constraint_violation_messages_de
 };
 const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
 function getConstraints() {
@@ -172,7 +158,7 @@ function getConstraints() {
   }
 }
 function afova(options) {
-  let constraints = getConstraints();
+  let constraintViolationMessages = getConstraints();
   function _ensureId(element) {
     if (!element.id) {
       element.id = `afova-${nanoid()}`;
@@ -196,19 +182,19 @@ function afova(options) {
     }
     return messageContainer;
   }
-  function _deriveMessageText(constraint, control) {
-    if (constraint != "customError") {
-      let derivedMessage = constraints[constraint];
-      if (derivedMessage) {
-        let message = derivedMessage.message;
-        let constraintAttr = derivedMessage.constraintAttr;
-        const constraintValue = control.getAttribute(constraintAttr || "");
-        message = control.dataset[constraintAttr || constraint] || message;
+  function _deriveMessageText(violation, control) {
+    if (violation != "customError") {
+      let defaultMessage = constraintViolationMessages[violation];
+      if (defaultMessage) {
+        let constraint = defaultMessage.constraint;
+        let message = (
+          //a message defined for the control has highest prio
+          control.dataset[constraint || violation] || //a default message specific for the input type has second hightest prio
+          constraintViolationMessages[violation][control.type] || //a default message has last prio
+          defaultMessage.message
+        );
+        const constraintValue = control.getAttribute(constraint || "");
         if (constraintValue) {
-          derivedMessage = constraints[`${constraint}[${constraint.toLowerCase()}]`];
-          if (derivedMessage) {
-            message = control.dataset[constraint] || derivedMessage.message;
-          }
           const regex = new RegExp(`{{\\s*constraint\\s*}}`, "ig");
           message = message.replace(regex, constraintValue);
         }
@@ -224,9 +210,12 @@ function afova(options) {
     messageElement.classList.add("afova-message");
     messageElement.classList.add("afova-derived");
     messageContainer.appendChild(messageElement);
-    for (const constraint of Object.keys(constraints)) {
-      if (validity[constraint]) {
-        let message = _deriveMessageText(constraint, control);
+    for (const violation of CONSTRAINT_VIOLATIONS) {
+      if (validity[violation]) {
+        let message = _deriveMessageText(
+          violation,
+          control
+        );
         if (message) {
           messageElement.innerHTML = message;
         }
@@ -234,7 +223,7 @@ function afova(options) {
       }
     }
     if (!messageElement.innerHTML) {
-      messageElement.innerHTML = control.dataset.errorInvalid || constraints.badInput.message;
+      messageElement.innerHTML = control.dataset.errorInvalid || constraintViolationMessages.badInput.message;
     }
   }
   function _clearControlMessages(control) {
@@ -281,8 +270,8 @@ function afova(options) {
   function _validateForm(form, event) {
     let firstError;
     for (const control of _getFormElements(form)) {
-      const valid2 = _validateControl(control);
-      if (!firstError && !valid2) {
+      const valid = _validateControl(control);
+      if (!firstError && !valid) {
         firstError = control;
       }
     }
