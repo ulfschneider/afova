@@ -200,7 +200,6 @@ function afova(options) {
     const validity = control.validity;
     const messageElement = document.createElement("li");
     messageElement.classList.add("afova-message");
-    messageElement.classList.add("afova-derived");
     messageContainer.appendChild(messageElement);
     for (const violation of CONSTRAINT_VIOLATIONS) {
       if (validity[violation]) {
@@ -219,7 +218,6 @@ function afova(options) {
     }
   }
   function _clearControlMessages(control) {
-    control.classList.remove("afova-active");
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
     const messageContainer = _findMessageContainer(control);
@@ -236,7 +234,6 @@ function afova(options) {
     if (context) {
       context.classList.add("afova-active");
     }
-    control.classList.add("afova-active");
     control.setAttribute("aria-invalid", "true");
     _putMessage(control);
     if (focus) {
@@ -310,6 +307,7 @@ function afova(options) {
   }
   function _prepareControl(control) {
     _ensureId(control);
+    _getContext(control);
     control.classList.add("afova-control");
     if (settings.validateOnChange) {
       control.addEventListener("change", _controlChangeListener);
@@ -326,11 +324,11 @@ function afova(options) {
     let context = control.closest(".afova-context");
     if (!context) {
       context = control.closest("label");
-      if (context) {
-        context.classList.add("afova-context");
-        if (!context.htmlFor) {
-          context.htmlFor = control.id;
-        }
+    }
+    if (context) {
+      context.classList.add("afova-context");
+      if (context.tagName == "LABEL" && !context.htmlFor) {
+        context.htmlFor = control.id;
       }
     }
     return context;

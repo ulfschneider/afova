@@ -185,7 +185,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
     const validity = control.validity;
     const messageElement = document.createElement("li");
     messageElement.classList.add("afova-message");
-    messageElement.classList.add("afova-derived");
     messageContainer.appendChild(messageElement);
 
     for (const violation of CONSTRAINT_VIOLATIONS) {
@@ -210,7 +209,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _clearControlMessages(control: HTMLObjectElement): void {
-    control.classList.remove("afova-active");
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
 
@@ -233,7 +231,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
     if (context) {
       context.classList.add("afova-active");
     }
-    control.classList.add("afova-active");
     control.setAttribute("aria-invalid", "true");
 
     _putMessage(control);
@@ -325,6 +322,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   function _prepareControl(control: HTMLObjectElement): void {
     _ensureId(control);
+    _getContext(control);
     control.classList.add("afova-control");
     if (settings.validateOnChange) {
       control.addEventListener("change", _controlChangeListener);
@@ -342,7 +340,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   /**
    * Find the wrapping afova context for a form control by searching the parents.
-   * The context must be a label or a container with CSS class afova-context assigned
+   * The context must be a label or a container with tje CSS class afova-context assigned.
    * @param control the form control to start from
    * @returns the wrapping context or null
    */
@@ -351,11 +349,15 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
     if (!context) {
       context = control.closest("label");
-      if (context) {
-        context.classList.add("afova-context");
-        if (!(context as HTMLLabelElement).htmlFor) {
-          (context as HTMLLabelElement).htmlFor = control.id;
-        }
+    }
+
+    if (context) {
+      context.classList.add("afova-context");
+      if (
+        context.tagName == "LABEL" &&
+        !(context as HTMLLabelElement).htmlFor
+      ) {
+        (context as HTMLLabelElement).htmlFor = control.id;
       }
     }
 
