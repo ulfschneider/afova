@@ -1,10 +1,9 @@
-# afova – experimental
+# Afova
 
-afova (Accessible Form Validation) is leveraging the Constraint Validation API to do client-side form validation.
-Please refer to:
+Afova (Accessible Form Validation) is leveraging the Constraint Validation API for client-side form validation. Please refer to:
 
--   [https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation]
--   [https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Constraint_validation]
+- [Constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation)
+- [Client-side form valication](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation) https://developer.mozilla.org/en-US/docs/Web/API/Constraint_validation
 
 ## Usage
 
