@@ -79,24 +79,54 @@ For more details please refor to:
 
 ## Usage
 
-Put the ESM script into your HTML page and initialize afova.
+### Bundler
+
+When using a bundler, add afova to your project with the command:
+
+```shell
+npm i afova
+```
+
+Then import afova into your JavaScript / TypeScript setup:
+
+```ts
+import { afova } from 'afova'
+
+//initialize by creating an afova object
+//shown are the default options, you can omit the options object
+const afv = afova({
+    selector: "form",
+    focusOnFirstError: true,
+    validateOnChange: false,
+    });
+
+//if required, clear the script and remove all event listeners
+afv.clear()
+```
+
+### HTML page without bundler
+
+When working without a bundler, download the minified ESM script [afova.min.js](https://raw.githubusercontent.com/ulfschneider/afova/refs/heads/main/dist/afova.min.js) and put it into the assets folder (for example) of your web site.
+Then you can integrate afova into your web pages as follows:
 
 ```html
 <script type="module">
-    import { afova } from "afova.js";
+    import { afova } from "/assets/afova.min.js";
 
     //initialize by creating an afova object
     //shown are the default options, you can omit the options object
-    afv = afova({
-     selector: "form",
-     focusOnFirstError: true,
-     validateOnChange: false,
-     });
+    var afv = afova({
+        selector: "form",
+        focusOnFirstError: true,
+        validateOnChange: false,
+    });
 
     //if required, clear the script and remove all event listeners
     afv.clear()
 </script>
 ```
+
+### The afova object
 
 When creating the afova object by calling `afova()`, all forms described by the selector are traversed
 and the default browser validation of those forms is deactivated.
@@ -123,12 +153,13 @@ as `data` attributes for each field. For example:
 
 ```html
 <label for="custom-pattern-input">A pattern input with custom failure message
-  <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
-  <input
-    id="custom-pattern-input"
-    type="text"
-    pattern="[A-Za-z]{3}"
-    data-pattern="The value is not in the correct format. Correct formats are AbC or xyz, for example.">
+    <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
+    <input
+        id="custom-pattern-input"
+        type="text"
+        pattern="[A-Za-z]{3}"
+        data-pattern="The value is not in the correct format. Correct formats are AbC or xyz, for example."
+    />
 </label>
 ```
 

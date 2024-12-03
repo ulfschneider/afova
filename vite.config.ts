@@ -7,8 +7,14 @@ export default defineConfig({
     lib: {
       entry: "src/afova.ts",
       name: "afova",
-      fileName: (format) => "afova.js",
-      formats: ["es"],
+      fileName: (format) => {
+        if (format == "cjs") {
+          return `afova.min.js`;
+        } else {
+          return `afova.js`;
+        }
+      },
+      formats: ["es", "cjs"],
     },
     minify: "terser",
     sourcemap: true,
