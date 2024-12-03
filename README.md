@@ -12,7 +12,11 @@ For example, give the following HTML form, which has a single required text inpu
     <input type="reset" value="Reset the form" />
     <label
         >A reqired text input
-        <input type="text" required data-required="Please provide text input" />
+        <input
+            type="text"
+            required
+            data-required="Please provide text input"
+        />
     </label>
 </form>
 ```
@@ -68,7 +72,7 @@ Afova will allow you to:
 - style constraint violation messages with your own CSS, and
 - have your own custom internationalized violation messages.
 
-Please refer to for more details:
+For more details please refor to:
 
 - [Constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation)
 - [Client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
@@ -89,9 +93,7 @@ Put the ESM script into your HTML page and initialize afova.
      validateOnChange: false,
      });
 
-    //clear the script and remove all event listeners
-    //introduced by afova
-    //when validation is completed
+    //if required, clear the script and remove all event listeners
     afv.clear()
 </script>
 ```
