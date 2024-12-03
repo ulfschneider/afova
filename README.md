@@ -106,7 +106,7 @@ afv.clear()
 
 ### HTML page without bundler
 
-When working without a bundler, download the minified ESM script [afova.min.js](https://raw.githubusercontent.com/ulfschneider/afova/refs/heads/main/dist/afova.min.js) and put it into the assets folder (for example) of your web site.
+When working without a bundler, download the minified ESM script [afova.min.js](https://raw.githubusercontent.com/ulfschneider/afova/refs/heads/main/dist/afova.min.js){download="afova.min.js"} and put it into the assets folder (for example) of your web site.
 Then you can integrate afova into your web pages as follows:
 
 ```html
