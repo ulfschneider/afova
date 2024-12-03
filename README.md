@@ -1,6 +1,74 @@
 # Afova
 
-Afova (Accessible Form Validation) is leveraging the Constraint Validation API for client-side form validation. Please refer to:
+Afova (Accessible Form Validation) is leveraging the Constraint Validation API for client-side form validation.
+
+Afova will identify the constraints assigned to input controls contained by HTML form elements, validate the form during submit, and report constraint violations.
+
+For example, give the following HTML form, which has a single required text input control and a constraint violation message saying "Please provide text input":
+
+```html
+<form>
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
+    <label
+        >A reqired text input
+        <input type="text" required data-required="Please provide text input" />
+    </label>
+</form>
+```
+
+That form will be transformed by Afova into:
+
+```html
+<form novalidate id="afova-e5W_aF_Ofr43OzGKdspCH">
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
+    <label class="afova-context" for="afova-naiUkFT0y3OUcxNzWnMQ4"
+        >A reqired text input
+        <input
+            type="text"
+            required
+            data-required="Please provide text input"
+            id="afova-naiUkFT0y3OUcxNzWnMQ4"
+            class="afova-control"
+        />
+    </label>
+</form>
+```
+
+Trying to submit the form without providing a text value will violate the `required` constraint. Afova will prevent the submit and instead provide a constraint violation message in the following form:
+
+```html
+<form novalidate id="afova-e5W_aF_Ofr43OzGKdspCH">
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
+    <label class="afova-context afova-active" for="afova-naiUkFT0y3OUcxNzWnMQ4"
+        >A reqired text input
+        <ul
+            id="afova-naiUkFT0y3OUcxNzWnMQ4-afova-message-container"
+            class="afova-message-container"
+        >
+            <li class="afova-message">Please provide text input</li>
+        </ul>
+        <input
+            type="text"
+            required
+            data-required="Please provide text input"
+            id="afova-naiUkFT0y3OUcxNzWnMQ4"
+            class="afova-control"
+            aria-invalid="true"
+            aria-errormessage="afova-naiUkFT0y3OUcxNzWnMQ4-afova-message-container"
+        />
+    </label>
+</form>
+```
+
+Afova will allow you to:
+- assign attributes to HTML input controls (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, and `maxlength`) to define input validation constraints,
+- style constraint violation messages with your own CSS, and
+- have your own custom internationalized violation messages.
+
+Please refer to for more details:
 
 - [Constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation)
 - [Client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
