@@ -4,7 +4,7 @@ Afova (accessible form validation) is leveraging the Constraint Validation API f
 
 Afova will identify the constraints assigned to input controls contained by HTML form elements, validate the form during submit, and report constraint violations.
 
-For example, give the following HTML form, which has a single required text input control and a constraint violation message saying "Please provide text input":
+For example, the following HTML form has a single *required* text input control and a constraint violation message saying "Please provide text input":
 
 ```html
 <form>
