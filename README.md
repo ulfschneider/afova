@@ -1,6 +1,6 @@
 # Afova
 
-Afova (Accessible Form Validation) is leveraging the Constraint Validation API for client-side form validation.
+Afova (accessible form validation) is leveraging the Constraint Validation API for client-side HTML form validation.
 
 Afova will identify the constraints assigned to input controls contained by HTML form elements, validate the form during submit, and report constraint violations.
 
