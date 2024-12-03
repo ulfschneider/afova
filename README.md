@@ -72,7 +72,7 @@ Afova will allow you to:
 - style constraint violation messages with your own CSS, and
 - have your own custom internationalized violation messages.
 
-For more details please refor to:
+For more details please refer to:
 
 - [Constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation)
 - [Client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
