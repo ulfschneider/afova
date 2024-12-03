@@ -1,111 +1,89 @@
-const urlAlphabet = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
-let nanoid = (size = 21) => {
-  let id = "";
-  let bytes = crypto.getRandomValues(new Uint8Array(size));
-  while (size--) {
-    id += urlAlphabet[bytes[size] & 63];
-  }
-  return id;
+const x = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
+let $ = (s = 21) => {
+  let a = "", i = crypto.getRandomValues(new Uint8Array(s));
+  for (; s--; )
+    a += x[i[s] & 63];
+  return a;
 };
-const badInput$1 = {
+const F = {
   message: "The input cannot be processed"
-};
-const patternMismatch$1 = {
+}, N = {
   message: "The value does not match the required pattern of {{constraint}}",
   constraint: "pattern"
-};
-const rangeOverflow$1 = {
+}, R = {
   message: "The value is too big. It cannot be bigger than {{constraint}}.",
   constraint: "max"
-};
-const rangeUnderflow$1 = {
+}, U = {
   message: "The value is too small. It must be at least {{constraint}}.",
   constraint: "min"
-};
-const stepMismatch$1 = {
+}, q = {
   message: "The value is not in within the correct step interval of {{constraint}}",
   constraint: "step"
-};
-const tooLong$1 = {
+}, k = {
   message: "The value is too long. It cannot be longer than {{constraint}} characters.",
   constraint: "maxlength"
-};
-const tooShort$1 = {
+}, V = {
   message: "The value is too short. It must be at least {{constraint}} characters long.",
   constraint: "minlength"
-};
-const typeMismatch$1 = {
+}, W = {
   message: "The value must be of type {{constraint}}",
   constraint: "type",
   email: "The value must be an email address",
   url: "The value must be a URL in the format http://url.com",
   tel: "The value must be a phone number"
-};
-const valueMissing$1 = {
+}, z = {
   message: "Please provide a value",
   constraint: "required"
-};
-const constraint_violation_messages_en = {
-  badInput: badInput$1,
-  patternMismatch: patternMismatch$1,
-  rangeOverflow: rangeOverflow$1,
-  rangeUnderflow: rangeUnderflow$1,
-  stepMismatch: stepMismatch$1,
-  tooLong: tooLong$1,
-  tooShort: tooShort$1,
-  typeMismatch: typeMismatch$1,
-  valueMissing: valueMissing$1
-};
-const badInput = {
+}, B = {
+  badInput: F,
+  patternMismatch: N,
+  rangeOverflow: R,
+  rangeUnderflow: U,
+  stepMismatch: q,
+  tooLong: k,
+  tooShort: V,
+  typeMismatch: W,
+  valueMissing: z
+}, G = {
   message: "Die Eingabe kann nicht verarbeitet werden"
-};
-const patternMismatch = {
+}, H = {
   message: "Der Eingabewert entspricht nicht dem erforderlichen Format {{constraint}}",
   constraint: "pattern"
-};
-const rangeOverflow = {
+}, P = {
   message: "Der Eingabewert ist zu groß. Der Wert darf nicht größer sein als {{constraint}}.",
   constraint: "max"
-};
-const rangeUnderflow = {
+}, Z = {
   message: "Der Eingabewert ist zu klein. Der Wert darf nicht kleiner sein als {{constraint}}.",
   constraint: "min"
-};
-const stepMismatch = {
+}, j = {
   message: "Der Eingabewert ist nicht in der richtigen Schrittfolge von {{constraint}}",
   constraint: "step"
-};
-const tooLong = {
+}, Y = {
   message: "Der Eingabewert ist zu lang. Der Wert darf nicht mehr als {{constraint}} Zeichen haben.",
   constraint: "maxlength"
-};
-const tooShort = {
+}, J = {
   message: "Der Eingabewert ist zu kurz. Der Wert muss mindestens {{constraint}} Zeichen lang sein.",
   constraint: "minlength"
-};
-const typeMismatch = {
+}, K = {
   message: "Der Eingabewert muss vom Typ {{constraint}} sein",
   constraint: "type",
   email: "Der Eingabewert muss eine E-Mail Adresse sein",
   tel: "Der Eingabewert muss eine Telefonnummer sein",
   url: "Der Eingabewert muss eine URL im Format http://url.com sein"
-};
-const valueMissing = {
+}, Q = {
   message: "Bitte machen Sie eine Eingabe",
   constraint: "required"
-};
-const constraint_violation_messages_de = {
-  badInput,
-  patternMismatch,
-  rangeOverflow,
-  rangeUnderflow,
-  stepMismatch,
-  tooLong,
-  tooShort,
-  typeMismatch,
-  valueMissing
-};
-const CONSTRAINT_VIOLATIONS = [
+}, X = {
+  badInput: G,
+  patternMismatch: H,
+  rangeOverflow: P,
+  rangeUnderflow: Z,
+  stepMismatch: j,
+  tooLong: Y,
+  tooShort: J,
+  typeMismatch: K,
+  valueMissing: Q
+}, ee = [
   "badInput",
   "customError",
   "patternMismatch",
@@ -116,259 +94,168 @@ const CONSTRAINT_VIOLATIONS = [
   "tooShort",
   "typeMismatch",
   "valueMissing"
-];
-const DEFAULT_SETTINGS = {
+], te = {
   selector: "form",
-  validateOnChange: false,
-  focusOnFirstError: true
-};
-const I18N_CONSTRAINTS = {
-  en: constraint_violation_messages_en,
-  de: constraint_violation_messages_de
-};
-const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
-function getConstraints() {
-  let locale = navigator.language;
-  let constraints = I18N_CONSTRAINTS[locale];
-  if (constraints) {
-    console.log(`afova is using locale=[${locale}]`);
-    return constraints;
-  }
-  const idx = locale.indexOf("-");
-  if (idx) {
-    locale = locale.substring(0, idx);
-    if (locale) {
-      constraints = I18N_CONSTRAINTS[locale];
-    }
-  }
-  if (constraints) {
-    console.log(`afova is using language=[${locale}]`);
-    return constraints;
-  } else {
-    console.log(`afova is using language=[en]`);
-    return I18N_CONSTRAINTS.en;
-  }
+  validateOnChange: !1,
+  focusOnFirstError: !0
+}, f = {
+  en: B,
+  de: X
+}, ne = ["submit", "reset", "button"];
+function se() {
+  let s = navigator.language, a = f[s];
+  if (a)
+    return console.log(`afova is using locale=[${s}]`), a;
+  const i = s.indexOf("-");
+  return i && (s = s.substring(0, i), s && (a = f[s])), a ? (console.log(`afova is using language=[${s}]`), a) : (console.log("afova is using language=[en]"), f.en);
 }
-function afova(options) {
-  let constraintViolationMessages = getConstraints();
-  function _ensureId(element) {
-    if (!element.id) {
-      element.id = `afova-${nanoid()}`;
-    }
+function ae(s) {
+  let a = se();
+  function i(e) {
+    e.id || (e.id = `afova-${$()}`);
   }
-  function _findMessageContainer(control) {
-    const messageContainer = document.querySelector(
-      `#${control.id}-afova-message-container`
+  function g(e) {
+    return document.querySelector(
+      `#${e.id}-afova-message-container`
     );
-    return messageContainer;
   }
-  function _ensureAndGetMessageContainer(control) {
-    var _a;
-    let messageContainer = _findMessageContainer(control);
-    if (!messageContainer) {
-      messageContainer = document.createElement("ul");
-      (_a = control.parentNode) == null ? void 0 : _a.insertBefore(messageContainer, control);
-      messageContainer.id = `${control.id}-afova-message-container`;
-      messageContainer.classList.add("afova-message-container");
-      control.setAttribute("aria-errormessage", messageContainer.id);
-    }
-    return messageContainer;
+  function M(e) {
+    var n;
+    let t = g(e);
+    return t || (t = document.createElement("ul"), (n = e.parentNode) == null || n.insertBefore(t, e), t.id = `${e.id}-afova-message-container`, t.classList.add("afova-message-container"), e.setAttribute("aria-errormessage", t.id)), t;
   }
-  function _deriveMessageText(violation, control) {
-    if (violation != "customError") {
-      let defaultMessage = constraintViolationMessages[violation];
-      if (defaultMessage) {
-        let constraint = defaultMessage.constraint;
-        let message = (
+  function _(e, t) {
+    if (e != "customError") {
+      let n = a[e];
+      if (n) {
+        let r = n.constraint, o = (
           //a message defined for the control has highest prio
-          control.dataset[constraint || violation] || //a default message specific for the input type has second hightest prio
-          constraintViolationMessages[violation][control.type] || //a default message has last prio
-          defaultMessage.message
+          t.dataset[r || e] || //a default message specific for the input type has second hightest prio
+          a[e][t.type] || //a default message has last prio
+          n.message
         );
-        const constraintValue = control.getAttribute(constraint || "");
-        if (constraintValue) {
-          const regex = new RegExp(`{{\\s*constraint\\s*}}`, "ig");
-          message = message.replace(regex, constraintValue);
+        const l = t.getAttribute(r || "");
+        if (l) {
+          const D = new RegExp("{{\\s*constraint\\s*}}", "ig");
+          o = o.replace(D, l);
         }
-        return message;
+        return o;
       }
     }
-    return control.validationMessage;
+    return t.validationMessage;
   }
-  function _putMessage(control) {
-    const messageContainer = _ensureAndGetMessageContainer(control);
-    const validity = control.validity;
-    const messageElement = document.createElement("li");
-    messageElement.classList.add("afova-message");
-    messageContainer.appendChild(messageElement);
-    for (const violation of CONSTRAINT_VIOLATIONS) {
-      if (validity[violation]) {
-        let message = _deriveMessageText(
-          violation,
-          control
+  function L(e) {
+    const t = M(e), n = e.validity, r = document.createElement("li");
+    r.classList.add("afova-message"), t.appendChild(r);
+    for (const o of ee)
+      if (n[o]) {
+        let l = _(
+          o,
+          e
         );
-        if (message) {
-          messageElement.innerHTML = message;
-        }
+        l && (r.innerHTML = l);
         break;
       }
+    r.innerHTML || (r.innerHTML = e.dataset.errorInvalid || a.badInput.message);
+  }
+  function d(e) {
+    e.removeAttribute("aria-invalid"), e.removeAttribute("aria-errormessage");
+    const t = g(e);
+    t && t.remove();
+    let n = m(e);
+    n && n.classList.remove("afova-active");
+  }
+  function T(e, t) {
+    const n = m(e);
+    n && n.classList.add("afova-active"), e.setAttribute("aria-invalid", "true"), L(e), t && e.focus();
+  }
+  function v(e, t) {
+    return d(e), e.validity.valid || T(e, t), e.validity.valid;
+  }
+  function u(e) {
+    const t = [];
+    for (const n of e.elements)
+      ne.includes(n.type) || t.push(n);
+    return t;
+  }
+  function h(e, t) {
+    let n;
+    for (const r of u(e)) {
+      const o = v(r);
+      !n && !o && (n = r);
     }
-    if (!messageElement.innerHTML) {
-      messageElement.innerHTML = control.dataset.errorInvalid || constraintViolationMessages.badInput.message;
+    n && (t == null || t.preventDefault(), c.focusOnFirstError && n.focus());
+  }
+  function w(e) {
+    for (let t of u(e))
+      d(t);
+  }
+  function y() {
+    const e = document.querySelectorAll(c.selector || "form");
+    for (const t of e) {
+      t.setAttribute("novalidate", ""), i(t), t.addEventListener("submit", p), t.addEventListener("reset", b);
+      for (const n of u(t))
+        I(n);
     }
   }
-  function _clearControlMessages(control) {
-    control.removeAttribute("aria-invalid");
-    control.removeAttribute("aria-errormessage");
-    const messageContainer = _findMessageContainer(control);
-    if (messageContainer) {
-      messageContainer.remove();
-    }
-    let context = _getContext(control);
-    if (context) {
-      context.classList.remove("afova-active");
-    }
+  function p(e) {
+    h(e.target, e);
   }
-  function _setControlMessage(control, focus) {
-    const context = _getContext(control);
-    if (context) {
-      context.classList.add("afova-active");
-    }
-    control.setAttribute("aria-invalid", "true");
-    _putMessage(control);
-    if (focus) {
-      control.focus();
+  function b(e) {
+    w(e.target);
+  }
+  function C() {
+    const e = document.querySelectorAll(c.selector || "form");
+    for (const t of e) {
+      t.removeAttribute("novalidate"), t.removeEventListener("submit", p), t.removeEventListener("reset", b);
+      for (const n of u(t))
+        A(n);
     }
   }
-  function _validateControl(control, focus) {
-    _clearControlMessages(control);
-    if (!control.validity.valid) {
-      _setControlMessage(control, focus);
-    }
-    return control.validity.valid;
+  function I(e) {
+    i(e), m(e), e.classList.add("afova-control"), c.validateOnChange && e.addEventListener("change", E);
   }
-  function _getFormElements(form) {
-    const result = [];
-    for (const control of form.elements) {
-      if (!IGNORE_CONTROL_TYPES.includes(control.type)) {
-        result.push(control);
-      }
-    }
-    return result;
+  function E(e) {
+    v(e.target, !0);
   }
-  function _validateForm(form, event) {
-    let firstError;
-    for (const control of _getFormElements(form)) {
-      const valid = _validateControl(control);
-      if (!firstError && !valid) {
-        firstError = control;
-      }
-    }
-    if (firstError) {
-      event == null ? void 0 : event.preventDefault();
-      if (settings.focusOnFirstError) {
-        firstError.focus();
-      }
-    }
+  function A(e) {
+    e.classList.remove("afova-control"), e.removeEventListener("change", E);
   }
-  function _resetForm(form) {
-    for (let control of _getFormElements(form)) {
-      _clearControlMessages(control);
-    }
+  function m(e) {
+    let t = e.closest(".afova-context");
+    return t || (t = e.closest("label")), t && (t.classList.add("afova-context"), t.tagName == "LABEL" && !t.htmlFor && (t.htmlFor = e.id)), t;
   }
-  function _prepareForms() {
-    const forms = document.querySelectorAll(settings.selector || "form");
-    for (const form of forms) {
-      form.setAttribute("novalidate", "");
-      _ensureId(form);
-      form.addEventListener("submit", _formSubmitListener);
-      form.addEventListener("reset", _formResetListener);
-      for (const control of _getFormElements(form)) {
-        _prepareControl(control);
-      }
-    }
+  function S() {
+    const e = document.querySelectorAll(c.selector || "form");
+    for (const t of e)
+      h(t);
   }
-  function _formSubmitListener(event) {
-    _validateForm(event.target, event);
+  function O() {
+    const e = document.querySelectorAll(c.selector || "form");
+    for (const t of e)
+      if (!t.checkValidity())
+        return !0;
+    return !1;
   }
-  function _formResetListener(event) {
-    _resetForm(event.target);
-  }
-  function _unprepareForms() {
-    const forms = document.querySelectorAll(settings.selector || "form");
-    for (const form of forms) {
-      form.removeAttribute("novalidate");
-      form.removeEventListener("submit", _formSubmitListener);
-      form.removeEventListener("reset", _formResetListener);
-      for (const control of _getFormElements(form)) {
-        _unprepareControl(control);
-      }
-    }
-  }
-  function _prepareControl(control) {
-    _ensureId(control);
-    _getContext(control);
-    control.classList.add("afova-control");
-    if (settings.validateOnChange) {
-      control.addEventListener("change", _controlChangeListener);
-    }
-  }
-  function _controlChangeListener(event) {
-    _validateControl(event.target, true);
-  }
-  function _unprepareControl(control) {
-    control.classList.remove("afova-control");
-    control.removeEventListener("change", _controlChangeListener);
-  }
-  function _getContext(control) {
-    let context = control.closest(".afova-context");
-    if (!context) {
-      context = control.closest("label");
-    }
-    if (context) {
-      context.classList.add("afova-context");
-      if (context.tagName == "LABEL" && !context.htmlFor) {
-        context.htmlFor = control.id;
-      }
-    }
-    return context;
-  }
-  function _validate() {
-    const forms = document.querySelectorAll(settings.selector || "form");
-    for (const form of forms) {
-      _validateForm(form);
-    }
-  }
-  function _isInvalid() {
-    const forms = document.querySelectorAll(settings.selector || "form");
-    for (const form of forms) {
-      if (!form.checkValidity()) {
-        return true;
-      }
-    }
-    return false;
-  }
-  let settings = Object.assign({}, DEFAULT_SETTINGS, options);
-  _prepareForms();
-  return {
+  let c = Object.assign({}, te, s);
+  return y(), {
     /**
      * Will remove all event listeners that have been added by afova and
      * will clear all afova messages.
      */
-    clear: () => _unprepareForms(),
+    clear: () => C(),
     /**
     * Trigger the validation. In most cases not required, as afova will trigger
      the validation automatically when submitting any of the selected forms.
     */
-    validate: () => _validate(),
+    validate: () => S(),
     /**
      * Verify if any of the forms selected according to the settings object is invalid
      * @returns true if at least one form is invalid
      */
-    isInvalid: () => _isInvalid()
+    isInvalid: () => O()
   };
 }
 export {
-  afova
+  ae as afova
 };
-//# sourceMappingURL=afova.js.map

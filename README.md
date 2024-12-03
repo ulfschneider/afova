@@ -89,7 +89,7 @@ npm i afova
 
 Then import afova into your JavaScript / TypeScript setup:
 
-```ts
+```js
 import { afova } from 'afova'
 
 //initialize by creating an afova object
@@ -106,14 +106,13 @@ afv.clear()
 
 ### HTML page without bundler
 
-When working without a bundler, download the ESM script <a href="https://raw.githubusercontent.com/ulfschneider/afova/refs/heads/main/dist/afova.js" download="afova.js">afova.js</a> and put it into the assets folder (for example) of your web site.
+When working without a bundler, download the ESM script <a href="https://raw.githubusercontent.com/ulfschneider/afova/refs/heads/main/dist/afova.min.js" download="afova.min.js">afova.min.js</a> and put it into the assets folder (for example) of your web site.
 
 Then you can integrate afova into your web pages as follows:
 
 ```html
 <script type="module">
-    //integrate ESM script
-    import { afova } from "/assets/afova.js";
+    import { afova } from "/assets/afova.min.js";
 
     //initialize by creating an afova object
     //shown are the default options, you can omit the options object
@@ -150,22 +149,8 @@ The settings are optional.
 : The default is `false`. When set to `true`, constraint violations are checked whenever the contents of an input control change, and not only during form submit.
 
 All constraint violations that can be checked with the Constraint Validation API are validated by afova.
-In case the default violation messages of afova shouldn´t be used, you can define custom error messages
-as `data` attributes for each field. For example:
-
-```html
-<label for="custom-pattern-input">A pattern input with custom failure message
-    <div class="description">Please provide a string that contains any mix of A-Z or a-z and has a length of 3 charactes.</div>
-    <input
-        id="custom-pattern-input"
-        type="text"
-        pattern="[A-Za-z]{3}"
-        data-pattern="The value is not in the correct format. Correct formats are AbC or xyz, for example."
-    />
-</label>
-```
-
-The following attributes are available to define your own constraint violation messages:
+In case the default violation messages of afova shouldn´t be used, you can define custom constraint violation messages
+as `data` attributes for each input control. The following attributes are available:
 
 `data-bad-input`
 : The browser is unable to handle the input value
