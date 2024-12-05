@@ -6,7 +6,7 @@ const minify = {
   name: "minify",
   closeBundle: () => {
     esbuild.buildSync({
-      entryPoints: ["./src/afova.ts"],
+      entryPoints: ["./dist/afova.js"],
       minify: true,
       allowOverwrite: true,
       outfile: "./dist/afova.min.js",
