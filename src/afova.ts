@@ -86,7 +86,7 @@ const I18N_CONSTRAINTS: AfovaI18NConstraintViolationMessages = {
   de: constraint_violation_messages_de as unknown as AfovaConstraintViolationMessages,
 };
 
-const IGNORE_CONTROL_TYPES = ["submit", "reset", "button"];
+const IGNORE_CONTROL_TYPES = ["submit", "reset", "button", "fieldset"];
 
 function getConstraints(): AfovaConstraintViolationMessages {
   let locale = navigator.language;
@@ -130,18 +130,27 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _findMessageContainer(control: HTMLObjectElement): Element | null {
-    const messageContainer = document.querySelector(
-      `#${control.id}-afova-message-container`,
+    const messageContainerAnchor = _getGroup(control) || control;
+    return document.querySelector(
+      `#${messageContainerAnchor.id}-afova-message-container`,
     );
-    return messageContainer;
+  }
+
+  function _isEmpty(element: Element): boolean {
+    return element.children.length > 0;
   }
 
   function _ensureAndGetMessageContainer(control: HTMLObjectElement): Element {
     let messageContainer = _findMessageContainer(control);
     if (!messageContainer) {
+      const messageContainerAnchor = _getGroup(control) || control;
+
       messageContainer = document.createElement("ul");
-      control.parentNode?.insertBefore(messageContainer, control);
-      messageContainer.id = `${control.id}-afova-message-container`;
+      messageContainerAnchor.parentNode?.insertBefore(
+        messageContainer,
+        messageContainerAnchor,
+      );
+      messageContainer.id = `${messageContainerAnchor.id}-afova-message-container`;
       messageContainer.classList.add("afova-message-container");
       control.setAttribute("aria-errormessage", messageContainer.id);
     }
@@ -185,6 +194,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     const validity = control.validity;
     const messageElement = document.createElement("li");
     messageElement.classList.add("afova-message");
+    messageElement.setAttribute("afova-message-for", control.id);
     messageContainer.appendChild(messageElement);
 
     for (const violation of CONSTRAINT_VIOLATIONS) {
@@ -212,14 +222,26 @@ export function afova(options?: AfovaSettings): AfovaObject {
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
 
+    const messages = document.querySelectorAll(
+      `[afova-message-for="${control.id}"]`,
+    );
+    for (const message of messages) {
+      message.remove();
+    }
+
     const messageContainer = _findMessageContainer(control);
-    if (messageContainer) {
+    if (messageContainer && _isEmpty(messageContainer)) {
       messageContainer.remove();
     }
 
     let context = _getContext(control);
     if (context) {
-      context.classList.remove("afova-active");
+      const invalidControls = document.querySelectorAll(
+        `#${context.id} [aria-invalid].afova-control`,
+      );
+      if (invalidControls.length == 0) {
+        context.classList.remove("afova-active");
+      }
     }
   }
 
@@ -263,6 +285,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   function _validateForm(form: HTMLFormElement, event?: Event): void {
     let firstError: HTMLObjectElement | undefined;
+
     for (const control of _getFormElements(form)) {
       const valid = _validateControl(control);
       if (!firstError && !valid) {
@@ -300,6 +323,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _formSubmitListener(event: Event): void {
+    event.preventDefault();
     _validateForm(event.target as HTMLFormElement, event);
   }
 
@@ -322,7 +346,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   function _prepareControl(control: HTMLObjectElement): void {
     _ensureId(control);
-    _getContext(control);
+    _getContext(control); //prepare the context, we will not use it here
     control.classList.add("afova-control");
     if (settings.validateOnChange) {
       control.addEventListener("change", _controlChangeListener);
@@ -352,6 +376,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
 
     if (context) {
+      _ensureId(context);
       context.classList.add("afova-context");
       if (
         context.tagName == "LABEL" &&
@@ -362,6 +387,24 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
 
     return context;
+  }
+
+  /**
+   * Multiple controls might be wrapped into an afova group,
+   * which must have the afova-group CSS class assigned.
+   * The constraint messages of all wrapped controls will be shown
+   * directly before the group. A group can be useful when controls are
+   * part of a fieldset. E.g., in such a case the afova-group CSS class
+   * can be assigned to the fieldset element.
+   * @param control
+   * @returns the element that is wrapping the controls or null, if none exists
+   */
+  function _getGroup(control: HTMLElement): Element | null {
+    const group = control.closest(".afova-group");
+    if (group) {
+      _ensureId(group);
+    }
+    return group;
   }
 
   function _validate(): void {

@@ -17,6 +17,10 @@ label {
     }
 }
 
+.afova-context.afova-active {
+    border-left: 3px solid red;
+}
+
 .afova-message-container {
     margin: 0;
     padding: 0;
