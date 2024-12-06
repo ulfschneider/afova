@@ -24,16 +24,19 @@ For example, the following HTML form has a single *required* text input control 
 That form will be transformed by Afova into:
 
 ```html
-<form novalidate id="afova-e5W_aF_Ofr43OzGKdspCH">
+<form novalidate="" id="afova-1v4dAnzsS9OjaF3F46igi">
     <input type="submit" value="Submit the form" />
     <input type="reset" value="Reset the form" />
-    <label class="afova-context" for="afova-naiUkFT0y3OUcxNzWnMQ4"
+    <label
+        id="afova-EckT8S1xwG_CQDra0arhS"
+        class="afova-context"
+        for="afova-d1qB-B6gUZ-dpFYghmIgp"
         >A reqired text input
         <input
             type="text"
             required
             data-required="Please provide text input"
-            id="afova-naiUkFT0y3OUcxNzWnMQ4"
+            id="afova-d1qB-B6gUZ-dpFYghmIgp"
             class="afova-control"
         />
     </label>
@@ -43,25 +46,33 @@ That form will be transformed by Afova into:
 Trying to submit the form without providing a text value will violate the `required` constraint. Afova will prevent the submit and instead provide a constraint violation message in the following form:
 
 ```html
-<form novalidate id="afova-e5W_aF_Ofr43OzGKdspCH">
+<form novalidate="" id="afova-1v4dAnzsS9OjaF3F46igi">
     <input type="submit" value="Submit the form" />
     <input type="reset" value="Reset the form" />
-    <label class="afova-context afova-active" for="afova-naiUkFT0y3OUcxNzWnMQ4"
+    <label
+        id="afova-EckT8S1xwG_CQDra0arhS"
+        class="afova-context afova-active"
+        for="afova-d1qB-B6gUZ-dpFYghmIgp"
         >A reqired text input
         <ul
-            id="afova-naiUkFT0y3OUcxNzWnMQ4-afova-message-container"
+            id="afova-d1qB-B6gUZ-dpFYghmIgp-afova-message-container"
             class="afova-message-container"
         >
-            <li class="afova-message">Please provide text input</li>
+            <li
+                class="afova-message"
+                afova-message-for="afova-d1qB-B6gUZ-dpFYghmIgp"
+            >
+                Please provide text input
+            </li>
         </ul>
         <input
             type="text"
-            required
+            required=""
             data-required="Please provide text input"
-            id="afova-naiUkFT0y3OUcxNzWnMQ4"
+            id="afova-d1qB-B6gUZ-dpFYghmIgp"
             class="afova-control"
             aria-invalid="true"
-            aria-errormessage="afova-naiUkFT0y3OUcxNzWnMQ4-afova-message-container"
+            aria-errormessage="afova-d1qB-B6gUZ-dpFYghmIgp-afova-message-container"
         />
     </label>
 </form>
