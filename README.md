@@ -1,8 +1,8 @@
-# Afova
+# afova
 
-Afova (accessible form validation) is leveraging the Constraint Validation API for client-side HTML form validation.
+afova (accessible form validation) is leveraging the Constraint Validation API for client-side HTML form validation.
 
-Afova will identify the constraints assigned to input controls contained by HTML form elements, validate the form during submit, and report constraint violations.
+afova will identify the constraints assigned to input controls contained by HTML form elements, validate the form during submit, and report constraint violations.
 
 For example, the following HTML form has a single *required* text input control and a constraint violation message saying "Please provide text input":
 
@@ -21,7 +21,7 @@ For example, the following HTML form has a single *required* text input control 
 </form>
 ```
 
-That form will be transformed by Afova into:
+That form will be transformed by afova into:
 
 ```html
 <form novalidate="" id="afova-1v4dAnzsS9OjaF3F46igi">
@@ -43,7 +43,7 @@ That form will be transformed by Afova into:
 </form>
 ```
 
-Trying to submit the form without providing a text value will violate the `required` constraint. Afova will prevent the submit and instead provide a constraint violation message in the following form:
+Trying to submit the form without providing a text value will violate the `required` constraint. afova will prevent the submit and instead provide a constraint violation message in the following form:
 
 ```html
 <form novalidate="" id="afova-1v4dAnzsS9OjaF3F46igi">
@@ -78,7 +78,7 @@ Trying to submit the form without providing a text value will violate the `requi
 </form>
 ```
 
-Afova will allow you to:
+afova will allow you to:
 - assign attributes to HTML input controls (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, and `maxlength`) to define input validation constraints,
 - style constraint violation messages with your own CSS, and
 - have your own custom internationalized violation messages.
@@ -142,7 +142,7 @@ Then you can integrate afova into your web pages as follows:
 
 When creating the afova object by calling `afova()`, all forms described by the selector are traversed
 and the default browser validation of those forms is deactivated.
-Afova will take over form validation for those forms during form submit.
+afova will take over form validation for those forms during form submit.
 
 The `clear()` is required in situations where you have to clear event listeners and CSS class assignments introduced by afova.
 
@@ -194,11 +194,11 @@ Assigning your custom violation messages is a good way to have internationalized
 
 ## Styling
 
-Afova does not come with any CSS styles. The following CSS class names are assigned during validation processing:
+afova does not come with any CSS styles. The following CSS class names are assigned during validation processing:
 
 `.afova-context`
-: Afova searches for a context for every validated input control.
-: By default this is the `label` element wrapping the control. Afova assigns the CSS class `afova-context` to the context element.
+: afova searches for a context for every validated input control.
+: By default this is the `label` element wrapping the control. afova assigns the CSS class `afova-context` to the context element.
 : You can decide to use a different wrapping context by assigning the `afova-context` class yourself, which can make sense for fieldsets of
 : radio buttons or checkboxes.
 
