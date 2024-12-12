@@ -137,7 +137,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _isEmpty(element: Element): boolean {
-    return element.children.length > 0;
+    return element.children.length == 0;
   }
 
   function _ensureAndGetMessageContainer(control: HTMLObjectElement): Element {
@@ -230,6 +230,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
 
     const messageContainer = _findMessageContainer(control);
+
     if (messageContainer && _isEmpty(messageContainer)) {
       messageContainer.remove();
     }

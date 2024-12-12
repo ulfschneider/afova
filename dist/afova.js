@@ -121,7 +121,7 @@ function oe(a) {
     );
   }
   function M(e) {
-    return e.children.length > 0;
+    return e.children.length == 0;
   }
   function L(e) {
     var n;
