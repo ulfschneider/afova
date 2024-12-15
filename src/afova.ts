@@ -141,6 +141,14 @@ export function afova(options?: AfovaSettings): AfovaObject {
     );
   }
 
+  function _setMessageCollectorVisibility(collector: Element): void {
+    if (_isEmpty(collector)) {
+      (collector as HTMLElement).style.display = "none";
+    } else {
+      (collector as HTMLElement).style.display = "";
+    }
+  }
+
   function _findMessageCollector(control: Element): Element | null {
     const form = control.closest("form");
     if (form) {
@@ -240,7 +248,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
     const messageCollector = _findMessageCollector(control);
 
     if (messageCollector) {
-      (messageCollector as HTMLElement).style.display = "";
       let collectedMessageElement: Element;
       if (
         messageCollector.tagName == "UL" ||
@@ -264,6 +271,8 @@ export function afova(options?: AfovaSettings): AfovaObject {
       collectedMessageElement.appendChild(messageElement);
 
       messageCollector.appendChild(collectedMessageElement);
+
+      _setMessageCollectorVisibility(messageCollector);
     }
   }
 
@@ -337,11 +346,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
     const messageCollector = _findMessageCollector(control);
     if (messageCollector) {
-      if (_isEmpty(messageCollector)) {
-        (messageCollector as HTMLElement).style.display = "none";
-      } else {
-        (messageCollector as HTMLElement).style.display = "";
-      }
+      _setMessageCollectorVisibility(messageCollector);
     }
   }
 
@@ -428,8 +433,8 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
       if (collector) {
         _ensureId(collector);
+        _setMessageCollectorVisibility(collector);
         form.setAttribute("afova-message-collector-id", collector.id);
-        (collector as HTMLElement).style.display = "none";
         collector.classList.add("afova-message-collector");
       }
     }
