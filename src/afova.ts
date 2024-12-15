@@ -4,6 +4,7 @@ import constraint_violation_messages_de from "./locale/de.json";
 
 export interface AfovaSettings {
   selector?: string;
+  collectSelector?: string;
   validateOnChange?: boolean;
   focusOnFirstError?: boolean;
 }
@@ -75,8 +76,12 @@ export interface AfovaObject {
   validate: () => void;
 }
 
+const DEFAULT_SELECTOR = "form";
+const DEFAULT_COLLECT_SELECTOR = ".afova-message-collector";
+
 const DEFAULT_SETTINGS: AfovaSettings = {
-  selector: "form",
+  selector: DEFAULT_SELECTOR,
+  collectSelector: DEFAULT_COLLECT_SELECTOR,
   validateOnChange: false,
   focusOnFirstError: true,
 };
@@ -129,18 +134,29 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
-  function _findMessageContainer(control: HTMLObjectElement): Element | null {
+  function _findMessageContainer(control: Element): Element | null {
     const messageContainerAnchor = _getGroup(control) || control;
     return document.querySelector(
       `#${messageContainerAnchor.id}-afova-message-container`,
     );
   }
 
+  function _findMessageCollector(control: Element): Element | null {
+    const form = control.closest("form");
+    if (form) {
+      const collectorId = form.getAttribute("afova-message-collector-id");
+      if (collectorId) {
+        return document.querySelector(`#${collectorId}`);
+      }
+    }
+    return null;
+  }
+
   function _isEmpty(element: Element): boolean {
     return element.children.length == 0;
   }
 
-  function _ensureAndGetMessageContainer(control: HTMLObjectElement): Element {
+  function _ensureAndGetMessageContainer(control: Element): Element {
     let messageContainer = _findMessageContainer(control);
     if (!messageContainer) {
       const messageContainerAnchor = _getGroup(control) || control;
@@ -188,11 +204,77 @@ export function afova(options?: AfovaSettings): AfovaObject {
     return control.validationMessage;
   }
 
+  function _findLabelText(control: Element): string {
+    const context = _findContext(control);
+    if (context) {
+      let label = context.querySelector(".afova-label");
+      if (label) {
+        return (label as HTMLElement).innerText;
+      }
+
+      if (context.tagName != "LABEL") {
+        label = context.querySelector("label");
+      } else {
+        label = context;
+      }
+
+      if (label) {
+        let labelText = "";
+        for (const node of label.childNodes) {
+          if (node.nodeType == Node.TEXT_NODE) {
+            if (labelText && node.textContent?.trim()) {
+              labelText += " ";
+            }
+            if (node.textContent?.trim()) {
+              labelText += node.textContent.trim();
+            }
+          }
+        }
+        return labelText;
+      }
+    }
+    return "";
+  }
+
+  function _collectMessage(control: Element, message: string) {
+    const messageCollector = _findMessageCollector(control);
+    if (messageCollector) {
+      let collectedMessageElement: Element;
+      if (
+        messageCollector.tagName == "UL" ||
+        messageCollector.tagName == "OL"
+      ) {
+        collectedMessageElement = document.createElement("LI");
+      } else {
+        collectedMessageElement = document.createElement("DIV");
+      }
+      collectedMessageElement.setAttribute("afova-message-for", control.id);
+      collectedMessageElement.classList.add("afova-message");
+
+      const labelText = _findLabelText(control);
+      if (labelText) {
+        const labelElement = document.createElement("DIV");
+        labelElement.innerText = labelText;
+        collectedMessageElement.appendChild(labelElement);
+      }
+      const messageElement = document.createElement("DIV");
+      messageElement.innerText = message;
+      collectedMessageElement.appendChild(messageElement);
+
+      messageCollector.appendChild(collectedMessageElement);
+    }
+  }
+
   function _putMessage(control: HTMLObjectElement): void {
     const messageContainer = _ensureAndGetMessageContainer(control);
 
     const validity = control.validity;
-    const messageElement = document.createElement("li");
+    let messageElement: Element;
+    if (messageContainer.tagName == "UL" || messageContainer.tagName == "OL") {
+      messageElement = document.createElement("LI");
+    } else {
+      messageElement = document.createElement("DIV");
+    }
     messageElement.classList.add("afova-message");
     messageElement.setAttribute("afova-message-for", control.id);
     messageContainer.appendChild(messageElement);
@@ -206,6 +288,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
         );
         if (message) {
           messageElement.innerHTML = message;
+          _collectMessage(control, message);
         }
         break;
       }
@@ -215,10 +298,15 @@ export function afova(options?: AfovaSettings): AfovaObject {
       messageElement.innerHTML =
         control.dataset.errorInvalid ||
         constraintViolationMessages.badInput.message;
+      _collectMessage(
+        control,
+        control.dataset.errorInvalid ||
+          constraintViolationMessages.badInput.message,
+      );
     }
   }
 
-  function _clearControlMessages(control: HTMLObjectElement): void {
+  function _clearControlMessages(control: Element): void {
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
 
@@ -235,7 +323,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
       messageContainer.remove();
     }
 
-    let context = _getContext(control);
+    let context = _findContext(control);
     if (context) {
       const invalidControls = document.querySelectorAll(
         `#${context.id} [aria-invalid].afova-control`,
@@ -250,7 +338,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     control: HTMLObjectElement,
     focus?: boolean,
   ): void {
-    const context = _getContext(control);
+    const context = _findContext(control);
     if (context) {
       context.classList.add("afova-active");
     }
@@ -308,7 +396,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _prepareForms(): void {
-    const forms = document.querySelectorAll(settings.selector || "form");
+    const forms = document.querySelectorAll(
+      settings.selector || DEFAULT_SELECTOR,
+    );
     for (const form of forms) {
       //switch off default browser form validation
       form.setAttribute("novalidate", "");
@@ -319,6 +409,16 @@ export function afova(options?: AfovaSettings): AfovaObject {
       form.addEventListener("reset", _formResetListener);
       for (const control of _getFormElements(form as HTMLFormElement)) {
         _prepareControl(control);
+      }
+
+      const collector = form.querySelector(
+        settings.collectSelector || DEFAULT_COLLECT_SELECTOR,
+      );
+
+      if (collector) {
+        _ensureId(collector);
+        form.setAttribute("afova-message-collector-id", collector.id);
+        collector.classList.add("afova-message-collector");
       }
     }
   }
@@ -345,9 +445,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
-  function _prepareControl(control: HTMLObjectElement): void {
+  function _prepareControl(control: Element): void {
     _ensureId(control);
-    _getContext(control); //prepare the context, we will not use it here
+    _findContext(control); //prepare the context, we will not use it here
     control.classList.add("afova-control");
     if (settings.validateOnChange) {
       control.addEventListener("change", _controlChangeListener);
@@ -358,7 +458,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     _validateControl(event.target as HTMLObjectElement, true);
   }
 
-  function _unprepareControl(control: HTMLObjectElement): void {
+  function _unprepareControl(control: Element): void {
     control.classList.remove("afova-control");
     control.removeEventListener("change", _controlChangeListener);
   }
@@ -369,7 +469,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
    * @param control the form control to start from
    * @returns the wrapping context or null
    */
-  function _getContext(control: HTMLElement): Element | null {
+  function _findContext(control: Element): Element | null {
     let context = control.closest(".afova-context");
 
     if (!context) {
@@ -400,7 +500,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
    * @param control
    * @returns the element that is wrapping the controls or null, if none exists
    */
-  function _getGroup(control: HTMLElement): Element | null {
+  function _getGroup(control: Element): Element | null {
     const group = control.closest(".afova-group");
     if (group) {
       _ensureId(group);
