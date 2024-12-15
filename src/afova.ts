@@ -238,7 +238,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   function _collectMessage(control: Element, message: string) {
     const messageCollector = _findMessageCollector(control);
+
     if (messageCollector) {
+      (messageCollector as HTMLElement).style.display = "";
       let collectedMessageElement: Element;
       if (
         messageCollector.tagName == "UL" ||
@@ -332,6 +334,15 @@ export function afova(options?: AfovaSettings): AfovaObject {
         context.classList.remove("afova-active");
       }
     }
+
+    const messageCollector = _findMessageCollector(control);
+    if (messageCollector) {
+      if (_isEmpty(messageCollector)) {
+        (messageCollector as HTMLElement).style.display = "none";
+      } else {
+        (messageCollector as HTMLElement).style.display = "";
+      }
+    }
   }
 
   function _setControlMessage(
@@ -418,6 +429,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
       if (collector) {
         _ensureId(collector);
         form.setAttribute("afova-message-collector-id", collector.id);
+        (collector as HTMLElement).style.display = "none";
         collector.classList.add("afova-message-collector");
       }
     }

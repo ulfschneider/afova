@@ -1,5 +1,6 @@
 export interface AfovaSettings {
     selector?: string;
+    collectSelector?: string;
     validateOnChange?: boolean;
     focusOnFirstError?: boolean;
 }
