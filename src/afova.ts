@@ -216,13 +216,10 @@ export function afova(options?: AfovaSettings): AfovaObject {
     const context = _findContext(control);
     if (context) {
       let label = context.querySelector(".afova-label");
-      if (label) {
-        return (label as HTMLElement).innerText;
-      }
-
-      if (context.tagName != "LABEL") {
+      if (!label && context.tagName != "LABEL") {
         label = context.querySelector("label");
-      } else {
+      }
+      if (!label) {
         label = context;
       }
 
@@ -258,16 +255,18 @@ export function afova(options?: AfovaSettings): AfovaObject {
         collectedMessageElement = document.createElement("DIV");
       }
       collectedMessageElement.setAttribute("afova-message-for", control.id);
-      collectedMessageElement.classList.add("afova-message");
+      collectedMessageElement.classList.add("afova-collected-message");
 
       const labelText = _findLabelText(control);
       if (labelText) {
         const labelElement = document.createElement("DIV");
         labelElement.innerText = labelText;
+        labelElement.classList.add("afova-message-label");
         collectedMessageElement.appendChild(labelElement);
       }
       const messageElement = document.createElement("DIV");
       messageElement.innerText = message;
+      messageElement.classList.add("afova-message");
       collectedMessageElement.appendChild(messageElement);
 
       messageCollector.appendChild(collectedMessageElement);

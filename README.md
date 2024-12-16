@@ -192,9 +192,167 @@ as `data` attributes for each input control. The following attributes are availa
 
 Assigning your custom violation messages is a good way to have internationalized messages. In case you do not use your own messages, afova will apply German and English default validation messages, according to the web browsers locale setting.
 
-## Styling
+## Collecting messages
+
+All constraint violation messages of the entire form can be collected and listed together inside of a message collector. The message collector must be inside of the validated form and is described to afova by assigning the CSS class `afova-message-collector`. E.g.:
+
+```html
+<form>
+    <ul class="afova-message-collector"></ul>
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
+    <label
+        >A reqired text input
+        <input
+            type="text"
+            required
+            data-required="Please provide text input"
+        />
+    </label>
+    <label
+        >A min length text input
+        <input
+            id="min-text-length"
+            type="text"
+            minlength="5"
+            data-minlength="The text must be at least 5 characters of length"/>
+    </label>
+</form>
+```
+
+Will be transformed by afova into:
+
+```html
+<form
+    novalidate=""
+    id="afova-HZ9_7J1fJI_VMYGrfJln9"
+    afova-message-collector-id="afova-cMvV7qnlQRK07g71a_Ban"
+>
+    <ul
+        class="afova-message-collector"
+        id="afova-cMvV7qnlQRK07g71a_Ban"
+        style="display: none"
+    ></ul>
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
+    <label
+        id="afova-vFiJd_pfspLE5JEluEX7Y"
+        class="afova-context"
+        for="afova-N55Wepw1mVEheG5c_NpKy"
+        >A reqired text input
+        <input
+            type="text"
+            required=""
+            data-required="Please provide text input"
+            id="afova-N55Wepw1mVEheG5c_NpKy"
+            class="afova-control"
+        />
+    </label>
+    <label
+        id="afova-61HZ-OI0LVId9adC-mNS7"
+        class="afova-context"
+        for="min-text-length"
+        >A min length text input
+        <input
+            id="min-text-length"
+            type="text"
+            minlength="5"
+            data-minlength="The text must be at least 5 characters of length"
+            class="afova-control"
+        />
+    </label>
+</form>
+```
+
+The invalid form cannot be submitted and will be prepared by afova as follows:
+
+```html
+<form
+    novalidate=""
+    id="afova-ZrtiyJtHnlDlNmeTuhu-o"
+    afova-message-collector-id="afova-eBosuZX7IAKictsYD5zfD"
+>
+    <ul
+        class="afova-message-collector"
+        id="afova-eBosuZX7IAKictsYD5zfD"
+    >
+        <li
+            afova-message-for="afova-3EzzZt5d0vHfNFew8ylGT"
+            class="afova-collected-message"
+        >
+            <div class="afova-message-label">A reqired text input</div>
+            <div class="afova-message">Please provide text input</div>
+        </li>
+        <li afova-message-for="min-text-length" class="afova-collected-message">
+            <div class="afova-message-label">A min length text input</div>
+            <div class="afova-message">
+                The text must be at least 5 characters of length
+            </div>
+        </li>
+    </ul>
+
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
+    <label
+        id="afova-MAvRodIUKgsJR8ccXUQyG"
+        class="afova-context afova-active"
+        for="afova-3EzzZt5d0vHfNFew8ylGT"
+        >A reqired text input
+        <ul
+            id="afova-3EzzZt5d0vHfNFew8ylGT-afova-message-container"
+            class="afova-message-container"
+        >
+            <li
+                class="afova-message"
+                afova-message-for="afova-3EzzZt5d0vHfNFew8ylGT"
+            >
+                Please provide text input
+            </li>
+        </ul>
+        <input
+            type="text"
+            required=""
+            data-required="Please provide text input"
+            id="afova-3EzzZt5d0vHfNFew8ylGT"
+            class="afova-control"
+            aria-invalid="true"
+            aria-errormessage="afova-3EzzZt5d0vHfNFew8ylGT-afova-message-container"
+        />
+    </label>
+    <label
+        id="afova-rBW0jMtZXY943cO6urEn2"
+        class="afova-context afova-active"
+        for="min-text-length"
+        >A min length text input
+        <ul
+            id="min-text-length-afova-message-container"
+            class="afova-message-container"
+        >
+            <li class="afova-message" afova-message-for="min-text-length">
+                The text must be at least 5 characters of length
+            </li>
+        </ul>
+        <input
+            id="min-text-length"
+            type="text"
+            minlength="5"
+            data-minlength="The text must be at least 5 characters of length"
+            class="afova-control"
+            aria-invalid="true"
+            aria-errormessage="min-text-length-afova-message-container"
+        />
+    </label>
+</form>
+```
+
+Notice the label text of each control is extracted and displayed along with the constraint violation message inside of the collector. To have more control over what label information is shown in the collector you can put a marker on the desired text with the CSS class `afova-label`.
+
+## Styling and identifiying
 
 afova does not come with any CSS styles. The following CSS class names are assigned during validation processing:
+
+`:invalid`
+: Every invalid control can be styled with the `:invalid` selector.
 
 `.afova-context`
 : afova searches for a context for every validated input control.
@@ -220,6 +378,15 @@ afova does not come with any CSS styles. The following CSS class names are assig
 
 `.afova-control`
 : Every input control validated by afova has the CSS class `afova-control` assigned to it.
+
+`.afova-message-collector`
+: Define a collector for all constraint violation messages of a form by assigning the CSS class `afova-message-collector`.
+
+`.afova-label`
+: The message collector will show the control´s label together with the constrain violation message. By default the label text is the text content of the `label` element. To have more control over what text is shown in the collector, assign the class `afova-label` to any text content along with the validated control.
+
+`.afova-message-label`
+: The label information inside of the message collector will have the CSS class `afova-message-label` assigned to it.
 
 
 ## Accessibility

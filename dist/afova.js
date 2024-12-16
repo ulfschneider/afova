@@ -1,89 +1,89 @@
-const V = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
-let k = (o = 21) => {
-  let i = "", c = crypto.getRandomValues(new Uint8Array(o));
-  for (; o--; )
-    i += V[c[o] & 63];
+const k = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
+let B = (r = 21) => {
+  let i = "", c = crypto.getRandomValues(new Uint8Array(r));
+  for (; r--; )
+    i += k[c[r] & 63];
   return i;
 };
-const B = {
+const G = {
   message: "The input cannot be processed"
-}, G = {
+}, W = {
   message: "The value does not match the required pattern of {{constraint}}",
   constraint: "pattern"
-}, W = {
+}, z = {
   message: "The value is too big. It cannot be bigger than {{constraint}}.",
   constraint: "max"
-}, z = {
+}, H = {
   message: "The value is too small. It must be at least {{constraint}}.",
   constraint: "min"
-}, H = {
+}, P = {
   message: "The value is not in within the correct step interval of {{constraint}}",
   constraint: "step"
-}, P = {
+}, Z = {
   message: "The value is too long. It cannot be longer than {{constraint}} characters.",
   constraint: "maxlength"
-}, Z = {
+}, j = {
   message: "The value is too short. It must be at least {{constraint}} characters long.",
   constraint: "minlength"
-}, j = {
+}, X = {
   message: "The value must be of type {{constraint}}",
   constraint: "type",
   email: "The value must be an email address",
   url: "The value must be a URL in the format http://url.com",
   tel: "The value must be a phone number"
-}, X = {
+}, Y = {
   message: "Please provide a value",
   constraint: "required"
-}, Y = {
-  badInput: B,
-  patternMismatch: G,
-  rangeOverflow: W,
-  rangeUnderflow: z,
-  stepMismatch: H,
-  tooLong: P,
-  tooShort: Z,
-  typeMismatch: j,
-  valueMissing: X
 }, J = {
-  message: "Die Eingabe kann nicht verarbeitet werden"
+  badInput: G,
+  patternMismatch: W,
+  rangeOverflow: z,
+  rangeUnderflow: H,
+  stepMismatch: P,
+  tooLong: Z,
+  tooShort: j,
+  typeMismatch: X,
+  valueMissing: Y
 }, K = {
+  message: "Die Eingabe kann nicht verarbeitet werden"
+}, Q = {
   message: "Der Eingabewert entspricht nicht dem erforderlichen Format {{constraint}}",
   constraint: "pattern"
-}, Q = {
+}, ee = {
   message: "Der Eingabewert ist zu groß. Der Wert darf nicht größer sein als {{constraint}}.",
   constraint: "max"
-}, ee = {
+}, te = {
   message: "Der Eingabewert ist zu klein. Der Wert darf nicht kleiner sein als {{constraint}}.",
   constraint: "min"
-}, te = {
+}, ne = {
   message: "Der Eingabewert ist nicht in der richtigen Schrittfolge von {{constraint}}",
   constraint: "step"
-}, ne = {
+}, se = {
   message: "Der Eingabewert ist zu lang. Der Wert darf nicht mehr als {{constraint}} Zeichen haben.",
   constraint: "maxlength"
-}, se = {
+}, ae = {
   message: "Der Eingabewert ist zu kurz. Der Wert muss mindestens {{constraint}} Zeichen lang sein.",
   constraint: "minlength"
-}, ae = {
+}, oe = {
   message: "Der Eingabewert muss vom Typ {{constraint}} sein",
   constraint: "type",
   email: "Der Eingabewert muss eine E-Mail Adresse sein",
   tel: "Der Eingabewert muss eine Telefonnummer sein",
   url: "Der Eingabewert muss eine URL im Format http://url.com sein"
-}, oe = {
+}, re = {
   message: "Bitte machen Sie eine Eingabe",
   constraint: "required"
-}, re = {
-  badInput: J,
-  patternMismatch: K,
-  rangeOverflow: Q,
-  rangeUnderflow: ee,
-  stepMismatch: te,
-  tooLong: ne,
-  tooShort: se,
-  typeMismatch: ae,
-  valueMissing: oe
-}, ie = [
+}, ie = {
+  badInput: K,
+  patternMismatch: Q,
+  rangeOverflow: ee,
+  rangeUnderflow: te,
+  stepMismatch: ne,
+  tooLong: se,
+  tooShort: ae,
+  typeMismatch: oe,
+  valueMissing: re
+}, ce = [
   "badInput",
   "customError",
   "patternMismatch",
@@ -94,34 +94,37 @@ const B = {
   "tooShort",
   "typeMismatch",
   "valueMissing"
-], M = "form", C = ".afova-message-collector", ce = {
-  selector: M,
-  collectSelector: C,
+], A = "form", I = ".afova-message-collector", le = {
+  selector: A,
+  collectSelector: I,
   validateOnChange: !1,
   focusOnFirstError: !0
-}, g = {
-  en: Y,
-  de: re
-}, le = ["submit", "reset", "button", "fieldset"];
-function me() {
-  let o = navigator.language, i = g[o];
+}, d = {
+  en: J,
+  de: ie
+}, me = ["submit", "reset", "button", "fieldset"];
+function fe() {
+  let r = navigator.language, i = d[r];
   if (i)
-    return console.log(`afova is using locale=[${o}]`), i;
-  const c = o.indexOf("-");
-  return c && (o = o.substring(0, c), o && (i = g[o])), i ? (console.log(`afova is using language=[${o}]`), i) : (console.log("afova is using language=[en]"), g.en);
+    return console.log(`afova is using locale=[${r}]`), i;
+  const c = r.indexOf("-");
+  return c && (r = r.substring(0, c), r && (i = d[r])), i ? (console.log(`afova is using language=[${r}]`), i) : (console.log("afova is using language=[en]"), d.en);
 }
-function fe(o) {
-  let i = me();
+function ue(r) {
+  let i = fe();
   function c(e) {
-    e.id || (e.id = `afova-${k()}`);
+    e.id || (e.id = `afova-${B()}`);
   }
-  function d(e) {
-    const t = _(e) || e;
+  function v(e) {
+    const t = M(e) || e;
     return document.querySelector(
       `#${t.id}-afova-message-container`
     );
   }
-  function y(e) {
+  function g(e) {
+    p(e) ? e.style.display = "none" : e.style.display = "";
+  }
+  function h(e) {
     const t = e.closest("form");
     if (t) {
       const n = t.getAttribute("afova-message-collector-id");
@@ -130,14 +133,14 @@ function fe(o) {
     }
     return null;
   }
-  function A(e) {
+  function p(e) {
     return e.children.length == 0;
   }
-  function I(e) {
+  function S(e) {
     var n;
-    let t = d(e);
+    let t = v(e);
     if (!t) {
-      const s = _(e) || e;
+      const s = M(e) || e;
       t = document.createElement("ul"), (n = s.parentNode) == null || n.insertBefore(
         t,
         s
@@ -145,7 +148,7 @@ function fe(o) {
     }
     return t;
   }
-  function S(e, t) {
+  function w(e, t) {
     if (e != "customError") {
       let n = i[e];
       if (n) {
@@ -155,10 +158,10 @@ function fe(o) {
           i[e][t.type] || //a default message has last prio
           n.message
         );
-        const r = t.getAttribute(s || "");
-        if (r) {
+        const o = t.getAttribute(s || "");
+        if (o) {
           const l = new RegExp("{{\\s*constraint\\s*}}", "ig");
-          a = a.replace(l, r);
+          a = a.replace(l, o);
         }
         return a;
       }
@@ -170,164 +173,164 @@ function fe(o) {
     const t = u(e);
     if (t) {
       let a = t.querySelector(".afova-label");
-      if (a)
-        return a.innerText;
-      if (t.tagName != "LABEL" ? a = t.querySelector("label") : a = t, a) {
-        let r = "";
+      if (!a && t.tagName != "LABEL" && (a = t.querySelector("label")), a || (a = t), a) {
+        let o = "";
         for (const l of a.childNodes)
-          l.nodeType == Node.TEXT_NODE && (r && ((n = l.textContent) != null && n.trim()) && (r += " "), (s = l.textContent) != null && s.trim() && (r += l.textContent.trim()));
-        return r;
+          l.nodeType == Node.TEXT_NODE && (o && ((n = l.textContent) != null && n.trim()) && (o += " "), (s = l.textContent) != null && s.trim() && (o += l.textContent.trim()));
+        return o;
       }
     }
     return "";
   }
-  function v(e, t) {
-    const n = y(e);
+  function b(e, t) {
+    const n = h(e);
     if (n) {
       let s;
-      n.tagName == "UL" || n.tagName == "OL" ? s = document.createElement("LI") : s = document.createElement("DIV"), s.setAttribute("afova-message-for", e.id), s.classList.add("afova-message");
+      n.tagName == "UL" || n.tagName == "OL" ? s = document.createElement("LI") : s = document.createElement("DIV"), s.setAttribute("afova-message-for", e.id), s.classList.add("afova-collected-message");
       const a = x(e);
       if (a) {
         const l = document.createElement("DIV");
-        l.innerText = a, s.appendChild(l);
+        l.innerText = a, l.classList.add("afova-message-label"), s.appendChild(l);
       }
-      const r = document.createElement("DIV");
-      r.innerText = t, s.appendChild(r), n.appendChild(s);
+      const o = document.createElement("DIV");
+      o.innerText = t, o.classList.add("afova-message"), s.appendChild(o), n.appendChild(s), g(n);
     }
   }
-  function w(e) {
-    const t = I(e), n = e.validity;
+  function D(e) {
+    const t = S(e), n = e.validity;
     let s;
     t.tagName == "UL" || t.tagName == "OL" ? s = document.createElement("LI") : s = document.createElement("DIV"), s.classList.add("afova-message"), s.setAttribute("afova-message-for", e.id), t.appendChild(s);
-    for (const a of ie)
+    for (const a of ce)
       if (n[a]) {
-        let r = S(
+        let o = w(
           a,
           e
         );
-        r && (s.innerHTML = r, v(e, r));
+        o && (s.innerHTML = o, b(e, o));
         break;
       }
-    s.innerHTML || (s.innerHTML = e.dataset.errorInvalid || i.badInput.message, v(
+    s.innerHTML || (s.innerHTML = e.dataset.errorInvalid || i.badInput.message, b(
       e,
       e.dataset.errorInvalid || i.badInput.message
     ));
   }
-  function h(e) {
+  function E(e) {
     e.removeAttribute("aria-invalid"), e.removeAttribute("aria-errormessage");
     const t = document.querySelectorAll(
       `[afova-message-for="${e.id}"]`
     );
-    for (const a of t)
-      a.remove();
-    const n = d(e);
-    n && A(n) && n.remove();
+    for (const o of t)
+      o.remove();
+    const n = v(e);
+    n && p(n) && n.remove();
     let s = u(e);
     s && document.querySelectorAll(
       `#${s.id} [aria-invalid].afova-control`
     ).length == 0 && s.classList.remove("afova-active");
+    const a = h(e);
+    a && g(a);
   }
-  function D(e, t) {
+  function O(e, t) {
     const n = u(e);
-    n && n.classList.add("afova-active"), e.setAttribute("aria-invalid", "true"), w(e), t && e.focus();
+    n && n.classList.add("afova-active"), e.setAttribute("aria-invalid", "true"), D(e), t && e.focus();
   }
-  function p(e, t) {
-    return h(e), e.validity.valid || D(e, t), e.validity.valid;
+  function L(e, t) {
+    return E(e), e.validity.valid || O(e, t), e.validity.valid;
   }
   function f(e) {
     const t = [];
     for (const n of e.elements)
-      le.includes(n.type) || t.push(n);
+      me.includes(n.type) || t.push(n);
     return t;
   }
-  function b(e, t) {
+  function _(e, t) {
     let n;
     for (const s of f(e)) {
-      const a = p(s);
+      const a = L(s);
       !n && !a && (n = s);
     }
     n && (t == null || t.preventDefault(), m.focusOnFirstError && n.focus());
   }
-  function O(e) {
+  function N(e) {
     for (let t of f(e))
-      h(t);
-  }
-  function N() {
-    const e = document.querySelectorAll(
-      m.selector || M
-    );
-    for (const t of e) {
-      t.setAttribute("novalidate", ""), c(t), t.addEventListener("submit", E), t.addEventListener("reset", L);
-      for (const s of f(t))
-        q(s);
-      const n = t.querySelector(
-        m.collectSelector || C
-      );
-      n && (c(n), t.setAttribute("afova-message-collector-id", n.id), n.classList.add("afova-message-collector"));
-    }
-  }
-  function E(e) {
-    e.preventDefault(), b(e.target, e);
-  }
-  function L(e) {
-    O(e.target);
+      E(t);
   }
   function $() {
-    const e = document.querySelectorAll(m.selector || "form");
+    const e = document.querySelectorAll(
+      m.selector || A
+    );
     for (const t of e) {
-      t.removeAttribute("novalidate"), t.removeEventListener("submit", E), t.removeEventListener("reset", L);
-      for (const n of f(t))
-        F(n);
+      t.setAttribute("novalidate", ""), c(t), t.addEventListener("submit", T), t.addEventListener("reset", y);
+      for (const s of f(t))
+        F(s);
+      const n = t.querySelector(
+        m.collectSelector || I
+      );
+      n && (c(n), g(n), t.setAttribute("afova-message-collector-id", n.id), n.classList.add("afova-message-collector"));
     }
   }
-  function q(e) {
-    c(e), u(e), e.classList.add("afova-control"), m.validateOnChange && e.addEventListener("change", T);
-  }
   function T(e) {
-    p(e.target, !0);
+    e.preventDefault(), _(e.target, e);
+  }
+  function y(e) {
+    N(e.target);
+  }
+  function q() {
+    const e = document.querySelectorAll(m.selector || "form");
+    for (const t of e) {
+      t.removeAttribute("novalidate"), t.removeEventListener("submit", T), t.removeEventListener("reset", y);
+      for (const n of f(t))
+        U(n);
+    }
   }
   function F(e) {
-    e.classList.remove("afova-control"), e.removeEventListener("change", T);
+    c(e), u(e), e.classList.add("afova-control"), m.validateOnChange && e.addEventListener("change", C);
+  }
+  function C(e) {
+    L(e.target, !0);
+  }
+  function U(e) {
+    e.classList.remove("afova-control"), e.removeEventListener("change", C);
   }
   function u(e) {
     let t = e.closest(".afova-context");
     return t || (t = e.closest("label")), t && (c(t), t.classList.add("afova-context"), t.tagName == "LABEL" && !t.htmlFor && (t.htmlFor = e.id)), t;
   }
-  function _(e) {
+  function M(e) {
     const t = e.closest(".afova-group");
     return t && c(t), t;
   }
-  function U() {
+  function R() {
     const e = document.querySelectorAll(m.selector || "form");
     for (const t of e)
-      b(t);
+      _(t);
   }
-  function R() {
+  function V() {
     const e = document.querySelectorAll(m.selector || "form");
     for (const t of e)
       if (!t.checkValidity())
         return !0;
     return !1;
   }
-  let m = Object.assign({}, ce, o);
-  return N(), {
+  let m = Object.assign({}, le, r);
+  return $(), {
     /**
      * Will remove all event listeners that have been added by afova and
      * will clear all afova messages.
      */
-    clear: () => $(),
+    clear: () => q(),
     /**
     * Trigger the validation. In most cases not required, as afova will trigger
      the validation automatically when submitting any of the selected forms.
     */
-    validate: () => U(),
+    validate: () => R(),
     /**
      * Verify if any of the forms selected according to the settings object is invalid
      * @returns true if at least one form is invalid
      */
-    isInvalid: () => R()
+    isInvalid: () => V()
   };
 }
 export {
-  fe as afova
+  ue as afova
 };

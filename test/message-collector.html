@@ -15,26 +15,27 @@
         <h1>Test message collector</h1>
         <form>
             <ul class="afova-message-collector"></ul>
-            <input type="submit" value="Submit the form" />
-            <input type="reset" value="Reset the form" />
-
-            <label for="email-type"
-                ><div class="afova-label">An email input</div>
-                <div class="description">Please provide an email address</div>
-                <input id="email-type" type="email" required />
-            </label>
-
-            <label for="url-type"
-                ><div class="afova-label">A url input</div>
-                <div class="description">Please provide a url address</div>
-                <input id="url-type" type="url" required />
-            </label>
-
-            <label for="tel-type"
-                >A tel input
-                <div class="description">Please provide a tel input</div>
-                <input id="tel-type" type="tel" required />
-            </label>
+            <form>
+                <input type="submit" value="Submit the form" />
+                <input type="reset" value="Reset the form" />
+                <label
+                    >A reqired text input
+                    <input
+                        type="text"
+                        required
+                        data-required="Please provide text input"
+                    />
+                </label>
+                <label
+                    >A min length text input
+                    <input
+                        id="min-text-length"
+                        type="text"
+                        minlength="5"
+                        data-minlength="The text must be at least 5 characters of length"
+                    />
+                </label>
+            </form>
         </form>
     </body>
     <script type="module">
