@@ -27,11 +27,11 @@
     "constraint": "minlength"
   },
   "typeMismatch": {
-    "message": "The value must be of type {{constraint}}",
+    "message": "The value {{input}} must be of type {{constraint}}",
     "constraint": "type",
-    "email": "The value must be an email address",
-    "url": "The value must be a URL in the format http://url.com",
-    "tel": "The value must be a phone number"
+    "email": "The value {{input}} is not a valid email address. Please provide an email address.",
+    "url": "The value {{inptu}} is not a valid URL. Please provide a URL in the format http://url.com.",
+    "tel": "The value {{input}} is not a valid phone number. Please provide a phone number."
   },
   "valueMissing": {
     "message": "Please provide a value",

@@ -200,11 +200,19 @@ export function afova(options?: AfovaSettings): AfovaObject {
           //a default message has last prio
           defaultMessage.message;
 
+        //show the constraint
         const constraintValue = control.getAttribute(constraint || "");
         if (constraintValue) {
-          const regex = new RegExp(`\{\{\\s*constraint\\s*\}\}`, "ig");
+          let regex = new RegExp(`\{\{\\s*constraint\\s*\}\}`, "ig");
           message = message.replace(regex, constraintValue);
         }
+
+        //show the input value
+        let regex = new RegExp(`\{\{\\s*input\\s*\}\}`, "ig");
+        message = message.replace(
+          regex,
+          (control as unknown as HTMLInputElement).value,
+        );
 
         return message;
       }
@@ -426,13 +434,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
       //switch off default browser form validation
       form.setAttribute("novalidate", "");
 
-      console.log(settings);
-
       const formMessageContainer = form.querySelector(
         settings.formMessageSelector || DEFAULT_FORM_CONTAINER_SELECTOR,
       );
-
-      console.log(formMessageContainer);
 
       if (formMessageContainer) {
         _ensureId(formMessageContainer);

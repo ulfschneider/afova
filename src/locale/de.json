@@ -27,11 +27,11 @@
     "constraint": "minlength"
   },
   "typeMismatch": {
-    "message": "Der Eingabewert muss vom Typ {{constraint}} sein",
+    "message": "Der Eingabewert {{input}} muss vom Typ {{constraint}} sein",
     "constraint": "type",
-    "email": "Der Eingabewert muss eine E-Mail Adresse sein",
-    "tel": "Der Eingabewert muss eine Telefonnummer sein",
-    "url": "Der Eingabewert muss eine URL im Format http://url.com sein"
+    "email": "Der Eingabewert {{input}} ist keine E-Mail Adresse. Bitte geben Sie eine E-Mail Adresse ein.",
+    "tel": "Der Eingabewert {{input}} ist keine Telefonnummer. Bitte geben Sie eine Telefonnummer ein.",
+    "url": "Der Eingabewert {{input}} ist kein URL. Bitte geben Sie eine URL im Format http://url.com ein."
   },
   "valueMissing": {
     "message": "Bitte machen Sie eine Eingabe",

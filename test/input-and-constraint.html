@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="Cache-Control" content="no-store, max-age=0" />
+        <title>Test input and constraint</title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+    <style></style>
+
+    <body>
+        <a href="/">Home</a>
+        <h1>Test input and constraint</h1>
+        <form>
+            <input type="submit" value="Submit the form" />
+            <input type="reset" value="Reset the form" />
+
+            <label for="email-type"
+                >An email input
+                <div class="description">Please provide an email address</div>
+                <input
+                    id="email-type"
+                    type="email"
+                    required
+                    data-type="{{input}} is not a valid email address"
+                />
+            </label>
+
+            <label for="min-max-text-length-custom"
+                >A min length and max length text input with custom failure
+                message
+                <div class="description">
+                    The text must be at least 5 characters of length and must
+                    not exceed 8 characters of length.
+                </div>
+                <input
+                    id="min-max-text-length-custom"
+                    type="text"
+                    minlength="5"
+                    maxlength="8"
+                    pattern="[0-9]*"
+                    data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
+                    data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
+                    data-pattern="Only digits are allowed: {{constraint}}"
+                />
+            </label>
+        </form>
+    </body>
+    <script type="module">
+        import { afova } from "/src/afova.ts";
+        const afv = afova();
+    </script>
+</html>
