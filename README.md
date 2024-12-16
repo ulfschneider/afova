@@ -166,7 +166,32 @@ The settings are optional.
 
 All constraint violations that can be checked with the Constraint Validation API are validated by afova.
 In case the default violation messages of afova shouldn´t be used, you can define custom constraint violation messages
-as `data` attributes for each input control. The following attributes are available:
+as `data` attributes for each input control. Use the placeholders `{{input}}` and `{{constraint}}` in your custom messages to show the current user input and to refer to th4e violated constraint setting.
+
+E.g.:
+
+```html
+<label for="min-max-text-length-custom"
+    >A min length and max length text input with custom failure
+    message
+    <div class="description">
+        The text must be at least 5 characters of length and must
+        not exceed 8 characters of length. And it can only contain digits.
+    </div>
+    <input
+        id="min-max-text-length-custom"
+        type="text"
+        minlength="5"
+        maxlength="8"
+        pattern="[0-9]*"
+        data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
+        data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
+        data-pattern="Only digits are allowed: {{constraint}}"
+    />
+</label>
+```
+
+The following attributes are available:
 
 `data-bad-input`
 : The browser is unable to handle the input value
@@ -175,10 +200,10 @@ as `data` attributes for each input control. The following attributes are availa
 : The value of a field doesn´t comply to the pattern of the `pattern` attribute
 
 `data-max`
-: The number value of a field is bigger than the value of the `max` attribute
+: The number value of a field is greater than the value of the `max` attribute
 
 `data-min`
-: The number value of a field is smaller than the value of the `min` attribute
+: The number value of a field is less than the value of the `min` attribute
 
 `data-step`
 : The number value of field is not evenly divisable by the value of the `step` attribute
