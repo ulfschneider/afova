@@ -1,6 +1,6 @@
 export interface AfovaSettings {
     selector?: string;
-    collectSelector?: string;
+    formMessageSelector?: string;
     validateOnChange?: boolean;
     focusOnFirstError?: boolean;
 }

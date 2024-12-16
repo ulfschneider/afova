@@ -4,7 +4,7 @@ import constraint_violation_messages_de from "./locale/de.json";
 
 export interface AfovaSettings {
   selector?: string;
-  collectSelector?: string;
+  formMessageSelector?: string;
   validateOnChange?: boolean;
   focusOnFirstError?: boolean;
 }
@@ -77,11 +77,11 @@ export interface AfovaObject {
 }
 
 const DEFAULT_SELECTOR = "form";
-const DEFAULT_COLLECT_SELECTOR = ".afova-message-collector";
+const DEFAULT_FORM_CONTAINER_SELECTOR = ".afova-form-message-container";
 
 const DEFAULT_SETTINGS: AfovaSettings = {
   selector: DEFAULT_SELECTOR,
-  collectSelector: DEFAULT_COLLECT_SELECTOR,
+  formMessageSelector: DEFAULT_FORM_CONTAINER_SELECTOR,
   validateOnChange: false,
   focusOnFirstError: true,
 };
@@ -141,20 +141,20 @@ export function afova(options?: AfovaSettings): AfovaObject {
     );
   }
 
-  function _setMessageCollectorVisibility(collector: Element): void {
-    if (_isEmpty(collector)) {
-      (collector as HTMLElement).style.display = "none";
+  function _setFormMessageContainerVisibility(container: Element): void {
+    if (_isEmpty(container)) {
+      (container as HTMLElement).style.display = "none";
     } else {
-      (collector as HTMLElement).style.display = "";
+      (container as HTMLElement).style.display = "";
     }
   }
 
-  function _findMessageCollector(control: Element): Element | null {
-    const form = control.closest("form");
+  function _findFormMessageContainer(container: Element): Element | null {
+    const form = container.closest("form");
     if (form) {
-      const collectorId = form.getAttribute("afova-message-collector-id");
-      if (collectorId) {
-        return document.querySelector(`#${collectorId}`);
+      const containerId = form.getAttribute("afova-form-message-container-id");
+      if (containerId) {
+        return document.querySelector(`#${containerId}`);
       }
     }
     return null;
@@ -241,14 +241,14 @@ export function afova(options?: AfovaSettings): AfovaObject {
     return "";
   }
 
-  function _collectMessage(control: Element, message: string) {
-    const messageCollector = _findMessageCollector(control);
+  function _putFormMessage(control: Element, message: string) {
+    const messageContainer = _findFormMessageContainer(control);
 
-    if (messageCollector) {
+    if (messageContainer) {
       let collectedMessageElement: Element;
       if (
-        messageCollector.tagName == "UL" ||
-        messageCollector.tagName == "OL"
+        messageContainer.tagName == "UL" ||
+        messageContainer.tagName == "OL"
       ) {
         collectedMessageElement = document.createElement("LI");
       } else {
@@ -269,9 +269,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
       messageElement.classList.add("afova-message");
       collectedMessageElement.appendChild(messageElement);
 
-      messageCollector.appendChild(collectedMessageElement);
+      messageContainer.appendChild(collectedMessageElement);
 
-      _setMessageCollectorVisibility(messageCollector);
+      _setFormMessageContainerVisibility(messageContainer);
     }
   }
 
@@ -298,7 +298,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
         );
         if (message) {
           messageElement.innerHTML = message;
-          _collectMessage(control, message);
+          _putFormMessage(control, message);
         }
         break;
       }
@@ -308,7 +308,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
       messageElement.innerHTML =
         control.dataset.errorInvalid ||
         constraintViolationMessages.badInput.message;
-      _collectMessage(
+      _putFormMessage(
         control,
         control.dataset.errorInvalid ||
           constraintViolationMessages.badInput.message,
@@ -343,9 +343,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
       }
     }
 
-    const messageCollector = _findMessageCollector(control);
+    const messageCollector = _findFormMessageContainer(control);
     if (messageCollector) {
-      _setMessageCollectorVisibility(messageCollector);
+      _setFormMessageContainerVisibility(messageCollector);
     }
   }
 
@@ -415,9 +415,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
       settings.selector || DEFAULT_SELECTOR,
     );
     for (const form of forms) {
-      //switch off default browser form validation
-      form.setAttribute("novalidate", "");
-
       _ensureId(form);
 
       form.addEventListener("submit", _formSubmitListener);
@@ -426,15 +423,25 @@ export function afova(options?: AfovaSettings): AfovaObject {
         _prepareControl(control);
       }
 
-      const collector = form.querySelector(
-        settings.collectSelector || DEFAULT_COLLECT_SELECTOR,
+      //switch off default browser form validation
+      form.setAttribute("novalidate", "");
+
+      console.log(settings);
+
+      const formMessageContainer = form.querySelector(
+        settings.formMessageSelector || DEFAULT_FORM_CONTAINER_SELECTOR,
       );
 
-      if (collector) {
-        _ensureId(collector);
-        _setMessageCollectorVisibility(collector);
-        form.setAttribute("afova-message-collector-id", collector.id);
-        collector.classList.add("afova-message-collector");
+      console.log(formMessageContainer);
+
+      if (formMessageContainer) {
+        _ensureId(formMessageContainer);
+        _setFormMessageContainerVisibility(formMessageContainer);
+        form.setAttribute(
+          "afova-form-message-container-id",
+          formMessageContainer.id,
+        );
+        formMessageContainer.classList.add("afova-form-message-container");
       }
     }
   }

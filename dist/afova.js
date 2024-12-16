@@ -94,9 +94,9 @@ const G = {
   "tooShort",
   "typeMismatch",
   "valueMissing"
-], A = "form", I = ".afova-message-collector", le = {
+], A = "form", I = ".afova-form-message-container", le = {
   selector: A,
-  collectSelector: I,
+  formMessageSelector: I,
   validateOnChange: !1,
   focusOnFirstError: !0
 }, d = {
@@ -116,7 +116,7 @@ function ue(r) {
     e.id || (e.id = `afova-${B()}`);
   }
   function v(e) {
-    const t = M(e) || e;
+    const t = C(e) || e;
     return document.querySelector(
       `#${t.id}-afova-message-container`
     );
@@ -127,7 +127,7 @@ function ue(r) {
   function h(e) {
     const t = e.closest("form");
     if (t) {
-      const n = t.getAttribute("afova-message-collector-id");
+      const n = t.getAttribute("afova-form-message-container-id");
       if (n)
         return document.querySelector(`#${n}`);
     }
@@ -140,7 +140,7 @@ function ue(r) {
     var n;
     let t = v(e);
     if (!t) {
-      const s = M(e) || e;
+      const s = C(e) || e;
       t = document.createElement("ul"), (n = s.parentNode) == null || n.insertBefore(
         t,
         s
@@ -255,52 +255,56 @@ function ue(r) {
     for (let t of f(e))
       E(t);
   }
-  function $() {
+  function F() {
     const e = document.querySelectorAll(
       m.selector || A
     );
     for (const t of e) {
-      t.setAttribute("novalidate", ""), c(t), t.addEventListener("submit", T), t.addEventListener("reset", y);
+      c(t), t.addEventListener("submit", M), t.addEventListener("reset", T);
       for (const s of f(t))
-        F(s);
+        q(s);
+      t.setAttribute("novalidate", ""), console.log(m);
       const n = t.querySelector(
-        m.collectSelector || I
+        m.formMessageSelector || I
       );
-      n && (c(n), g(n), t.setAttribute("afova-message-collector-id", n.id), n.classList.add("afova-message-collector"));
+      console.log(n), n && (c(n), g(n), t.setAttribute(
+        "afova-form-message-container-id",
+        n.id
+      ), n.classList.add("afova-form-message-container"));
     }
   }
-  function T(e) {
+  function M(e) {
     e.preventDefault(), _(e.target, e);
   }
-  function y(e) {
+  function T(e) {
     N(e.target);
   }
-  function q() {
+  function $() {
     const e = document.querySelectorAll(m.selector || "form");
     for (const t of e) {
-      t.removeAttribute("novalidate"), t.removeEventListener("submit", T), t.removeEventListener("reset", y);
+      t.removeAttribute("novalidate"), t.removeEventListener("submit", M), t.removeEventListener("reset", T);
       for (const n of f(t))
-        U(n);
+        R(n);
     }
   }
-  function F(e) {
-    c(e), u(e), e.classList.add("afova-control"), m.validateOnChange && e.addEventListener("change", C);
+  function q(e) {
+    c(e), u(e), e.classList.add("afova-control"), m.validateOnChange && e.addEventListener("change", y);
   }
-  function C(e) {
+  function y(e) {
     L(e.target, !0);
   }
-  function U(e) {
-    e.classList.remove("afova-control"), e.removeEventListener("change", C);
+  function R(e) {
+    e.classList.remove("afova-control"), e.removeEventListener("change", y);
   }
   function u(e) {
     let t = e.closest(".afova-context");
     return t || (t = e.closest("label")), t && (c(t), t.classList.add("afova-context"), t.tagName == "LABEL" && !t.htmlFor && (t.htmlFor = e.id)), t;
   }
-  function M(e) {
+  function C(e) {
     const t = e.closest(".afova-group");
     return t && c(t), t;
   }
-  function R() {
+  function U() {
     const e = document.querySelectorAll(m.selector || "form");
     for (const t of e)
       _(t);
@@ -313,17 +317,17 @@ function ue(r) {
     return !1;
   }
   let m = Object.assign({}, le, r);
-  return $(), {
+  return F(), {
     /**
      * Will remove all event listeners that have been added by afova and
      * will clear all afova messages.
      */
-    clear: () => q(),
+    clear: () => $(),
     /**
     * Trigger the validation. In most cases not required, as afova will trigger
      the validation automatically when submitting any of the selected forms.
     */
-    validate: () => R(),
+    validate: () => U(),
     /**
      * Verify if any of the forms selected according to the settings object is invalid
      * @returns true if at least one form is invalid

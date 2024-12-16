@@ -107,6 +107,7 @@ import { afova } from 'afova'
 //shown are the default options, you can omit the options object
 const afv = afova({
     selector: "form",
+    formMessageSelector: ".afova-form-message-container",
     focusOnFirstError: true,
     validateOnChange: false,
     });
@@ -129,6 +130,7 @@ Then you can integrate afova into your web pages as follows:
     //shown are the default options, you can omit the options object
     var afv = afova({
         selector: "form",
+        formMessageSelector: ".afova-form-message-container",
         focusOnFirstError: true,
         validateOnChange: false,
     });
@@ -152,6 +154,9 @@ The settings are optional.
 
 `selector`
 : The default value is `form`, which will make afova search for *all* forms on a web page and take over validation control.
+
+`formMessageSelector`
+: To show constraint violation messages not only along with the invalid input controls, but also in a list along with the form, you can have a form message container. The form message container is identified with the CSS class `.afova-form-message-container`, which will let afova search for the container inside of the form and collect all constraint violation messages there. The form message container is optional, because violation messages anyway will be displayed along with the invalid input controls.
 
 `focusOnFirstError`
 : The default value is `true`, which leads to focusing the first input control with a constraint violation when a form is validated during submit.
@@ -192,13 +197,13 @@ as `data` attributes for each input control. The following attributes are availa
 
 Assigning your custom violation messages is a good way to have internationalized messages. In case you do not use your own messages, afova will apply German and English default validation messages, according to the web browsers locale setting.
 
-## Collecting messages
+## Collecting messages for the form
 
-All constraint violation messages of the entire form can be collected and listed together inside of a message collector. The message collector must be inside of the validated form and is described to afova by assigning the CSS class `afova-message-collector`. E.g.:
+All constraint violation messages of the entire form can be collected and listed together inside of a form message contgainer. The form message container must be inside of the validated form and is described to afova by assigning the CSS class `afova-form-message-container`. E.g., when the starting form looks like:
 
 ```html
 <form>
-    <ul class="afova-message-collector"></ul>
+    <ul class="afova-form-message-container"></ul>
     <input type="submit" value="Submit the form" />
     <input type="reset" value="Reset the form" />
     <label
@@ -220,16 +225,16 @@ All constraint violation messages of the entire form can be collected and listed
 </form>
 ```
 
-Will be transformed by afova into:
+It be transformed by afova into:
 
 ```html
 <form
     novalidate=""
     id="afova-HZ9_7J1fJI_VMYGrfJln9"
-    afova-message-collector-id="afova-cMvV7qnlQRK07g71a_Ban"
+    afova-form-message-container-id="afova-cMvV7qnlQRK07g71a_Ban"
 >
     <ul
-        class="afova-message-collector"
+        class="afova-form-message-container"
         id="afova-cMvV7qnlQRK07g71a_Ban"
         style="display: none"
     ></ul>
@@ -270,10 +275,10 @@ The invalid form cannot be submitted and will be prepared by afova as follows:
 <form
     novalidate=""
     id="afova-ZrtiyJtHnlDlNmeTuhu-o"
-    afova-message-collector-id="afova-eBosuZX7IAKictsYD5zfD"
+    afova-form-message-container-id="afova-eBosuZX7IAKictsYD5zfD"
 >
     <ul
-        class="afova-message-collector"
+        class="afova-form-message-container"
         id="afova-eBosuZX7IAKictsYD5zfD"
     >
         <li
@@ -345,11 +350,11 @@ The invalid form cannot be submitted and will be prepared by afova as follows:
 </form>
 ```
 
-Notice the label text of each control is extracted and displayed along with the constraint violation message inside of the collector. To have more control over what label information is shown in the collector you can put a marker on the desired text with the CSS class `afova-label`.
+Notice the label text of each control is extracted and displayed along with the constraint violation message inside of the form message container. To have more control over what label information is shown in the form message container you can put a marker on the desired text with the CSS class `afova-label`.
 
 ## Styling and identifiying
 
-afova does not come with any CSS styles. The following CSS class names are assigned during validation processing:
+afova does not come with any CSS styles. The following CSS class names are assigned during validation processing or can be used to activate afova functionality:
 
 `:invalid`
 : Every invalid control can be styled with the `:invalid` selector.
@@ -379,8 +384,8 @@ afova does not come with any CSS styles. The following CSS class names are assig
 `.afova-control`
 : Every input control validated by afova has the CSS class `afova-control` assigned to it.
 
-`.afova-message-collector`
-: Define a collector for all constraint violation messages of a form by assigning the CSS class `afova-message-collector`.
+`.afova-form-message-container`
+: Define a collector for all constraint violation messages of a form by assigning the CSS class `afova-form-message-container`.
 
 `.afova-label`
 : The message collector will show the control´s label together with the constrain violation message. By default the label text is the text content of the `label` element. To have more control over what text is shown in the collector, assign the class `afova-label` to any text content along with the validated control.
