@@ -214,8 +214,6 @@ function de(r) {
     }
   }
   function O(e) {
-    if (x(e))
-      return;
     const t = I(e), n = e.validity;
     let s;
     t.tagName == "UL" || t.tagName == "OL" ? s = document.createElement("LI") : s = document.createElement("DIV"), s.classList.add("afova-message"), s.setAttribute("afova-message-for", e.id), t.appendChild(s);
@@ -251,7 +249,7 @@ function de(r) {
   }
   function N(e, t) {
     const n = m(e);
-    n && n.classList.add("afova-active"), e.setAttribute("aria-invalid", "true"), O(e), t && e.focus();
+    n && n.classList.add("afova-active"), e.setAttribute("aria-invalid", "true"), x(e) || (O(e), t && e.focus());
   }
   function L(e, t) {
     return E(e), e.validity.valid || N(e, t), e.validity.valid;

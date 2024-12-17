@@ -304,11 +304,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _putMessage(control: HTMLObjectElement): void {
-    if (_isValidatedRadioGroup(control)) {
-      //a group of radio controls should only be validated once
-      return;
-    }
-
     const messageContainer = _ensureAndGetMessageContainer(control);
 
     const validity = control.validity;
@@ -392,10 +387,14 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
     control.setAttribute("aria-invalid", "true");
 
-    _putMessage(control);
+    if (!_isValidatedRadioGroup(control)) {
+      //a group of radio controls should only be validated once
 
-    if (focus) {
-      control.focus();
+      _putMessage(control);
+
+      if (focus) {
+        control.focus();
+      }
     }
   }
 
