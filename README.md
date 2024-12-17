@@ -1,8 +1,41 @@
 # afova
 
-afova (accessible form validation) is leveraging the Constraint Validation API for client-side HTML form validation.
+afova (accessible form validation) is a progressive enhancement to the [Constraint Validation API](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation) for client-side HTML form validation.
 
-afova will identify the constraints assigned to input controls contained by HTML form elements, validate the form during submit, and report constraint violations.
+afova will allow you to:
+- pick up any of the constraining attributes of HTML input controls (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, and `maxlength`) and show constraint violation messages to the user,
+- describe violation messages with corresponding `data` attributes (`data-required`, `data-type`, `data-step`, `data-pattern`, `data-min`, `data-max`, `data-minlength`, and `data-maxlength`, and `data-bad-input`),
+- use placeholders within the violation messages to refer to the current user input (placeholder is `{{input}}`) and to the violated constraint setting (placeholder is `{{constraint}}`),
+- style constraint violation messages with CSS.
+
+Below is an example of how afova allows to define constraint violation messages:
+
+```html
+<form>
+    <label for="min-max"
+        >A min length and max length text input with custom failure
+            message
+            <div class="description">
+                The text must be at least 5 characters of length and must
+                not exceed 8 characters of length, and it can only contain digits.
+            </div>
+        <input
+            id="min-max"
+            type="text"
+            <!-- constraints -->
+            minlength="5"
+            maxlength="8"
+            pattern="[0-9]*"
+            <!-- constraint violation messages -->
+            data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
+            data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
+            data-pattern="Only digits are allowed: {{constraint}}"
+        />
+    </label>
+</form>
+```
+
+afova will identify the constraints assigned to input controls, validate the form during submit, and report constraint violations to the user.
 
 For example, the following HTML form has a single *required* text input control and a constraint violation message saying "Please provide text input":
 
@@ -14,7 +47,9 @@ For example, the following HTML form has a single *required* text input control 
         >A reqired text input
         <input
             type="text"
+            <!-- constraint -->
             required
+            <!-- constraint violation message -->
             data-required="Please provide text input"
         />
     </label>
@@ -78,15 +113,11 @@ Trying to submit the form without providing a text value will violate the `requi
 </form>
 ```
 
-afova will allow you to:
-- assign attributes to HTML input controls (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, and `maxlength`) to define input validation constraints,
-- style constraint violation messages with your own CSS, and
-- have your own custom internationalized violation messages.
-
-For more details please refer to:
+For more details please about constraint validation please refer to:
 
 - [Constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation)
 - [Client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
+
 
 ## Usage
 
@@ -118,7 +149,7 @@ afv.clear()
 
 ### HTML page without bundler
 
-When working without a bundler, download the ESM script <a href="https://raw.githubusercontent.com/ulfschneider/afova/refs/heads/main/dist/afova.min.js" download="afova.min.js">afova.min.js</a> and put it into the assets folder (for example) of your web site.
+When working without a bundler, download the ESM script <a href="https://raw.githubusercontent.com/ulfschneider/afova/refs/heads/main/dist/afova.min.js" download="afova.min.js">afova.min.js</a> and put it into the assets folder (for example) of your website.
 
 Then you can integrate afova into your web pages as follows:
 
@@ -142,11 +173,10 @@ Then you can integrate afova into your web pages as follows:
 
 ### The afova object
 
-When creating the afova object by calling `afova()`, all forms described by the selector are traversed
-and the default browser validation of those forms is deactivated.
+When creating the afova object by calling `afova()`, all forms described by the selector are traversed and the default browser validation of those forms is deactivated.
 afova will take over form validation for those forms during form submit.
 
-The `clear()` is required in situations where you have to clear event listeners and CSS class assignments introduced by afova.
+The `clear()` can be used in situations where you have to remove event listeners and CSS class assignments introduced by afova.
 
 ## Settings
 
@@ -164,37 +194,11 @@ The settings are optional.
 `validateOnChange`
 : The default is `false`. When set to `true`, constraint violations are checked whenever the contents of an input control change, and not only during form submit.
 
-All constraint violations that can be checked with the Constraint Validation API are validated by afova.
-In case the default violation messages of afova shouldn´t be used, you can define custom constraint violation messages
-as `data` attributes for each input control. Use the placeholders `{{input}}` and `{{constraint}}` in your custom messages to show the current user input and to refer to th4e violated constraint setting.
 
-E.g.:
-
-```html
-<label for="min-max-text-length-custom"
-    >A min length and max length text input with custom failure
-    message
-    <div class="description">
-        The text must be at least 5 characters of length and must
-        not exceed 8 characters of length. And it can only contain digits.
-    </div>
-    <input
-        id="min-max-text-length-custom"
-        type="text"
-        minlength="5"
-        maxlength="8"
-        pattern="[0-9]*"
-        data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
-        data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
-        data-pattern="Only digits are allowed: {{constraint}}"
-    />
-</label>
-```
-
-The following attributes are available:
+The following attributes are available to describe constraint violation messages:
 
 `data-bad-input`
-: The browser is unable to handle the input value
+: The browser is unable to handle the input value, for example when the required type of the input control is a number but the user provided a alphabetic characters
 
 `data-pattern`
 : The value of a field doesn´t comply to the pattern of the `pattern` attribute
@@ -220,15 +224,17 @@ The following attributes are available:
 `data-required`
 : A value of a field that is required due to the `required` attribute is missing
 
-Assigning your custom violation messages is a good way to have internationalized messages. In case you do not use your own messages, afova will apply German and English default validation messages, according to the web browsers locale setting.
+Assigning your constraint violation messages is a good way to have internationalized messages. In case you do not use your own messages, afova will apply German and English default validation messages, according to the web browsers locale setting.
 
 ## Collecting messages for the form
 
-All constraint violation messages of the entire form can be collected and listed together inside of a form message contgainer. The form message container must be inside of the validated form and is described to afova by assigning the CSS class `afova-form-message-container`. E.g., when the starting form looks like:
+All constraint violation messages of the entire form can be collected and listed together inside of a form message container. The form message container must be inside of the validated form and is described to afova by assigning the CSS class `afova-form-message-container`. E.g., when the starting form looks like:
 
 ```html
 <form>
+
     <ul class="afova-form-message-container"></ul>
+
     <input type="submit" value="Submit the form" />
     <input type="reset" value="Reset the form" />
     <label
