@@ -1,29 +1,29 @@
 declare const _default: {
   "badInput": {
-    "message": "Die Eingabe kann nicht verarbeitet werden"
+    "message": "Die Eingabe {{input}} kann nicht verarbeitet werden"
   },
   "patternMismatch": {
-    "message": "Der Eingabewert entspricht nicht dem erforderlichen Format {{constraint}}",
+    "message": "Der Eingabewert {{input}} entspricht nicht dem erforderlichen Format {{constraint}}",
     "constraint": "pattern"
   },
   "rangeOverflow": {
-    "message": "Der Eingabewert ist zu groß. Der Wert darf nicht größer sein als {{constraint}}.",
+    "message": "Der Eingabewert {{input}} ist zu groß. Der Wert darf nicht größer sein als {{constraint}}.",
     "constraint": "max"
   },
   "rangeUnderflow": {
-    "message": "Der Eingabewert ist zu klein. Der Wert darf nicht kleiner sein als {{constraint}}.",
+    "message": "Der Eingabewert {{input}} ist zu klein. Der Wert darf nicht kleiner sein als {{constraint}}.",
     "constraint": "min"
   },
   "stepMismatch": {
-    "message": "Der Eingabewert ist nicht in der richtigen Schrittfolge von {{constraint}}",
+    "message": "Der Eingabewert {{input}} ist nicht in der richtigen Schrittfolge von {{constraint}}",
     "constraint": "step"
   },
   "tooLong": {
-    "message": "Der Eingabewert ist zu lang. Der Wert darf nicht mehr als {{constraint}} Zeichen haben.",
+    "message": "Der Eingabewert {{input}} ist zu lang. Der Wert darf nicht mehr als {{constraint}} Zeichen haben.",
     "constraint": "maxlength"
   },
   "tooShort": {
-    "message": "Der Eingabewert ist zu kurz. Der Wert muss mindestens {{constraint}} Zeichen lang sein.",
+    "message": "Der Eingabewert {{input}} ist zu kurz. Der Wert muss mindestens {{constraint}} Zeichen lang sein.",
     "constraint": "minlength"
   },
   "typeMismatch": {

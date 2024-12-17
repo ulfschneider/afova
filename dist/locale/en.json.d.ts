@@ -1,29 +1,29 @@
 declare const _default: {
   "badInput": {
-    "message": "The input cannot be processed"
+    "message": "The input {{input}} cannot be processed"
   },
   "patternMismatch": {
-    "message": "The value does not match the required pattern of {{constraint}}",
+    "message": "The value {{input}} does not match the required pattern of {{constraint}}",
     "constraint": "pattern"
   },
   "rangeOverflow": {
-    "message": "The value is too big. It cannot be bigger than {{constraint}}.",
+    "message": "The value {{input}} is too big. It cannot be bigger than {{constraint}}.",
     "constraint": "max"
   },
   "rangeUnderflow": {
-    "message": "The value is too small. It must be at least {{constraint}}.",
+    "message": "The value {{input}} is too small. It must be at least {{constraint}}.",
     "constraint": "min"
   },
   "stepMismatch": {
-    "message": "The value is not in within the correct step interval of {{constraint}}",
+    "message": "The value {{input}} is not in within the correct step interval of {{constraint}}",
     "constraint": "step"
   },
   "tooLong": {
-    "message": "The value is too long. It cannot be longer than {{constraint}} characters.",
+    "message": "The value {{input}} is too long. It cannot be longer than {{constraint}} characters.",
     "constraint": "maxlength"
   },
   "tooShort": {
-    "message": "The value is too short. It must be at least {{constraint}} characters long.",
+    "message": "The value {{input}} is too short. It must be at least {{constraint}} characters long.",
     "constraint": "minlength"
   },
   "typeMismatch": {

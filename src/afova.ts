@@ -182,6 +182,26 @@ export function afova(options?: AfovaSettings): AfovaObject {
     return messageContainer;
   }
 
+  function _isValidatedRadioGroup(control: HTMLObjectElement): boolean {
+    if (control.type == "radio" && control.name) {
+      const radioGroup = document.querySelectorAll(
+        `input[name="${control.name}"][type="radio"]`,
+      );
+      const messageContainer = _findMessageContainer(control);
+      if (messageContainer) {
+        for (let radio of radioGroup) {
+          if (
+            messageContainer.querySelector(`[afova-message-for="${radio.id}"]`)
+          ) {
+            //there is already a message for one of the radio controls
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   function _deriveMessageText(
     violation: ConstraintViolation,
     control: HTMLObjectElement,
@@ -284,6 +304,11 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _putMessage(control: HTMLObjectElement): void {
+    if (_isValidatedRadioGroup(control)) {
+      //a group of radio controls should only be validated once
+      return;
+    }
+
     const messageContainer = _ensureAndGetMessageContainer(control);
 
     const validity = control.validity;
@@ -492,7 +517,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   /**
    * Find the wrapping afova context for a form control by searching the parents.
-   * The context must be a label or a container with tje CSS class afova-context assigned.
+   * The context must be a label or a container with the CSS class afova-context assigned.
    * @param control the form control to start from
    * @returns the wrapping context or null
    */
