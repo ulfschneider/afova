@@ -135,13 +135,8 @@ Then import afova into your JavaScript / TypeScript setup:
 import { afova } from 'afova'
 
 //initialize by creating an afova object
-//shown are the default options, you can omit the options object
-const afv = afova({
-    selector: "form",
-    formMessageSelector: ".afova-form-message-container",
-    focusOnFirstError: true,
-    validateOnChange: false,
-    });
+
+const afv = afova();
 
 //if required, clear the script and remove all event listeners
 afv.clear()
@@ -158,13 +153,7 @@ Then you can integrate afova into your web pages as follows:
     import { afova } from "/assets/afova.min.js";
 
     //initialize by creating an afova object
-    //shown are the default options, you can omit the options object
-    var afv = afova({
-        selector: "form",
-        formMessageSelector: ".afova-form-message-container",
-        focusOnFirstError: true,
-        validateOnChange: false,
-    });
+    var afv = afova();
 
     //if required, clear the script and remove all event listeners
     afv.clear()
@@ -173,27 +162,58 @@ Then you can integrate afova into your web pages as follows:
 
 ### The afova object
 
-When creating the afova object by calling `afova()`, all forms described by the selector are traversed and the default browser validation of those forms is deactivated.
+When creating the afova object by calling `afova()`, all forms are traversed and the default browser validation of those forms is deactivated.
 afova will take over form validation for those forms during form submit.
 
 The `clear()` can be used in situations where you have to remove event listeners and CSS class assignments introduced by afova.
 
 ## Settings
 
-The settings are optional.
+### JavaScript
 
-`selector`
+The afova object can be initialized with an optional settings object.
+
+```js
+{
+  selector?: string;
+  formMessageSelector?: string;
+  validateOnChange?: boolean;
+  focusOnFirstError?: boolean;
+  onSubmit?: (event: SubmitEvent) => void;
+  onReset?: (event: Event) => void;
+  onInvalid?: (event: SubmitEvent) => void;
+  onValid?: (event: SubmitEvent) => void;
+}
+```
+
+You can provide a settings object when calling `afova()`. The settings are optional.
+
+`selector?: string`
 : The default value is `form`, which will make afova search for *all* forms on a web page and take over validation control.
 
-`formMessageSelector`
+`formMessageSelector?: string`
 : To show constraint violation messages not only along with the invalid input controls, but also in a list along with the form, you can have a form message container. The form message container is identified with the CSS class `.afova-form-message-container`, which will let afova search for the container inside of the form and collect all constraint violation messages there. The form message container is optional, because violation messages anyway will be displayed along with the invalid input controls.
 
-`focusOnFirstError`
+`focusOnFirstError?: boolean`
 : The default value is `true`, which leads to focusing the first input control with a constraint violation when a form is validated during submit.
 
-`validateOnChange`
+`validateOnChange?: boolean`
 : The default is `false`. When set to `true`, constraint violations are checked whenever the contents of an input control change, and not only during form submit.
 
+`onSubmit: (event: SubmitEvent) => void`
+: A callback that is called when a form is successfully validated and can be submitted.
+
+`onReset?: (event: Event) => void`
+: A callback that is called when the form is resetted
+
+`onInvalid?: (event: SubmitEvent) => void`
+: A callback that is called after a form has been validated and is invalid
+
+`onValid?: (event: SubmitEvent) => void`
+: A callback that is called after a form has been successfully validated. Called before the `onSubmit` callback.
+
+
+### HTML
 
 The following attributes are available to describe constraint violation messages:
 
@@ -224,7 +244,7 @@ The following attributes are available to describe constraint violation messages
 `data-required`
 : A value of a field that is required due to the `required` attribute is missing
 
-Assigning your constraint violation messages is a good way to have internationalized messages. In case you do not use your own messages, afova will apply German and English default validation messages, according to the web browsers locale setting.
+Assigning your constraint violation messages is a good way to have internationalized messages. In case you do not use your own messages, afova will apply German and English default validation messages, according to the web browsers locale setting. You can use the placeholder `{{input}}` to refer within your violation message to the current user input and you can use `{{constraint}}` to refer to the violated constraint.
 
 ## Collecting messages for the form
 
