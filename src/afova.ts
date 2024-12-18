@@ -3,10 +3,42 @@ import constraint_violation_messages_en from "./locale/en.json";
 import constraint_violation_messages_de from "./locale/de.json";
 
 export interface AfovaSettings {
+  /**
+   * The selector to identify the forms to validate. Default is form
+   */
   selector?: string;
+  /**
+   * The optional selector for the form messages container. Default is .afova-form-message-container
+   */
   formMessageSelector?: string;
+  /**
+   * Indicate whether or not to validate single fields on field change. Default is false.
+   */
   validateOnChange?: boolean;
+  /**
+   * Whether or not to bring the focus to the first invalid field during form validation. Default is true.
+   */
   focusOnFirstError?: boolean;
+  /**
+   * Callback for submitting the form after successful validation.
+   * @param event the SubmitEvent
+   */
+  onSubmit?: (event: SubmitEvent) => void;
+  /**
+   * Callback for resetting the form
+   * @param event the SubmitEvent
+   */
+  onReset?: (event: Event) => void;
+  /**
+   * Callback when trying to submit an invalid form.
+   * @param event the SubmitEvent
+   */
+  onInvalid?: (event: SubmitEvent) => void;
+  /**
+   * Callback for a valid form during submit. Will be called before the onSubmit callback.
+   * @param event the SubmitEvent
+   */
+  onValid?: (event: SubmitEvent) => void;
 }
 
 const INPUT_TYPES = [
@@ -72,8 +104,9 @@ export interface AfovaI18NConstraintViolationMessages {
 
 export interface AfovaObject {
   clear: () => void;
-  isInvalid: () => boolean;
-  validate: () => void;
+  isValid: (form?: HTMLFormElement) => boolean;
+  isInvalid: (form?: HTMLFormElement) => boolean;
+  validate: (form?: HTMLFormElement) => boolean;
 }
 
 const DEFAULT_SELECTOR = "form";
@@ -419,13 +452,34 @@ export function afova(options?: AfovaSettings): AfovaObject {
     return result;
   }
 
-  function _validateForm(form: HTMLFormElement, event?: Event): void {
+  function _isValid(form?: HTMLFormElement): boolean {
+    if (form) {
+      return form.checkValidity();
+    } else {
+      const forms = document.querySelectorAll(settings.selector || "form");
+      for (const form of forms) {
+        if (!(form as HTMLFormElement).checkValidity()) {
+          //form has invalid controls
+          return false;
+        }
+      }
+
+      return true;
+    }
+  }
+
+  function _validateForm(form: HTMLFormElement, event?: Event): boolean {
     let firstError: HTMLObjectElement | undefined;
+    let formIsValid = true;
 
     for (const control of _getFormElements(form)) {
       const valid = _validateControl(control);
-      if (!firstError && !valid) {
-        firstError = control;
+      if (!valid) {
+        formIsValid = false;
+
+        if (!firstError) {
+          firstError = control;
+        }
       }
     }
     if (firstError) {
@@ -433,6 +487,22 @@ export function afova(options?: AfovaSettings): AfovaObject {
       if (settings.focusOnFirstError) {
         firstError.focus();
       }
+    }
+    return formIsValid;
+  }
+
+  function _validate(form?: HTMLFormElement): boolean {
+    if (form) {
+      return _validateForm(form);
+    } else {
+      let formsAreValid = true;
+      const forms = document.querySelectorAll(settings.selector || "form");
+      for (const form of forms) {
+        if (!_validateForm(form as HTMLFormElement)) {
+          formsAreValid = false;
+        }
+      }
+      return formsAreValid;
     }
   }
 
@@ -476,11 +546,26 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   function _formSubmitListener(event: Event): void {
     event.preventDefault();
+
     _validateForm(event.target as HTMLFormElement, event);
+
+    if ((event.target as HTMLFormElement).checkValidity()) {
+      if (settings.onValid) {
+        settings.onValid(event as SubmitEvent);
+      }
+      if (settings.onSubmit) {
+        settings.onSubmit(event as SubmitEvent);
+      }
+    } else if (settings.onInvalid) {
+      settings.onInvalid(event as SubmitEvent);
+    }
   }
 
   function _formResetListener(event: Event): void {
     _resetForm(event.target as HTMLFormElement);
+    if (settings.onReset) {
+      settings.onReset(event);
+    }
   }
 
   function _unprepareForms(): void {
@@ -559,25 +644,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
     return group;
   }
 
-  function _validate(): void {
-    const forms = document.querySelectorAll(settings.selector || "form");
-    for (const form of forms) {
-      _validateForm(form as HTMLFormElement);
-    }
-  }
-
-  function _isInvalid(): boolean {
-    const forms = document.querySelectorAll(settings.selector || "form");
-    for (const form of forms) {
-      if (!(form as HTMLFormElement).checkValidity()) {
-        //form has invalid controls
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   let settings = Object.assign({}, DEFAULT_SETTINGS, options);
   _prepareForms();
 
@@ -589,15 +655,26 @@ export function afova(options?: AfovaSettings): AfovaObject {
     clear: () => _unprepareForms(),
 
     /**
-    * Trigger the validation. In most cases not required, as afova will trigger
-     the validation automatically when submitting any of the selected forms.
-    */
-    validate: () => _validate(),
+     * check the validity of the given form
+     * @param form to get the valid state for. When the form is not provided it is checked if all of the forms addressed by the selector are valid.
+     * @returns true if the form is (or all forms are) valid
+     */
+    isValid: (form?: HTMLFormElement) => _isValid(form),
 
     /**
-     * Verify if any of the forms selected according to the settings object is invalid
-     * @returns true if at least one form is invalid
+     * check the validity of the given form
+     * @param form to get the invalid state for. When the form is not provided it is checked if any of the forms addressed by the selector is invalid.
+     * @returns true if the form is (or any form) invalid
      */
-    isInvalid: () => _isInvalid(),
+    isInvalid: (form?: HTMLFormElement) => !_isValid(form),
+
+    /**
+     * Do the afova form validation and return whether the form is valid
+     * @param form to check. When the form is not provided, all forms addressed by the selector are validated.
+     * @returns true if the form is (or all forms are) valid
+     */
+    validate: (form?: HTMLFormElement) => {
+      return _validate(form);
+    },
   };
 }

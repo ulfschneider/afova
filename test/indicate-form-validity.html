@@ -63,16 +63,19 @@
     </body>
     <script type="module">
         import { afova } from "/src/afova.ts";
-        const afv = afova();
-
-        const form = document.querySelector("form");
-        form.addEventListener("submit", () => {
-            event.preventDefault();
-            const validState = document.querySelector("#valid-state");
-
-            validState.innerText = afv.isInvalid()
-                ? "invalid form"
-                : "valid form";
+        const afv = afova({
+            onValid: () => {
+                const validState = document.querySelector("#valid-state");
+                validState.innerText = "valid form";
+            },
+            onInvalid: () => {
+                const validState = document.querySelector("#valid-state");
+                validState.innerText = "invalid form";
+            },
+            onReset: () => {
+                const validState = document.querySelector("#valid-state");
+                validState.innerText = "";
+            },
         });
     </script>
 </html>
