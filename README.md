@@ -113,7 +113,7 @@ Trying to submit the form without providing a text value will violate the `requi
 </form>
 ```
 
-For more details please about constraint validation please refer to:
+For more details about constraint validation please refer to:
 
 - [Constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation)
 - [Client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
