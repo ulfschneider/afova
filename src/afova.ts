@@ -581,6 +581,30 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
+  function _warnMissingMessage(control: Element): void {
+    //indicate in the console log the missing constraint violation message
+    const attributeNames = control
+      .getAttributeNames()
+      .map((attribute) => attribute.toLowerCase());
+    for (const constraint of CONSTRAINTS) {
+      if (
+        attributeNames.includes(constraint) &&
+        !control.getAttribute(`data-${constraint}`)
+      ) {
+        const name = control.getAttribute("name");
+        if (name) {
+          console.warn(
+            `afova is missing the attribute data-${constraint} for the control with name=[${name}]`,
+          );
+        } else {
+          console.warn(
+            `afova is missing the attribute data-${constraint} for the control with id=[${control.id}]`,
+          );
+        }
+      }
+    }
+  }
+
   function _prepareControl(control: Element): void {
     _ensureId(control);
     _findContext(control); //prepare the context, we will not use it here
@@ -588,6 +612,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     if (settings.validateOnChange) {
       control.addEventListener("change", _controlChangeListener);
     }
+    //TODO _warnMissingMessage(control);
   }
 
   function _controlChangeListener(event: Event): void {
