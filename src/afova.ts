@@ -46,28 +46,67 @@ export interface AfovaObject {
   validate: (form?: HTMLFormElement) => boolean;
 }
 
-const VIOLATION_TO_CONSTRAINT_MAP = {
+enum Violation {
+  badInput = "badInput",
+  customError = "customError",
+  patternMismatch = "patternMismatch",
+  rangeOverflow = "rangeOverflow",
+  rangeUnderflow = "rangeUnderflow",
+  stepMismatch = "stepMismatch",
+  tooLong = "tooLong",
+  tooShort = "tooShort",
+  typeMismatch = "typeMismatch",
+  valueMissing = "valueMissing",
+}
+
+enum Constraint {
+  pattern = "pattern",
+  max = "max",
+  min = "min",
+  step = "step",
+  maxlength = "maxlength",
+  minlength = "minlength",
+  type = "type",
+  required = "required",
+}
+
+const VIOLATION_TO_CONSTRAINT_MAP: Record<Violation, Constraint | undefined> = {
   badInput: undefined,
   customError: undefined,
-  patternMismatch: "pattern",
-  rangeOverflow: "max",
-  rangeUnderflow: "min",
-  stepMismatch: "step",
-  tooLong: "maxlength",
-  tooShort: "minlength",
-  typeMismatch: "type",
-  valueMissing: "required",
+  patternMismatch: Constraint.pattern,
+  rangeOverflow: Constraint.max,
+  rangeUnderflow: Constraint.min,
+  stepMismatch: Constraint.step,
+  tooLong: Constraint.maxlength,
+  tooShort: Constraint.minlength,
+  typeMismatch: Constraint.type,
+  valueMissing: Constraint.required,
 };
 
-type Violation = keyof typeof VIOLATION_TO_CONSTRAINT_MAP;
+function _mapViolationToConstraint(
+  violation: Violation,
+): Constraint | undefined {
+  return VIOLATION_TO_CONSTRAINT_MAP[violation];
+}
 
-const CONSTRAINTS = Object.values(VIOLATION_TO_CONSTRAINT_MAP).filter(
-  (value) => value != undefined,
-);
+const CONSTRAINT_TO_VIOLATION_MAP: Record<Constraint, Violation> = {
+  pattern: Violation.patternMismatch,
+  max: Violation.rangeOverflow,
+  min: Violation.rangeUnderflow,
+  step: Violation.stepMismatch,
+  maxlength: Violation.tooLong,
+  minlength: Violation.tooShort,
+  type: Violation.typeMismatch,
+  required: Violation.valueMissing,
+};
 
-const VIOLATION_FALLBACK_MESSAGES = {
+function _mapConstraintToViolation(constraint: Constraint): Violation {
+  return CONSTRAINT_TO_VIOLATION_MAP[constraint];
+}
+
+const VIOLATION_FALLBACK_MESSAGES: Record<Violation, string> = {
   badInput: "The input {{input}} is not valid",
-  customError: undefined,
+  customError: "The input {{input}} is not valid",
   patternMismatch:
     "The value {{input}} does not match the required pattern of {{constraint}}",
   rangeOverflow:
@@ -195,11 +234,12 @@ export function afova(options?: AfovaSettings): AfovaObject {
     control: HTMLObjectElement,
   ): string {
     if (violation != "customError") {
-      let constraint = VIOLATION_TO_CONSTRAINT_MAP[violation];
+      let constraint = _mapViolationToConstraint(violation);
 
       let message =
         //a message defined for the control has highest prio
-        control.dataset[constraint || violation] ||
+        control.dataset[constraint || violation.toLowerCase()] ||
+        control.dataset[violation.toLowerCase()] ||
         // fallback message has last prio
         VIOLATION_FALLBACK_MESSAGES[violation];
 
@@ -300,13 +340,10 @@ export function afova(options?: AfovaSettings): AfovaObject {
     messageElement.setAttribute("afova-message-for", control.id);
     messageContainer.appendChild(messageElement);
 
-    for (const violation of Object.keys(VIOLATION_TO_CONSTRAINT_MAP)) {
+    for (const violation in Violation) {
       if ((validity as any)[violation]) {
         //there is an error of type constraint
-        let message = _deriveMessageText(
-          violation as keyof typeof VIOLATION_TO_CONSTRAINT_MAP,
-          control,
-        );
+        let message = _deriveMessageText(violation as Violation, control);
         if (message) {
           messageElement.innerHTML = message;
           _putFormMessage(control, message);
@@ -525,10 +562,13 @@ export function afova(options?: AfovaSettings): AfovaObject {
     const attributeNames = control
       .getAttributeNames()
       .map((attribute) => attribute.toLowerCase());
-    for (const constraint of CONSTRAINTS) {
+    for (const constraint in Constraint) {
       if (
         attributeNames.includes(constraint) &&
         !control.getAttribute(`data-${constraint}`) &&
+        !control.getAttribute(
+          `data-${_mapConstraintToViolation(constraint as Constraint).toLowerCase()}`,
+        ) &&
         (constraint != "type" ||
           (constraint == "type" && INPUT_TYPE_WARNINGS.includes(control.type)))
       ) {

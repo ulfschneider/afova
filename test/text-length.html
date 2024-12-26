@@ -22,7 +22,12 @@
                 <div class="description">
                     The text must be at least 5 characters of length
                 </div>
-                <input id="min-text-length" type="text" minlength="5" />
+                <input
+                    id="min-text-length"
+                    type="text"
+                    minlength="5"
+                    data-tooshort="This is too short"
+                />
             </label>
 
             <label for="min-text-length-custom"
@@ -34,7 +39,7 @@
                     id="min-text-length-custom"
                     type="text"
                     minlength="5"
-                    data-minlength="Hey, this should have at least {{constraint}} characters"
+                    data-tooshort="Hey, this should have at least {{constraint}} characters"
                 />
             </label>
 
@@ -55,7 +60,7 @@
                     id="max-text-length-custom"
                     type="text"
                     maxlength="5"
-                    data-too-long="Hey, this should have at max {{constraint}} characters"
+                    data-maxlength="Hey, this should have at max {{constraint}} characters"
                 />
             </label>
         </form>
