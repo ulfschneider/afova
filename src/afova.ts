@@ -1,6 +1,4 @@
 import { nanoid } from "nanoid";
-import constraint_violation_messages_en from "./locale/en.json";
-import constraint_violation_messages_de from "./locale/de.json";
 
 export interface AfovaSettings {
   /**
@@ -41,73 +39,50 @@ export interface AfovaSettings {
   onValid?: (event: SubmitEvent) => void;
 }
 
-const INPUT_TYPES = [
-  "text",
-  "email",
-  "datetime-local",
-  "file",
-  "image",
-  "month",
-  "number",
-  "password",
-  "range",
-  "search",
-  "tel",
-  "time",
-  "url",
-  "week",
-] as const;
-
-const CONSTRAINTS = [
-  "required",
-  "pattern",
-  "max",
-  "min",
-  "step",
-  "maxlength",
-  "minlength",
-  "type",
-] as const;
-
-const CONSTRAINT_VIOLATIONS = [
-  "badInput",
-  "customError",
-  "patternMismatch",
-  "rangeOverflow",
-  "rangeUnderflow",
-  "stepMismatch",
-  "tooLong",
-  "tooShort",
-  "typeMismatch",
-  "valueMissing",
-] as const;
-
-export type InputType = (typeof INPUT_TYPES)[number];
-
-export type Constraint = (typeof CONSTRAINTS)[number];
-
-export type ConstraintViolation = (typeof CONSTRAINT_VIOLATIONS)[number];
-
-export interface ConstraintViolationMessage extends Record<InputType, string> {
-  message: string;
-  constraint?: Constraint;
-}
-
-export type AfovaConstraintViolationMessages = Record<
-  ConstraintViolation,
-  ConstraintViolationMessage
->;
-
-export interface AfovaI18NConstraintViolationMessages {
-  [key: string]: AfovaConstraintViolationMessages;
-}
-
 export interface AfovaObject {
   clear: () => void;
   isValid: (form?: HTMLFormElement) => boolean;
   isInvalid: (form?: HTMLFormElement) => boolean;
   validate: (form?: HTMLFormElement) => boolean;
 }
+
+const VIOLATION_TO_CONSTRAINT_MAP = {
+  badInput: undefined,
+  customError: undefined,
+  patternMismatch: "pattern",
+  rangeOverflow: "max",
+  rangeUnderflow: "min",
+  stepMismatch: "step",
+  tooLong: "maxlength",
+  tooShort: "minlength",
+  typeMismatch: "type",
+  valueMissing: "required",
+};
+
+type Violation = keyof typeof VIOLATION_TO_CONSTRAINT_MAP;
+
+const CONSTRAINTS = Object.values(VIOLATION_TO_CONSTRAINT_MAP).filter(
+  (value) => value != undefined,
+);
+
+const VIOLATION_FALLBACK_MESSAGES = {
+  badInput: "The input {{input}} is not valid",
+  customError: undefined,
+  patternMismatch:
+    "The value {{input}} does not match the required pattern of {{constraint}}",
+  rangeOverflow:
+    "The value {{input}} is too big. It cannot be bigger than {{constraint}}.",
+  rangeUnderflow:
+    "The value {{input}} is too small. It must be at least {{constraint}}.",
+  stepMismatch:
+    "The value {{input}} is not in within the correct step interval of {{constraint}}",
+  tooLong:
+    "The value {{input}} is too long. It cannot be longer than {{constraint}} characters.",
+  tooShort:
+    "The value {{input}} is too short. It must be at least {{constraint}} characters long.",
+  typeMismatch: "The value {{input}} must be of type {{constraint}}",
+  valueMissing: "Please provide a value",
+};
 
 const DEFAULT_SELECTOR = "form";
 const DEFAULT_FORM_CONTAINER_SELECTOR = ".afova-form-message-container";
@@ -119,38 +94,21 @@ const DEFAULT_SETTINGS: AfovaSettings = {
   focusOnFirstError: true,
 };
 
-const I18N_CONSTRAINTS: AfovaI18NConstraintViolationMessages = {
-  en: constraint_violation_messages_en as unknown as AfovaConstraintViolationMessages,
-  de: constraint_violation_messages_de as unknown as AfovaConstraintViolationMessages,
-};
+const INPUT_TYPE_WARNINGS = [
+  "color",
+  "date",
+  "datetime-local",
+  "email",
+  "month",
+  "number",
+  "range",
+  "tel",
+  "time",
+  "url",
+  "week",
+];
 
-const IGNORE_CONTROL_TYPES = ["submit", "reset", "button", "fieldset"];
-
-function getConstraints(): AfovaConstraintViolationMessages {
-  let locale = navigator.language;
-  let constraints = I18N_CONSTRAINTS[locale];
-  if (constraints) {
-    console.log(`afova is using locale=[${locale}]`);
-    return constraints;
-  }
-
-  //extract language
-  const idx = locale.indexOf("-");
-  if (idx) {
-    locale = locale.substring(0, idx);
-    if (locale) {
-      constraints = I18N_CONSTRAINTS[locale];
-    }
-  }
-
-  if (constraints) {
-    console.log(`afova is using language=[${locale}]`);
-    return constraints;
-  } else {
-    console.log(`afova is using language=[en]`);
-    return I18N_CONSTRAINTS.en;
-  }
-}
+const IGNORE_INPUT_TYPES = ["submit", "reset", "button", "fieldset", "image"];
 
 /**
  * Create an afova object and initialize it for forms that are identified by the selector given in the options.
@@ -158,9 +116,6 @@ function getConstraints(): AfovaConstraintViolationMessages {
  * @param options settings for afova, optional
  */
 export function afova(options?: AfovaSettings): AfovaObject {
-  let constraintViolationMessages: AfovaConstraintViolationMessages =
-    getConstraints();
-
   function _ensureId(element: Element): void {
     if (!element.id) {
       element.id = `afova-${nanoid()}`;
@@ -168,7 +123,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _findMessageContainer(control: Element): Element | null {
-    const messageContainerAnchor = _getGroup(control) || control;
+    const messageContainerAnchor = _findAndPrepareGroup(control) || control;
     return document.querySelector(
       `#${messageContainerAnchor.id}-afova-message-container`,
     );
@@ -200,7 +155,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
   function _ensureAndGetMessageContainer(control: Element): Element {
     let messageContainer = _findMessageContainer(control);
     if (!messageContainer) {
-      const messageContainerAnchor = _getGroup(control) || control;
+      const messageContainerAnchor = _findAndPrepareGroup(control) || control;
 
       messageContainer = document.createElement("ul");
       messageContainerAnchor.parentNode?.insertBefore(
@@ -236,45 +191,40 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _deriveMessageText(
-    violation: ConstraintViolation,
+    violation: Violation,
     control: HTMLObjectElement,
   ): string {
     if (violation != "customError") {
-      let defaultMessage = constraintViolationMessages[violation];
+      let constraint = VIOLATION_TO_CONSTRAINT_MAP[violation];
 
-      if (defaultMessage) {
-        let constraint = defaultMessage.constraint;
+      let message =
+        //a message defined for the control has highest prio
+        control.dataset[constraint || violation] ||
+        // fallback message has last prio
+        VIOLATION_FALLBACK_MESSAGES[violation];
 
-        let message =
-          //a message defined for the control has highest prio
-          control.dataset[constraint || violation] ||
-          //a default message specific for the input type has second hightest prio
-          constraintViolationMessages[violation][control.type as InputType] ||
-          //a default message has last prio
-          defaultMessage.message;
-
-        //show the constraint
-        const constraintValue = control.getAttribute(constraint || "");
-        if (constraintValue) {
-          let regex = new RegExp(`\{\{\\s*constraint\\s*\}\}`, "ig");
-          message = message.replace(regex, constraintValue);
-        }
-
-        //show the input value
-        let regex = new RegExp(`\{\{\\s*input\\s*\}\}`, "ig");
-        message = message.replace(
-          regex,
-          (control as unknown as HTMLInputElement).value,
-        );
-
-        return message;
+      //show the constraint
+      const constraintValue = control.getAttribute(constraint || "");
+      if (constraintValue) {
+        let regex = new RegExp(`\{\{\\s*constraint\\s*\}\}`, "ig");
+        message = message.replace(regex, constraintValue);
       }
+
+      //show the input value
+      let regex = new RegExp(`\{\{\\s*input\\s*\}\}`, "ig");
+      message = message.replace(
+        regex,
+        (control as unknown as HTMLInputElement).value,
+      );
+
+      return message;
     }
+
     return control.validationMessage;
   }
 
   function _findLabelText(control: Element): string {
-    const context = _findContext(control);
+    const context = _findAndPrepareContext(control);
     if (context) {
       let label = context.querySelector(".afova-label");
       if (!label && context.tagName != "LABEL") {
@@ -350,11 +300,11 @@ export function afova(options?: AfovaSettings): AfovaObject {
     messageElement.setAttribute("afova-message-for", control.id);
     messageContainer.appendChild(messageElement);
 
-    for (const violation of CONSTRAINT_VIOLATIONS) {
+    for (const violation of Object.keys(VIOLATION_TO_CONSTRAINT_MAP)) {
       if ((validity as any)[violation]) {
         //there is an error of type constraint
         let message = _deriveMessageText(
-          violation as ConstraintViolation,
+          violation as keyof typeof VIOLATION_TO_CONSTRAINT_MAP,
           control,
         );
         if (message) {
@@ -363,17 +313,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
         }
         break;
       }
-    }
-
-    if (!messageElement.innerHTML) {
-      messageElement.innerHTML =
-        control.dataset.errorInvalid ||
-        constraintViolationMessages.badInput.message;
-      _putFormMessage(
-        control,
-        control.dataset.errorInvalid ||
-          constraintViolationMessages.badInput.message,
-      );
     }
   }
 
@@ -394,7 +333,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
       messageContainer.remove();
     }
 
-    let context = _findContext(control);
+    let context = _findAndPrepareContext(control);
     if (context) {
       const invalidControls = document.querySelectorAll(
         `#${context.id} [aria-invalid].afova-control`,
@@ -414,7 +353,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     control: HTMLObjectElement,
     focus?: boolean,
   ): void {
-    const context = _findContext(control);
+    const context = _findAndPrepareContext(control);
     if (context) {
       context.classList.add("afova-active");
     }
@@ -445,7 +384,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
   function _getFormElements(form: HTMLFormElement): HTMLObjectElement[] {
     const result: HTMLObjectElement[] = [];
     for (const control of form.elements) {
-      if (!IGNORE_CONTROL_TYPES.includes((control as HTMLObjectElement).type)) {
+      if (!IGNORE_INPUT_TYPES.includes((control as HTMLObjectElement).type)) {
         result.push(control as HTMLObjectElement);
       }
     }
@@ -581,7 +520,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
-  function _warnMissingMessage(control: Element): void {
+  function _warnMissingMessage(control: HTMLObjectElement): void {
     //indicate in the console log the missing constraint violation message
     const attributeNames = control
       .getAttributeNames()
@@ -589,16 +528,18 @@ export function afova(options?: AfovaSettings): AfovaObject {
     for (const constraint of CONSTRAINTS) {
       if (
         attributeNames.includes(constraint) &&
-        !control.getAttribute(`data-${constraint}`)
+        !control.getAttribute(`data-${constraint}`) &&
+        (constraint != "type" ||
+          (constraint == "type" && INPUT_TYPE_WARNINGS.includes(control.type)))
       ) {
         const name = control.getAttribute("name");
         if (name) {
           console.warn(
-            `afova is missing the attribute data-${constraint} for the control with name=[${name}]`,
+            `afova: Missing attribute [data-${constraint}] for the control with [name="${name}"]. Therefore only a fallback message will be used in case of a [${constraint}] constraint violation. It´s strongly recommended to define the violation message with the [data-${constraint}] attribute.`,
           );
         } else {
           console.warn(
-            `afova is missing the attribute data-${constraint} for the control with id=[${control.id}]`,
+            `afova: Missing attribute [data-${constraint}] for the control with [id="${control.id}"]. Therefore only a fallback message will be used in case of a [${constraint}] constraint violation. It´s strongly recommended to define the violation message with the [data-${constraint}] attribute.`,
           );
         }
       }
@@ -607,12 +548,12 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   function _prepareControl(control: Element): void {
     _ensureId(control);
-    _findContext(control); //prepare the context, we will not use it here
+    _findAndPrepareContext(control);
     control.classList.add("afova-control");
     if (settings.validateOnChange) {
       control.addEventListener("change", _controlChangeListener);
     }
-    //TODO _warnMissingMessage(control);
+    _warnMissingMessage(control as HTMLObjectElement);
   }
 
   function _controlChangeListener(event: Event): void {
@@ -630,7 +571,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
    * @param control the form control to start from
    * @returns the wrapping context or null
    */
-  function _findContext(control: Element): Element | null {
+  function _findAndPrepareContext(control: Element): Element | null {
     let context = control.closest(".afova-context");
 
     if (!context) {
@@ -661,7 +602,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
    * @param control
    * @returns the element that is wrapping the controls or null, if none exists
    */
-  function _getGroup(control: Element): Element | null {
+  function _findAndPrepareGroup(control: Element): Element | null {
     const group = control.closest(".afova-group");
     if (group) {
       _ensureId(group);

@@ -1,373 +1,311 @@
 const G = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
-let P = (o = 21) => {
-  let c = "", l = crypto.getRandomValues(new Uint8Array(o));
-  for (; o--; )
-    c += G[l[o] & 63];
-  return c;
+let P = (f = 21) => {
+  let l = "", c = crypto.getRandomValues(new Uint8Array(f));
+  for (; f--; )
+    l += G[c[f] & 63];
+  return l;
 };
-const W = {
-  message: "The input {{input}} cannot be processed"
-}, z = {
-  message: "The value {{input}} does not match the required pattern of {{constraint}}",
-  constraint: "pattern"
-}, H = {
-  message: "The value {{input}} is too big. It cannot be bigger than {{constraint}}.",
-  constraint: "max"
-}, Z = {
-  message: "The value {{input}} is too small. It must be at least {{constraint}}.",
-  constraint: "min"
-}, j = {
-  message: "The value {{input}} is not in within the correct step interval of {{constraint}}",
-  constraint: "step"
-}, X = {
-  message: "The value {{input}} is too long. It cannot be longer than {{constraint}} characters.",
-  constraint: "maxlength"
-}, Y = {
-  message: "The value {{input}} is too short. It must be at least {{constraint}} characters long.",
-  constraint: "minlength"
-}, J = {
-  message: "The value {{input}} must be of type {{constraint}}",
-  constraint: "type",
-  email: "The value {{input}} is not a valid email address. Please provide an email address.",
-  url: "The value {{inptu}} is not a valid URL. Please provide a URL in the format http://url.com.",
-  tel: "The value {{input}} is not a valid phone number. Please provide a phone number."
-}, K = {
-  message: "Please provide a value",
-  constraint: "required"
-}, Q = {
-  badInput: W,
-  patternMismatch: z,
-  rangeOverflow: H,
-  rangeUnderflow: Z,
-  stepMismatch: j,
-  tooLong: X,
-  tooShort: Y,
-  typeMismatch: J,
-  valueMissing: K
-}, ee = {
-  message: "Die Eingabe {{input}} kann nicht verarbeitet werden"
-}, te = {
-  message: "Der Eingabewert {{input}} entspricht nicht dem erforderlichen Format {{constraint}}",
-  constraint: "pattern"
-}, ne = {
-  message: "Der Eingabewert {{input}} ist zu groß. Der Wert darf nicht größer sein als {{constraint}}.",
-  constraint: "max"
-}, ae = {
-  message: "Der Eingabewert {{input}} ist zu klein. Der Wert darf nicht kleiner sein als {{constraint}}.",
-  constraint: "min"
-}, se = {
-  message: "Der Eingabewert {{input}} ist nicht in der richtigen Schrittfolge von {{constraint}}",
-  constraint: "step"
-}, ie = {
-  message: "Der Eingabewert {{input}} ist zu lang. Der Wert darf nicht mehr als {{constraint}} Zeichen haben.",
-  constraint: "maxlength"
-}, re = {
-  message: "Der Eingabewert {{input}} ist zu kurz. Der Wert muss mindestens {{constraint}} Zeichen lang sein.",
-  constraint: "minlength"
-}, oe = {
-  message: "Der Eingabewert {{input}} muss vom Typ {{constraint}} sein",
-  constraint: "type",
-  email: "Der Eingabewert {{input}} ist keine E-Mail Adresse. Bitte geben Sie eine E-Mail Adresse ein.",
-  tel: "Der Eingabewert {{input}} ist keine Telefonnummer. Bitte geben Sie eine Telefonnummer ein.",
-  url: "Der Eingabewert {{input}} ist kein URL. Bitte geben Sie eine URL im Format http://url.com ein."
-}, ce = {
-  message: "Bitte machen Sie eine Eingabe",
-  constraint: "required"
-}, le = {
-  badInput: ee,
-  patternMismatch: te,
-  rangeOverflow: ne,
-  rangeUnderflow: ae,
-  stepMismatch: se,
-  tooLong: ie,
-  tooShort: re,
-  typeMismatch: oe,
-  valueMissing: ce
-}, ue = [
-  "badInput",
-  "customError",
-  "patternMismatch",
-  "rangeOverflow",
-  "rangeUnderflow",
-  "stepMismatch",
-  "tooLong",
-  "tooShort",
-  "typeMismatch",
-  "valueMissing"
-], A = "form", I = ".afova-form-message-container", fe = {
-  selector: A,
+const v = {
+  badInput: void 0,
+  customError: void 0,
+  patternMismatch: "pattern",
+  rangeOverflow: "max",
+  rangeUnderflow: "min",
+  stepMismatch: "step",
+  tooLong: "maxlength",
+  tooShort: "minlength",
+  typeMismatch: "type",
+  valueMissing: "required"
+}, B = Object.values(v).filter(
+  (f) => f != null
+), j = {
+  badInput: "The input {{input}} is not valid",
+  customError: void 0,
+  patternMismatch: "The value {{input}} does not match the required pattern of {{constraint}}",
+  rangeOverflow: "The value {{input}} is too big. It cannot be bigger than {{constraint}}.",
+  rangeUnderflow: "The value {{input}} is too small. It must be at least {{constraint}}.",
+  stepMismatch: "The value {{input}} is not in within the correct step interval of {{constraint}}",
+  tooLong: "The value {{input}} is too long. It cannot be longer than {{constraint}} characters.",
+  tooShort: "The value {{input}} is too short. It must be at least {{constraint}} characters long.",
+  typeMismatch: "The value {{input}} must be of type {{constraint}}",
+  valueMissing: "Please provide a value"
+}, C = "form", I = ".afova-form-message-container", Y = {
+  selector: C,
   formMessageSelector: I,
   validateOnChange: !1,
   focusOnFirstError: !0
-}, v = {
-  en: Q,
-  de: le
-}, me = ["submit", "reset", "button", "fieldset"];
-function de() {
-  let o = navigator.language, c = v[o];
-  if (c)
-    return console.log(`afova is using locale=[${o}]`), c;
-  const l = o.indexOf("-");
-  return l && (o = o.substring(0, l), o && (c = v[o])), c ? (console.log(`afova is using language=[${o}]`), c) : (console.log("afova is using language=[en]"), v.en);
-}
-function ge(o) {
-  let c = de();
+}, H = [
+  "color",
+  "date",
+  "datetime-local",
+  "email",
+  "month",
+  "number",
+  "range",
+  "tel",
+  "time",
+  "url",
+  "week"
+], K = ["submit", "reset", "button", "fieldset", "image"];
+function W(f) {
   function l(e) {
     e.id || (e.id = `afova-${P()}`);
   }
-  function d(e) {
-    const t = S(e) || e;
+  function c(e) {
+    const t = T(e) || e;
     return document.querySelector(
       `#${t.id}-afova-message-container`
     );
   }
-  function g(e) {
-    b(e) ? e.style.display = "none" : e.style.display = "";
+  function m(e) {
+    h(e) ? e.style.display = "none" : e.style.display = "";
   }
-  function h(e) {
+  function p(e) {
     const t = e.closest("form");
     if (t) {
-      const n = t.getAttribute("afova-form-message-container-id");
-      if (n)
-        return document.querySelector(`#${n}`);
+      const a = t.getAttribute("afova-form-message-container-id");
+      if (a)
+        return document.querySelector(`#${a}`);
     }
     return null;
   }
-  function b(e) {
+  function h(e) {
     return e.children.length == 0;
   }
-  function x(e) {
-    var n;
-    let t = d(e);
+  function S(e) {
+    var a;
+    let t = c(e);
     if (!t) {
-      const a = S(e) || e;
-      t = document.createElement("ul"), (n = a.parentNode) == null || n.insertBefore(
+      const n = T(e) || e;
+      t = document.createElement("ul"), (a = n.parentNode) == null || a.insertBefore(
         t,
-        a
-      ), t.id = `${a.id}-afova-message-container`, t.classList.add("afova-message-container"), e.setAttribute("aria-errormessage", t.id);
+        n
+      ), t.id = `${n.id}-afova-message-container`, t.classList.add("afova-message-container"), e.setAttribute("aria-errormessage", t.id);
     }
     return t;
   }
-  function w(e) {
+  function M(e) {
     if (e.type == "radio" && e.name) {
       const t = document.querySelectorAll(
         `input[name="${e.name}"][type="radio"]`
-      ), n = d(e);
-      if (n) {
-        for (let a of t)
-          if (n.querySelector(`[afova-message-for="${a.id}"]`))
+      ), a = c(e);
+      if (a) {
+        for (let n of t)
+          if (a.querySelector(`[afova-message-for="${n.id}"]`))
             return !0;
       }
     }
     return !1;
   }
-  function D(e, t) {
+  function N(e, t) {
     if (e != "customError") {
-      let n = c[e];
-      if (n) {
-        let a = n.constraint, s = (
-          //a message defined for the control has highest prio
-          t.dataset[a || e] || //a default message specific for the input type has second hightest prio
-          c[e][t.type] || //a default message has last prio
-          n.message
-        );
-        const i = t.getAttribute(a || "");
-        if (i) {
-          let B = new RegExp("{{\\s*constraint\\s*}}", "ig");
-          s = s.replace(B, i);
-        }
-        let u = new RegExp("{{\\s*input\\s*}}", "ig");
-        return s = s.replace(
-          u,
-          t.value
-        ), s;
+      let a = v[e], n = (
+        //a message defined for the control has highest prio
+        t.dataset[a || e] || // fallback message has last prio
+        j[e]
+      );
+      const s = t.getAttribute(a || "");
+      if (s) {
+        let r = new RegExp("{{\\s*constraint\\s*}}", "ig");
+        n = n.replace(r, s);
       }
+      let i = new RegExp("{{\\s*input\\s*}}", "ig");
+      return n = n.replace(
+        i,
+        t.value
+      ), n;
     }
     return t.validationMessage;
   }
   function O(e) {
-    var n, a;
-    const t = m(e);
+    var a, n;
+    const t = d(e);
     if (t) {
       let s = t.querySelector(".afova-label");
       if (!s && t.tagName != "LABEL" && (s = t.querySelector("label")), s || (s = t), s) {
         let i = "";
-        for (const u of s.childNodes)
-          u.nodeType == Node.TEXT_NODE && (i && ((n = u.textContent) != null && n.trim()) && (i += " "), (a = u.textContent) != null && a.trim() && (i += u.textContent.trim()));
+        for (const r of s.childNodes)
+          r.nodeType == Node.TEXT_NODE && (i && ((a = r.textContent) != null && a.trim()) && (i += " "), (n = r.textContent) != null && n.trim() && (i += r.textContent.trim()));
         return i;
       }
     }
     return "";
   }
-  function E(e, t) {
-    const n = h(e);
-    if (n) {
-      let a;
-      n.tagName == "UL" || n.tagName == "OL" ? a = document.createElement("LI") : a = document.createElement("DIV"), a.setAttribute("afova-message-for", e.id), a.classList.add("afova-collected-message");
+  function x(e, t) {
+    const a = p(e);
+    if (a) {
+      let n;
+      a.tagName == "UL" || a.tagName == "OL" ? n = document.createElement("LI") : n = document.createElement("DIV"), n.setAttribute("afova-message-for", e.id), n.classList.add("afova-collected-message");
       const s = O(e);
       if (s) {
-        const u = document.createElement("DIV");
-        u.innerText = s, u.classList.add("afova-message-label"), a.appendChild(u);
+        const r = document.createElement("DIV");
+        r.innerText = s, r.classList.add("afova-message-label"), n.appendChild(r);
       }
       const i = document.createElement("DIV");
-      i.innerText = t, i.classList.add("afova-message"), a.appendChild(i), n.appendChild(a), g(n);
+      i.innerText = t, i.classList.add("afova-message"), n.appendChild(i), a.appendChild(n), m(a);
     }
   }
-  function N(e) {
-    const t = x(e), n = e.validity;
-    let a;
-    t.tagName == "UL" || t.tagName == "OL" ? a = document.createElement("LI") : a = document.createElement("DIV"), a.classList.add("afova-message"), a.setAttribute("afova-message-for", e.id), t.appendChild(a);
-    for (const s of ue)
-      if (n[s]) {
-        let i = D(
+  function w(e) {
+    const t = S(e), a = e.validity;
+    let n;
+    t.tagName == "UL" || t.tagName == "OL" ? n = document.createElement("LI") : n = document.createElement("DIV"), n.classList.add("afova-message"), n.setAttribute("afova-message-for", e.id), t.appendChild(n);
+    for (const s of Object.keys(v))
+      if (a[s]) {
+        let i = N(
           s,
           e
         );
-        i && (a.innerHTML = i, E(e, i));
+        i && (n.innerHTML = i, x(e, i));
         break;
       }
-    a.innerHTML || (a.innerHTML = e.dataset.errorInvalid || c.badInput.message, E(
-      e,
-      e.dataset.errorInvalid || c.badInput.message
-    ));
   }
-  function L(e) {
+  function b(e) {
     e.removeAttribute("aria-invalid"), e.removeAttribute("aria-errormessage");
     const t = document.querySelectorAll(
       `[afova-message-for="${e.id}"]`
     );
     for (const i of t)
       i.remove();
-    const n = d(e);
-    n && b(n) && n.remove();
-    let a = m(e);
-    a && document.querySelectorAll(
-      `#${a.id} [aria-invalid].afova-control`
-    ).length == 0 && a.classList.remove("afova-active");
-    const s = h(e);
-    s && g(s);
+    const a = c(e);
+    a && h(a) && a.remove();
+    let n = d(e);
+    n && document.querySelectorAll(
+      `#${n.id} [aria-invalid].afova-control`
+    ).length == 0 && n.classList.remove("afova-active");
+    const s = p(e);
+    s && m(s);
   }
-  function R(e, t) {
-    const n = m(e);
-    n && n.classList.add("afova-active"), e.setAttribute("aria-invalid", "true"), w(e) || (N(e), t && e.focus());
+  function V(e, t) {
+    const a = d(e);
+    a && a.classList.add("afova-active"), e.setAttribute("aria-invalid", "true"), M(e) || (w(e), t && e.focus());
   }
-  function _(e, t) {
-    return L(e), e.validity.valid || R(e, t), e.validity.valid;
+  function y(e, t) {
+    return b(e), e.validity.valid || V(e, t), e.validity.valid;
   }
-  function f(e) {
+  function u(e) {
     const t = [];
-    for (const n of e.elements)
-      me.includes(n.type) || t.push(n);
+    for (const a of e.elements)
+      K.includes(a.type) || t.push(a);
     return t;
   }
-  function y(e) {
+  function E(e) {
     if (e)
       return e.checkValidity();
     {
-      const t = document.querySelectorAll(r.selector || "form");
-      for (const n of t)
-        if (!n.checkValidity())
+      const t = document.querySelectorAll(o.selector || "form");
+      for (const a of t)
+        if (!a.checkValidity())
           return !1;
       return !0;
     }
   }
-  function p(e, t) {
-    let n, a = !0;
-    for (const s of f(e))
-      _(s) || (a = !1, n || (n = s));
-    return n && (t == null || t.preventDefault(), r.focusOnFirstError && n.focus()), a;
+  function g(e, t) {
+    let a, n = !0;
+    for (const s of u(e))
+      y(s) || (n = !1, a || (a = s));
+    return a && (t == null || t.preventDefault(), o.focusOnFirstError && a.focus()), n;
   }
-  function V(e) {
+  function F(e) {
     if (e)
-      return p(e);
+      return g(e);
     {
       let t = !0;
-      const n = document.querySelectorAll(r.selector || "form");
-      for (const a of n)
-        p(a) || (t = !1);
+      const a = document.querySelectorAll(o.selector || "form");
+      for (const n of a)
+        g(n) || (t = !1);
       return t;
     }
   }
-  function F(e) {
-    for (let t of f(e))
-      L(t);
-  }
-  function $() {
-    const e = document.querySelectorAll(
-      r.selector || A
-    );
-    for (const t of e) {
-      l(t), t.addEventListener("submit", M), t.addEventListener("reset", T);
-      for (const a of f(t))
-        U(a);
-      t.setAttribute("novalidate", "");
-      const n = t.querySelector(
-        r.formMessageSelector || I
-      );
-      n && (l(n), g(n), t.setAttribute(
-        "afova-form-message-container-id",
-        n.id
-      ), n.classList.add("afova-form-message-container"));
-    }
-  }
-  function M(e) {
-    e.preventDefault(), p(e.target, e), e.target.checkValidity() ? (r.onValid && r.onValid(e), r.onSubmit && r.onSubmit(e)) : r.onInvalid && r.onInvalid(e);
-  }
-  function T(e) {
-    F(e.target), r.onReset && r.onReset(e);
+  function $(e) {
+    for (let t of u(e))
+      b(t);
   }
   function q() {
-    const e = document.querySelectorAll(r.selector || "form");
+    const e = document.querySelectorAll(
+      o.selector || C
+    );
     for (const t of e) {
-      t.removeAttribute("novalidate"), t.removeEventListener("submit", M), t.removeEventListener("reset", T);
-      for (const n of f(t))
-        k(n);
+      l(t), t.addEventListener("submit", A), t.addEventListener("reset", L);
+      for (const n of u(t))
+        U(n);
+      t.setAttribute("novalidate", "");
+      const a = t.querySelector(
+        o.formMessageSelector || I
+      );
+      a && (l(a), m(a), t.setAttribute(
+        "afova-form-message-container-id",
+        a.id
+      ), a.classList.add("afova-form-message-container"));
     }
   }
-  function U(e) {
-    l(e), m(e), e.classList.add("afova-control"), r.validateOnChange && e.addEventListener("change", C);
+  function A(e) {
+    e.preventDefault(), g(e.target, e), e.target.checkValidity() ? (o.onValid && o.onValid(e), o.onSubmit && o.onSubmit(e)) : o.onInvalid && o.onInvalid(e);
   }
-  function C(e) {
-    _(e.target, !0);
+  function L(e) {
+    $(e.target), o.onReset && o.onReset(e);
+  }
+  function R() {
+    const e = document.querySelectorAll(o.selector || "form");
+    for (const t of e) {
+      t.removeAttribute("novalidate"), t.removeEventListener("submit", A), t.removeEventListener("reset", L);
+      for (const a of u(t))
+        k(a);
+    }
+  }
+  function D(e) {
+    const t = e.getAttributeNames().map((a) => a.toLowerCase());
+    for (const a of B)
+      if (t.includes(a) && !e.getAttribute(`data-${a}`) && (a != "type" || a == "type" && H.includes(e.type))) {
+        const n = e.getAttribute("name");
+        console.warn(
+          n ? `afova: Missing attribute [data-${a}] for the control with [name="${n}"]. Therefore only a fallback message will be used in case of a [${a}] constraint violation. It´s strongly recommended to define the violation message with the [data-${a}] attribute.` : `afova: Missing attribute [data-${a}] for the control with [id="${e.id}"]. Therefore only a fallback message will be used in case of a [${a}] constraint violation. It´s strongly recommended to define the violation message with the [data-${a}] attribute.`
+        );
+      }
+  }
+  function U(e) {
+    l(e), d(e), e.classList.add("afova-control"), o.validateOnChange && e.addEventListener("change", _), D(e);
+  }
+  function _(e) {
+    y(e.target, !0);
   }
   function k(e) {
-    e.classList.remove("afova-control"), e.removeEventListener("change", C);
+    e.classList.remove("afova-control"), e.removeEventListener("change", _);
   }
-  function m(e) {
+  function d(e) {
     let t = e.closest(".afova-context");
     return t || (t = e.closest("label")), t && (l(t), t.classList.add("afova-context"), t.tagName == "LABEL" && !t.htmlFor && (t.htmlFor = e.id)), t;
   }
-  function S(e) {
+  function T(e) {
     const t = e.closest(".afova-group");
     return t && l(t), t;
   }
-  let r = Object.assign({}, fe, o);
-  return $(), {
+  let o = Object.assign({}, Y, f);
+  return q(), {
     /**
      * Will remove all event listeners that have been added by afova and
      * will clear all afova messages.
      */
-    clear: () => q(),
+    clear: () => R(),
     /**
      * check the validity of the given form
      * @param form to get the valid state for. When the form is not provided it is checked if all of the forms addressed by the selector are valid.
      * @returns true if the form is (or all forms are) valid
      */
-    isValid: (e) => y(e),
+    isValid: (e) => E(e),
     /**
      * check the validity of the given form
      * @param form to get the invalid state for. When the form is not provided it is checked if any of the forms addressed by the selector is invalid.
      * @returns true if the form is (or any form) invalid
      */
-    isInvalid: (e) => !y(e),
+    isInvalid: (e) => !E(e),
     /**
      * Do the afova form validation and return whether the form is valid
      * @param form to check. When the form is not provided, all forms addressed by the selector are validated.
      * @returns true if the form is (or all forms are) valid
      */
-    validate: (e) => V(e)
+    validate: (e) => F(e)
   };
 }
 export {
-  ge as afova
+  W as afova
 };
