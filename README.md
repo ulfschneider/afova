@@ -187,63 +187,37 @@ The afova object can be initialized with an optional settings object.
 
 You can provide a settings object when calling `afova()`. The settings are optional.
 
-`selector?: string`
-: The default value is `form`, which will make afova search for *all* forms on a web page and take over validation control.
-
-`formMessageSelector?: string`
-: To show constraint violation messages not only along with the invalid input controls, but also in a list along with the form, you can have a form message container. The form message container is identified with the CSS class `.afova-form-message-container`, which will let afova search for the container inside of the form and collect all constraint violation messages there. The form message container is optional, because violation messages anyway will be displayed along with the invalid input controls.
-
-`focusOnFirstError?: boolean`
-: The default value is `true`, which leads to focusing the first input control with a constraint violation when a form is validated during submit.
-
-`validateOnChange?: boolean`
-: The default is `false`. When set to `true`, constraint violations are checked whenever the contents of an input control change, and not only during form submit.
-
-`onSubmit: (event: SubmitEvent) => void`
-: A callback that is called when a form is successfully validated and can be submitted. **When this callback is defined, the default form submit behaviour is deactivated and instead the form submittal has to be handled within the callback.**
-
-`onReset?: (event: Event) => void`
-: A callback that is called when the form is resetted
-
-`onInvalid?: (event: SubmitEvent) => void`
-: A callback that is called after a form has been validated and is invalid
-
-`onValid?: (event: SubmitEvent) => void`
-: A callback that is called after a form has been successfully validated. Called before the `onSubmit` callback.
+- `selector?: string` The default value is `form`, which will make afova search for *all* forms on a web page and take over validation control.
+- `formMessageSelector?: string` To show constraint violation messages not only along with the invalid input controls, but also in a list along with the form, you can have a form message container. The form message container is identified with the CSS class `.afova-form-message-container`, which will let afova search for the container inside of the form and collect all constraint violation messages there. The form message container is optional, because violation messages anyway will be displayed along with the invalid input controls.
+- `focusOnFirstError?: boolean` The default value is `true`, which leads to focusing the first input control with a constraint violation when a form is validated during submit.
+- `validateOnChange?: boolean` The default is `false`. When set to `true`, constraint violations are checked whenever the contents of an input control change, and not only during form submit.
+- `onSubmit: (event: SubmitEvent) => void` A callback that is called when a form is successfully validated and can be submitted. **When this callback is defined, the default form submit behaviour is deactivated and instead the form submittal has to be handled within the callback.**
+- `onReset?: (event: Event) => void` A callback that is called when the form is resetted
+- `onInvalid?: (event: SubmitEvent) => void` A callback that is called after a form has been validated and is invalid
+- `onValid?: (event: SubmitEvent) => void` A callback that is called after a form has been successfully validated. Called before the `onSubmit` callback.
 
 
 ### HTML
 
 The following attributes are available to describe constraint violation messages:
 
-`data-bad-input`
-: The browser is unable to handle the input value, for example when the required type of the input control is a number but the user provided a alphabetic characters
+- `data-badinput` The browser is unable to handle the input value, for example when the required type of the input control is a number but the user provided a alphabetic characters
+- `data-pattern` The value of a field doesn´t comply to the pattern of the `pattern` attribute
+- `data-max` The number value of a field is greater than the value of the `max` attribute
+- `data-min` The number value of a field is less than the value of the `min` attribute
+- `data-step` The number value of field is not evenly divisable by the value of the `step` attribute
+- `data-maxlength` The value of a field has more characters than defined by the attribute `maxlength`
+- `data-minlength` The value of a field has less characters than defined by the attribute `minlength`
+- `data-type` The value of a field dosn´t comply to the `type` attribute
+- `data-required` A value of a field that is required due to the `required` attribute is missing
 
-`data-pattern`
-: The value of a field doesn´t comply to the pattern of the `pattern` attribute
+Assigning your constraint violation messages is a good way to have internationalized messages and generally recommended. You can use the placeholders to refer to certain control properties within your violation messages, like:
 
-`data-max`
-: The number value of a field is greater than the value of the `max` attribute
+- `{{input}}` for current user input,
+- `{{constraint}}` for the violated constraint, and
+- `{{type}}` for the controls value of the type attribute.
 
-`data-min`
-: The number value of a field is less than the value of the `min` attribute
-
-`data-step`
-: The number value of field is not evenly divisable by the value of the `step` attribute
-
-`data-maxlength`
-: The value of a field has more characters than defined by the attribute `maxlength`
-
-`data-minlength`
-: The value of a field has less characters than defined by the attribute `minlength`
-
-`data-type`
-: The value of a field dosn´t comply to the `type` attribute
-
-`data-required`
-: A value of a field that is required due to the `required` attribute is missing
-
-Assigning your constraint violation messages is a good way to have internationalized messages and strongly recommended. You can use the placeholder `{{input}}` to refer within your violation message to the current user input and you can use `{{constraint}}` to refer to the violated constraint. afova will apply English fallback messages in case you do not use your own messages,
+afova will apply English fallback messages in case you do not use your own constraint violation messages,
 
 ## Collecting messages for the form
 
@@ -406,54 +380,21 @@ Notice the label text of each control is extracted and displayed along with the 
 
 afova does not come with any CSS styles. The following CSS class names are assigned during validation processing or can be used to activate afova functionality:
 
-`:invalid`
-: Every invalid control can be styled with the `:invalid` selector.
-
-`.afova-context`
-: afova searches for a context for every validated input control.
-: By default this is the `label` element wrapping the control. afova assigns the CSS class `afova-context` to the context element.
-: You can decide to use a different wrapping context by assigning the `afova-context` class yourself, which can make sense for fieldsets of
-: radio buttons or checkboxes.
-
-`.afova-group`
-: The CSS class `afova-group` can be used to bundle constraint violation messages in front of a group of input controls.
-: A good use case are radio buttons or checkboxes that belong together. In that case the controls should be wrapped into a `div`
-: with the CSS classs `afova-group` group assigned.
-
-`.afova-active`
-: A context with an invalid input control has the CSS class `afova-active` assigned to it. The class is removed once the control becomes valid again.
-
-`.afova-message-container`
-: When an input control becomes invalid because of a constraint violation, a container for violation messages is inserted right before the control.
-: The container will have the CSS class `afova-message-container`.
-: Once the input control becomes valid again, the message container is removed.
-
-`.afova-message`
-: Each violation message inside of the message container has the CSS class `afova-message` assigned to it.
-
-`.afova-control`
-: Every input control validated by afova has the CSS class `afova-control` assigned to it.
-
-`.afova-form-message-container`
-: Define a collector for all constraint violation messages of a form by assigning the CSS class `afova-form-message-container`.
-
-`.afova-label`
-: The message collector will show the control´s label together with the constrain violation message. By default the label text is the text content of the `label` element. To have more control over what text is shown in the collector, assign the class `afova-label` to any text content along with the validated control.
-
-`.afova-message-label`
-: The label information inside of the message collector will have the CSS class `afova-message-label` assigned to it.
+- `:invalid` Every invalid control can be styled with the `:invalid` selector.
+- `.afova-context` afova searches for a context for every validated input control. By default this is the `label` element wrapping the control. afova assigns the CSS class `afova-context` to the context element. You can decide to use a different wrapping context by assigning the `afova-context` class yourself, which can make sense for fieldsets of radio buttons or checkboxes.
+- `.afova-group` The CSS class `afova-group` can be used to bundle constraint violation messages in front of a group of input controls. A good use case are radio buttons or checkboxes that belong together. In that case the controls should be wrapped into a `div` with the CSS classs `afova-group` group assigned.
+- `.afova-active` A context with an invalid input control has the CSS class `afova-active` assigned to it. The class is removed once the control becomes valid again.
+- `.afova-message-container` When an input control becomes invalid because of a constraint violation, a container for violation messages is inserted right before the control. The container will have the CSS class afova-message-container`. Once the input control becomes valid again, the message container is removed.
+- `.afova-message` Each violation message inside of the message container has the CSS class `afova-message` assigned to it.
+- `.afova-control` Every input control validated by afova has the CSS class `afova-control` assigned to it.
+- `.afova-form-message-container` Define a collector for all constraint violation messages of a form by assigning the CSS class `afova-form-message-container`.
+- `.afova-label` The message collector will show the control´s label together with the constrain violation message. By default the label text is the text content of the `label` element. To have more control over what text is shown in the collector, assign the class `afova-label` to any text content along with the validated control.
+- `.afova-message-label` The label information inside of the message collector will have the CSS class `afova-message-label` assigned to it.
 
 
 ## Accessibility
 
-`id`
-: Every input control observed by afova will get an `id` assigned if it doesn´t have one.
-
-`for`
-: When a wrapping label of an input control does not have the `for` attribute pointing to the `id` of the control, the `for` attribute will be assigned by afova.
-
-`aria-invalid`
-: An invalid control has the attribute `aria-invalid` assigned to it.
-
-`aria-errormessage`
-: An invalid control has the attribute `aria-errormessage` pointing to the `id` of the associated message container.
+- `id` Every input control observed by afova will get an `id` assigned if it doesn´t have one.
+- `for` When a wrapping label of an input control does not have the `for` attribute pointing to the `id` of the control, the `for` attribute will be assigned by afova.
+- `aria-invalid` An invalid control has the attribute `aria-invalid` assigned to it.
+- `aria-errormessage` An invalid control has the attribute `aria-errormessage` pointing to the `id` of the associated message container.
