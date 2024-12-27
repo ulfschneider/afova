@@ -105,7 +105,7 @@ function _mapConstraintToViolation(constraint: Constraint): Violation {
 }
 
 const VIOLATION_FALLBACK_MESSAGES: Record<Violation, string> = {
-  badInput: "The input {{input}} is not valid",
+  badInput: "The input {{input}} is not a valid {{type}}",
   customError: "The input {{input}} is not valid",
   patternMismatch:
     "The value {{input}} does not match the required pattern of {{constraint}}",
@@ -256,6 +256,10 @@ export function afova(options?: AfovaSettings): AfovaObject {
         regex,
         (control as unknown as HTMLInputElement).value,
       );
+
+      //show the type
+      regex = new RegExp(`\{\{\\s*type\\s*\}\}`, "ig");
+      message = message.replace(regex, control.type);
 
       return message;
     }
