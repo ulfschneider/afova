@@ -1,6 +1,6 @@
 # afova
 
-afova (accessible form validation) is a progressive enhancement to the [Constraint Validation API](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation) for client-side HTML form validation.
+afova (accessible form validation) is a progressive enhancement of the [client-side HTML form constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation).
 
 afova will allow you to:
 - pick up any of the constraining attributes of HTML input controls (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, and `maxlength`) and show constraint violation messages to the user,
@@ -37,7 +37,7 @@ Below is an example of how afova allows to define constraint violation messages:
 
 afova will identify the constraints assigned to input controls, validate the form during submit, and report constraint violations to the user.
 
-For example, the following HTML form has a single *required* text input control and a constraint violation message saying "Please provide text input":
+For example, the following HTML form has a single `required` text input control and a constraint violation message saying "Please provide text input":
 
 ```html
 <form>
@@ -56,7 +56,7 @@ For example, the following HTML form has a single *required* text input control 
 </form>
 ```
 
-That form will be transformed by afova into:
+afova will transform the form into:
 
 ```html
 <form novalidate="" id="afova-1v4dAnzsS9OjaF3F46igi">
@@ -119,7 +119,7 @@ For more details about constraint validation please refer to:
 - [Client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
 
 
-## Usage
+## afova usage
 
 ### Bundler
 
@@ -129,7 +129,7 @@ When using a bundler, add afova to your project with the command:
 npm i afova
 ```
 
-Then import afova into your JavaScript / TypeScript setup:
+Then import afova into your JavaScript/TypeScript setup:
 
 ```js
 import { afova } from 'afova'
@@ -144,9 +144,9 @@ afv.clear()
 
 ### HTML page without bundler
 
-When working without a bundler, download the ESM script <a href="https://raw.githubusercontent.com/ulfschneider/afova/refs/heads/main/dist/afova.min.js" download="afova.min.js">afova.min.js</a> and put it into the assets folder (for example) of your website.
+When working without a bundler, download the ESM script <a href="https://raw.githubusercontent.com/ulfschneider/afova/refs/heads/main/dist/afova.min.js" download="afova.min.js">afova.min.js</a> and put it into the assets folder of your website (or any other folder where your script dependencies are located).
 
-Then you can integrate afova into your web pages as follows:
+Integrate afova into your web pages as follows:
 
 ```html
 <script type="module">
@@ -162,8 +162,7 @@ Then you can integrate afova into your web pages as follows:
 
 ### The afova object
 
-When creating the afova object by calling `afova()`, all forms are traversed and the default browser validation of those forms is deactivated.
-afova will take over form validation for those forms during form submit.
+When creating the afova object by calling `afova()`, all forms are traversed and afova will take over form validation for those forms during form submit.
 
 The `clear()` can be used in situations where you have to remove event listeners and CSS class assignments introduced by afova.
 
@@ -201,7 +200,7 @@ You can provide a settings object when calling `afova()`. The settings are optio
 : The default is `false`. When set to `true`, constraint violations are checked whenever the contents of an input control change, and not only during form submit.
 
 `onSubmit: (event: SubmitEvent) => void`
-: A callback that is called when a form is successfully validated and can be submitted.
+: A callback that is called when a form is successfully validated and can be submitted. **When this callback is defined, the default form submit behaviour is deactivated and instead the form submittal has to be handled within the callback.**
 
 `onReset?: (event: Event) => void`
 : A callback that is called when the form is resetted
@@ -244,11 +243,11 @@ The following attributes are available to describe constraint violation messages
 `data-required`
 : A value of a field that is required due to the `required` attribute is missing
 
-Assigning your constraint violation messages is a good way to have internationalized messages. In case you do not use your own messages, afova will apply German and English default validation messages, according to the web browsers locale setting. You can use the placeholder `{{input}}` to refer within your violation message to the current user input and you can use `{{constraint}}` to refer to the violated constraint.
+Assigning your constraint violation messages is a good way to have internationalized messages and strongly recommended. You can use the placeholder `{{input}}` to refer within your violation message to the current user input and you can use `{{constraint}}` to refer to the violated constraint. afova will apply English fallback messages in case you do not use your own messages,
 
 ## Collecting messages for the form
 
-All constraint violation messages of the entire form can be collected and listed together inside of a form message container. The form message container must be inside of the validated form and is described to afova by assigning the CSS class `afova-form-message-container`. E.g., when the starting form looks like:
+All constraint violation messages of an entire form can be collected and listed together inside of a form message container. The form message container must be inside of the validated form and is described to afova by assigning the CSS class `afova-form-message-container`. E.g., when the starting form looks like:
 
 ```html
 <form>
@@ -276,7 +275,7 @@ All constraint violation messages of the entire form can be collected and listed
 </form>
 ```
 
-It be transformed by afova into:
+It will be transformed by afova into:
 
 ```html
 <form

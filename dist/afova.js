@@ -47,9 +47,9 @@ const W = {
   tooShort: "The value {{input}} is too short. It must be at least {{constraint}} characters long.",
   typeMismatch: "The value {{input}} must be of type {{constraint}}",
   valueMissing: "Please provide a value"
-}, C = "form", I = ".afova-form-message-container", X = {
-  selector: C,
-  formMessageSelector: I,
+}, I = "form", C = ".afova-form-message-container", X = {
+  selector: I,
+  formMessageSelector: C,
   validateOnChange: !1,
   focusOnFirstError: !0
 }, J = [
@@ -215,10 +215,14 @@ function Z(r) {
     }
   }
   function g(e, t) {
-    let a, n = !0;
-    for (const s of u(e))
-      b(s) || (n = !1, a || (a = s));
-    return a && (t == null || t.preventDefault(), i.focusOnFirstError && a.focus()), n;
+    let a;
+    const n = e.checkValidity();
+    if (!n) {
+      for (const s of u(e))
+        b(s) || a || (a = s);
+      a && (t == null || t.preventDefault(), i.focusOnFirstError && a.focus());
+    }
+    return n;
   }
   function $(e) {
     if (e)
@@ -235,9 +239,9 @@ function Z(r) {
     for (let t of u(e))
       h(t);
   }
-  function U() {
+  function V() {
     const e = document.querySelectorAll(
-      i.selector || C
+      i.selector || I
     );
     for (const t of e) {
       f(t), t.addEventListener("submit", y), t.addEventListener("reset", _);
@@ -245,7 +249,7 @@ function Z(r) {
         P(n);
       t.setAttribute("novalidate", "");
       const a = t.querySelector(
-        i.formMessageSelector || I
+        i.formMessageSelector || C
       );
       a && (f(a), d(a), t.setAttribute(
         "afova-form-message-container-id",
@@ -254,12 +258,16 @@ function Z(r) {
     }
   }
   function y(e) {
-    e.preventDefault(), g(e.target, e), e.target.checkValidity() ? (i.onValid && i.onValid(e), i.onSubmit && i.onSubmit(e)) : i.onInvalid && i.onInvalid(e);
+    if (!g(e.target, e)) {
+      e.preventDefault(), i.onInvalid && i.onInvalid(e);
+      return;
+    }
+    i.onValid && i.onValid(e), i.onSubmit && (e.preventDefault(), i.onSubmit(e));
   }
   function _(e) {
     R(e.target), i.onReset && i.onReset(e);
   }
-  function V() {
+  function U() {
     const e = document.querySelectorAll(i.selector || "form");
     for (const t of e) {
       t.removeAttribute("novalidate"), t.removeEventListener("submit", y), t.removeEventListener("reset", _);
@@ -297,12 +305,12 @@ function Z(r) {
     return t && f(t), t;
   }
   let i = Object.assign({}, X, r);
-  return U(), {
+  return V(), {
     /**
      * Will remove all event listeners that have been added by afova and
      * will clear all afova messages.
      */
-    clear: () => V(),
+    clear: () => U(),
     /**
      * check the validity of the given form
      * @param form to get the valid state for. When the form is not provided it is checked if all of the forms addressed by the selector are valid.

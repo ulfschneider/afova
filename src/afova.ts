@@ -446,22 +446,22 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   function _validateForm(form: HTMLFormElement, event?: Event): boolean {
     let firstError: HTMLObjectElement | undefined;
-    let formIsValid = true;
+    const formIsValid = form.checkValidity();
 
-    for (const control of _getFormElements(form)) {
-      const valid = _validateControl(control);
-      if (!valid) {
-        formIsValid = false;
-
-        if (!firstError) {
-          firstError = control;
+    if (!formIsValid) {
+      for (const control of _getFormElements(form)) {
+        const valid = _validateControl(control);
+        if (!valid) {
+          if (!firstError) {
+            firstError = control;
+          }
         }
       }
-    }
-    if (firstError) {
-      event?.preventDefault();
-      if (settings.focusOnFirstError) {
-        firstError.focus();
+      if (firstError) {
+        event?.preventDefault();
+        if (settings.focusOnFirstError) {
+          firstError.focus();
+        }
       }
     }
     return formIsValid;
@@ -501,7 +501,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
         _prepareControl(control);
       }
 
-      //switch off default browser form validation
+      //switch off default browser form validation, afova will take over
       form.setAttribute("novalidate", "");
 
       const formMessageContainer = form.querySelector(
@@ -521,19 +521,23 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _formSubmitListener(event: Event): void {
-    event.preventDefault();
+    const formIsValid = _validateForm(event.target as HTMLFormElement, event);
 
-    _validateForm(event.target as HTMLFormElement, event);
+    if (!formIsValid) {
+      event.preventDefault();
+      if (settings.onInvalid) {
+        settings.onInvalid(event as SubmitEvent);
+      }
+      return;
+    }
 
-    if ((event.target as HTMLFormElement).checkValidity()) {
-      if (settings.onValid) {
-        settings.onValid(event as SubmitEvent);
-      }
-      if (settings.onSubmit) {
-        settings.onSubmit(event as SubmitEvent);
-      }
-    } else if (settings.onInvalid) {
-      settings.onInvalid(event as SubmitEvent);
+    //form is valid
+    if (settings.onValid) {
+      settings.onValid(event as SubmitEvent);
+    }
+    if (settings.onSubmit) {
+      event.preventDefault();
+      settings.onSubmit(event as SubmitEvent);
     }
   }
 
