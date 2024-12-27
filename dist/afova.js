@@ -46,7 +46,7 @@ const W = {
   tooLong: "The value {{input}} is too long. It cannot be longer than {{constraint}} characters.",
   tooShort: "The value {{input}} is too short. It must be at least {{constraint}} characters long.",
   typeMismatch: "The value {{input}} must be of type {{constraint}}",
-  valueMissing: "Please provide a value"
+  valueMissing: "Please provide a {{type}} value"
 }, I = "form", C = ".afova-form-message-container", X = {
   selector: I,
   formMessageSelector: C,

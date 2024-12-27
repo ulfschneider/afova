@@ -18,7 +18,7 @@ export interface AfovaSettings {
    */
   focusOnFirstError?: boolean;
   /**
-   * Callback for submitting the form after successful validation.
+   * Callback for submitting the form after successful validation. When this callback is defined, the default form submit behaviour is prevented.
    * @param event the SubmitEvent
    */
   onSubmit?: (event: SubmitEvent) => void;
@@ -120,7 +120,7 @@ const VIOLATION_FALLBACK_MESSAGES: Record<Violation, string> = {
   tooShort:
     "The value {{input}} is too short. It must be at least {{constraint}} characters long.",
   typeMismatch: "The value {{input}} must be of type {{constraint}}",
-  valueMissing: "Please provide a value",
+  valueMissing: "Please provide a {{type}} value",
 };
 
 const DEFAULT_SELECTOR = "form";

@@ -16,7 +16,7 @@ export interface AfovaSettings {
      */
     focusOnFirstError?: boolean;
     /**
-     * Callback for submitting the form after successful validation.
+     * Callback for submitting the form after successful validation. When this callback is defined, the default form submit behaviour is prevented.
      * @param event the SubmitEvent
      */
     onSubmit?: (event: SubmitEvent) => void;
