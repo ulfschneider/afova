@@ -1,10 +1,12 @@
 body {
     line-height: 1.6;
+    padding: 2em;
 }
 
 label {
     display: block;
     font-weight: bold;
+    margin: 1em 0;
 
     .description {
         display: block;
@@ -17,14 +19,16 @@ label {
     }
 }
 
-.afova-context.afova-active {
-    border-left: 3px solid red;
+label input[type="checkbox"],
+label input[type="radio"] {
+    display: inline-block;
+    margin-right: 1em;
 }
 
-.afova-message-container {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
+.afova-context.afova-active {
+    border-left: 3px solid red;
+    padding-left: 10px;
+    margin-left: -13px;
 }
 
 .afova-message,

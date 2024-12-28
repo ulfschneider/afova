@@ -5,7 +5,7 @@ let B = (s = 21) => {
     f += k[c[s] & 63];
   return f;
 };
-var T = /* @__PURE__ */ ((s) => (s.badInput = "badInput", s.customError = "customError", s.patternMismatch = "patternMismatch", s.rangeOverflow = "rangeOverflow", s.rangeUnderflow = "rangeUnderflow", s.stepMismatch = "stepMismatch", s.tooLong = "tooLong", s.tooShort = "tooShort", s.typeMismatch = "typeMismatch", s.valueMissing = "valueMissing", s))(T || {}), M = /* @__PURE__ */ ((s) => (s.pattern = "pattern", s.max = "max", s.min = "min", s.step = "step", s.maxlength = "maxlength", s.minlength = "minlength", s.type = "type", s.required = "required", s))(M || {});
+var M = /* @__PURE__ */ ((s) => (s.badInput = "badInput", s.customError = "customError", s.patternMismatch = "patternMismatch", s.rangeOverflow = "rangeOverflow", s.rangeUnderflow = "rangeUnderflow", s.stepMismatch = "stepMismatch", s.tooLong = "tooLong", s.tooShort = "tooShort", s.typeMismatch = "typeMismatch", s.valueMissing = "valueMissing", s))(M || {}), T = /* @__PURE__ */ ((s) => (s.pattern = "pattern", s.max = "max", s.min = "min", s.step = "step", s.maxlength = "maxlength", s.minlength = "minlength", s.type = "type", s.required = "required", s))(T || {});
 const Y = {
   badInput: void 0,
   customError: void 0,
@@ -46,10 +46,10 @@ const W = {
   tooLong: "The value {{input}} is too long. It cannot be longer than {{constraint}} characters.",
   tooShort: "The value {{input}} is too short. It must be at least {{constraint}} characters long.",
   typeMismatch: "The value {{input}} must be of type {{constraint}}",
-  valueMissing: "Please provide a {{type}} value"
-}, I = "form", C = ".afova-form-message-container", X = {
-  selector: I,
-  formMessageSelector: C,
+  valueMissing: "Please provide the {{type}} value"
+}, C = "form", I = ".afova-form-message-container", X = {
+  selector: C,
+  formMessageSelector: I,
   validateOnChange: !1,
   focusOnFirstError: !0
 }, J = [
@@ -73,7 +73,7 @@ function Z(s) {
     const t = A(e) || e;
     return document.querySelector(
       `#${t.id}-afova-message-container`
-    );
+    ) || void 0;
   }
   function d(e) {
     v(e) ? e.style.display = "none" : e.style.display = "";
@@ -83,9 +83,8 @@ function Z(s) {
     if (t) {
       const a = t.getAttribute("afova-form-message-container-id");
       if (a)
-        return document.querySelector(`#${a}`);
+        return document.querySelector(`#${a}`) || void 0;
     }
-    return null;
   }
   function v(e) {
     return e.children.length == 0;
@@ -95,7 +94,7 @@ function Z(s) {
     let t = c(e);
     if (!t) {
       const n = A(e) || e;
-      t = document.createElement("ul"), (a = n.parentNode) == null || a.insertBefore(
+      t = document.createElement("DIV"), (a = n.parentNode) == null || a.insertBefore(
         t,
         n
       ), t.id = `${n.id}-afova-message-container`, t.classList.add("afova-message-container"), e.setAttribute("aria-errormessage", t.id);
@@ -128,10 +127,7 @@ function Z(s) {
         n = n.replace(l, r);
       }
       let i = new RegExp("{{\\s*input\\s*}}", "ig");
-      return n = n.replace(
-        i,
-        t.value
-      ), i = new RegExp("{{\\s*type\\s*}}", "ig"), n = n.replace(i, t.type), n;
+      return n = n.replace(i, t.value), i = new RegExp("{{\\s*type\\s*}}", "ig"), n = n.replace(i, t.type), n;
     }
     return t.validationMessage;
   }
@@ -167,7 +163,7 @@ function Z(s) {
     const t = S(e), a = e.validity;
     let n;
     t.tagName == "UL" || t.tagName == "OL" ? n = document.createElement("LI") : n = document.createElement("DIV"), n.classList.add("afova-message"), n.setAttribute("afova-message-for", e.id), t.appendChild(n);
-    for (const r in T)
+    for (const r in M)
       if (a[r]) {
         let i = x(r, e);
         i && (n.innerHTML = i, N(e, i));
@@ -195,7 +191,7 @@ function Z(s) {
     a && a.classList.add("afova-active"), e.setAttribute("aria-invalid", "true"), w(e) || (q(e), t && e.focus());
   }
   function b(e, t) {
-    return h(e), e.validity.valid || F(e, t), e.validity.valid;
+    return h(e), e.validity.valid && o.onValidateControl && o.onValidateControl(e), e.validity.valid || F(e, t), e.validity.valid;
   }
   function u(e) {
     const t = [];
@@ -216,15 +212,11 @@ function Z(s) {
   }
   function g(e, t) {
     let a;
-    const n = e.checkValidity();
-    if (!n) {
-      for (const r of u(e))
-        b(r) || a || (a = r);
-      a && (t == null || t.preventDefault(), o.focusOnFirstError && a.focus());
-    }
-    return n;
+    for (const n of u(e))
+      b(n) || a || (a = n);
+    return a && (t == null || t.preventDefault(), o.focusOnFirstError && a.focus()), e.checkValidity();
   }
-  function $(e) {
+  function V(e) {
     if (e)
       return g(e);
     {
@@ -235,13 +227,13 @@ function Z(s) {
       return t;
     }
   }
-  function R(e) {
+  function $(e) {
     for (let t of u(e))
       h(t);
   }
-  function V() {
+  function R() {
     const e = document.querySelectorAll(
-      o.selector || I
+      o.selector || C
     );
     for (const t of e) {
       f(t), t.addEventListener("submit", L), t.addEventListener("reset", _);
@@ -249,7 +241,7 @@ function Z(s) {
         P(n);
       t.setAttribute("novalidate", "");
       const a = t.querySelector(
-        o.formMessageSelector || C
+        o.formMessageSelector || I
       );
       a && (f(a), d(a), t.setAttribute(
         "afova-form-message-container-id",
@@ -265,7 +257,7 @@ function Z(s) {
     o.onValid && o.onValid(e), o.onSubmit && (e.preventDefault(), o.onSubmit(e));
   }
   function _(e) {
-    R(e.target), o.onReset && o.onReset(e);
+    $(e.target), o.onReset && o.onReset(e);
   }
   function U() {
     const e = document.querySelectorAll(o.selector || "form");
@@ -277,13 +269,13 @@ function Z(s) {
   }
   function D(e) {
     const t = e.getAttributeNames().map((a) => a.toLowerCase());
-    for (const a in M)
+    for (const a in T)
       if (t.includes(a) && !e.getAttribute(`data-${a}`) && !e.getAttribute(
         `data-${K(a).toLowerCase()}`
       ) && (a != "type" || a == "type" && J.includes(e.type))) {
         const n = e.getAttribute("name");
         console.warn(
-          n ? `afova: Missing attribute [data-${a}] for the control with [name="${n}"]. Therefore only a fallback message will be used in case of a [${a}] constraint violation. It´s strongly recommended to define the violation message with the [data-${a}] attribute.` : `afova: Missing attribute [data-${a}] for the control with [id="${e.id}"]. Therefore only a fallback message will be used in case of a [${a}] constraint violation. It´s strongly recommended to define the violation message with the [data-${a}] attribute.`
+          n ? `afova: Missing attribute [data-${a}] for the control with [name="${n}"]. Therefore only a fallback message will be used in case of a [${a}] constraint violation. It is recommended to define the violation message with the [data-${a}] attribute.` : `afova: Missing attribute [data-${a}] for the control with [id="${e.id}"]. Therefore only a fallback message will be used in case of a [${a}] constraint violation. It is recommended to define the violation message with the [data-${a}] attribute.`
         );
       }
   }
@@ -298,37 +290,18 @@ function Z(s) {
   }
   function m(e) {
     let t = e.closest(".afova-context");
-    return t || (t = e.closest("label")), t && (f(t), t.classList.add("afova-context"), t.tagName == "LABEL" && !t.htmlFor && (t.htmlFor = e.id)), t;
+    return t || (t = e.closest("label")), t && (f(t), t.classList.add("afova-context"), t.tagName == "LABEL" && !t.htmlFor && (t.htmlFor = e.id)), t || void 0;
   }
   function A(e) {
     const t = e.closest(".afova-group");
-    return t && f(t), t;
+    return t && f(t), t || void 0;
   }
   let o = Object.assign({}, X, s);
-  return V(), {
-    /**
-     * Will remove all event listeners that have been added by afova and
-     * will clear all afova messages.
-     */
+  return R(), {
     clear: () => U(),
-    /**
-     * check the validity of the given form
-     * @param form to get the valid state for. When the form is not provided it is checked if all of the forms addressed by the selector are valid.
-     * @returns true if the form is (or all forms are) valid
-     */
     isValid: (e) => y(e),
-    /**
-     * check the validity of the given form
-     * @param form to get the invalid state for. When the form is not provided it is checked if any of the forms addressed by the selector is invalid.
-     * @returns true if the form is (or any form) invalid
-     */
     isInvalid: (e) => !y(e),
-    /**
-     * Do the afova form validation and return whether the form is valid
-     * @param form to check. When the form is not provided, all forms addressed by the selector are validated.
-     * @returns true if the form is (or all forms are) valid
-     */
-    validate: (e) => $(e)
+    validate: (e) => V(e)
   };
 }
 export {

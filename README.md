@@ -89,17 +89,17 @@ Trying to submit the form without providing a text value will violate the `requi
         class="afova-context afova-active"
         for="afova-d1qB-B6gUZ-dpFYghmIgp"
         >A reqired text input
-        <ul
+        <div
             id="afova-d1qB-B6gUZ-dpFYghmIgp-afova-message-container"
             class="afova-message-container"
         >
-            <li
+            <div
                 class="afova-message"
                 afova-message-for="afova-d1qB-B6gUZ-dpFYghmIgp"
             >
                 Please provide text input
-            </li>
-        </ul>
+            </div>
+        </div>
         <input
             type="text"
             required=""
@@ -182,6 +182,7 @@ The afova object can be initialized with an optional settings object.
   onReset?: (event: Event) => void;
   onInvalid?: (event: SubmitEvent) => void;
   onValid?: (event: SubmitEvent) => void;
+  onValidateControl?: (control: HTMLInputElement) => void
 }
 ```
 
@@ -195,6 +196,7 @@ You can provide a settings object when calling `afova()`. The settings are optio
 - `onReset?: (event: Event) => void` A callback that is called when the form is resetted
 - `onInvalid?: (event: SubmitEvent) => void` A callback that is called after a form has been validated and is invalid
 - `onValid?: (event: SubmitEvent) => void` A callback that is called after a form has been successfully validated. Called before the `onSubmit` callback.
+- `onValidateControl?: (control: HTMLInputElement) => void` Will be called during validation for each input element and can be used to set custom messages with `control.setCustomValidity()`. **Will only be called when all constraints of the inpout element are fulfilled.**
 
 
 ### HTML
@@ -327,17 +329,17 @@ The invalid form cannot be submitted and will be prepared by afova as follows:
         class="afova-context afova-active"
         for="afova-3EzzZt5d0vHfNFew8ylGT"
         >A reqired text input
-        <ul
+        <div
             id="afova-3EzzZt5d0vHfNFew8ylGT-afova-message-container"
             class="afova-message-container"
         >
-            <li
+            <div
                 class="afova-message"
                 afova-message-for="afova-3EzzZt5d0vHfNFew8ylGT"
             >
                 Please provide text input
-            </li>
-        </ul>
+            </div>
+        </div>
         <input
             type="text"
             required=""
@@ -353,14 +355,14 @@ The invalid form cannot be submitted and will be prepared by afova as follows:
         class="afova-context afova-active"
         for="min-text-length"
         >A min length text input
-        <ul
+        <div
             id="min-text-length-afova-message-container"
             class="afova-message-container"
         >
-            <li class="afova-message" afova-message-for="min-text-length">
+            <div class="afova-message" afova-message-for="min-text-length">
                 The text must be at least 5 characters of length
-            </li>
-        </ul>
+            </div>
+        </div>
         <input
             id="min-text-length"
             type="text"
