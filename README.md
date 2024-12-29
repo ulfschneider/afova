@@ -3,12 +3,12 @@
 afova (accessible form validation) is a progressive enhancement of the [client-side HTML form constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation).
 
 afova will allow you to:
-- pick up any of the constraining attributes of HTML input controls (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, and `maxlength`) and show constraint violation messages to the user,
+- pick up any of the constraining attributes of HTML input elements (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, and `maxlength`) and show constraint violation messages to the user,
 - describe violation messages with corresponding `data` attributes (`data-required`, `data-type`, `data-step`, `data-pattern`, `data-min`, `data-max`, `data-minlength`, and `data-maxlength`, and `data-bad-input`),
 - use placeholders within the violation messages to refer to the current user input (placeholder is `{{input}}`) and to the violated constraint setting (placeholder is `{{constraint}}`),
 - style constraint violation messages with CSS,
-- do custom HTML input element validation (sync and async),
-- do custom HTML form validation (sync and async)
+- do custom HTML input element validation (sync and async), and
+- do HTML form validation (sync and async).
 
 Below is an example of how afova allows to define constraint violation messages:
 
@@ -136,8 +136,7 @@ Then import afova into your JavaScript/TypeScript setup:
 ```js
 import { afova } from 'afova'
 
-//initialize by creating an afova object
-
+//initialize by creating an afova object with default settings
 const afv = afova();
 
 //if required, clear the script and remove all event listeners
@@ -154,7 +153,7 @@ Integrate afova into your web pages as follows:
 <script type="module">
     import { afova } from "/assets/afova.min.js";
 
-    //initialize by creating an afova object
+    //initialize by creating an afova object with default settings
     var afv = afova();
 
     //if required, clear the script and remove all event listeners
@@ -164,15 +163,15 @@ Integrate afova into your web pages as follows:
 
 ### The afova object
 
-When creating the afova object by calling `afova()`, all forms are traversed and afova will take over form validation for those forms during form submit.
+When creating the afova object by calling `afova()`, all forms that are available on the web page are traversed and afova will take over form validation for those forms during form submit.
 
-The `clear()` can be used in situations where you have to remove event listeners and CSS class assignments introduced by afova.
+The `clear()` method can be used in situations where you have to remove event listeners and CSS class assignments introduced by afova from the web page.
 
 ## Settings
 
 ### JavaScript
 
-The afova object can be initialized with an optional settings object.
+The afova object can be initialized with an optional settings object:
 
 ```js
 {
@@ -191,20 +190,20 @@ The afova object can be initialized with an optional settings object.
 }
 ```
 
-You can provide a settings object when calling `afova()`. The settings are optional.
+Properties of the settings object and their meaning:
 
-- `selector?: string` The default value is `form`, which will make afova search for all forms on a web page and take over validation control.
-- `formMessageSelector?: string` To show constraint violation messages not only along with the invalid input controls, but also in a list along with the form, you can have a form message container. The form message container is identified with the CSS class `.afova-form-message-container`, which will let afova search for the container inside of the form and collect all constraint violation messages there. The form message container is optional, because violation messages anyway will be displayed along with the invalid input controls.
-- `focusOnFirstError?: boolean` The default value is `true`, which leads to focusing the first input control with a constraint violation when a form is validated during submit.
-- `validateOnChange?: boolean` The default is `false`. When set to `true`, constraint violations are checked when the `onChange` event of the HTML input elements fire, and not only during form submit.
-- `onSubmit: (event: SubmitEvent) => void` The hook is called when the submit event of the form fired and the form is successfully validated. **When this hook is provided the default form submit behaviour is prevented and the submit needs to be implemented inside of the hook.**
+- `selector?: string` The selector that is used during construction of the afova object to identify the forms to validate. Default is `form`.
+- `formMessageSelector?: string` To show constraint violation messages not only along with the invalid input controls, but also in a list inside of the form, you can have a form message container. The form message container is identified with the CSS class `.afova-form-message-container` during construction of the afova object. afova will search for the container inside of the form and collect all constraint violation messages there. The form message container is optional, because violation messages anyway will be displayed along with the invalid input controls.
+- `focusOnFirstError?: boolean` The default value is `true`, which leads to focusing the first invalid input control during the validation of a form.
+- `validateOnChange?: boolean` The default is `false`. When set to `true`, validation is performed when the `onChange` event of the HTML input elements fire, and not only during form submit.
+- `onSubmit: (event: SubmitEvent) => void` The hook is called when the submit event of the form fired and the form is successfully validated. **When this hook is provided the default form submit behaviour is prevented and the submit needs to be implemented inside of this hook.**
 - `onReset?: (event: Event) => void` The hook is called when the form is resetted.
 - `onInvalid?: (event: SubmitEvent) => void` The hook is called when the submit event of the form fired but the form is invalid. The form will not be submitted in that case.
 - `onValid?: (event: SubmitEvent) => void` The hook is called when the submit event of the form fired and the form is valid. Will be called right before the `onSubmit` hook.
-- `onValidateControl?: (control: HTMLInputElement) => void` The hook is called for each input element during form validation. The hook
-- `onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>` The async hook is called for each input element during form validation and must return a promise. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. *ill only be called after the successful validation of all constraints for the input element and after the `onValidateControl` hook.
+- `onValidateControl?: (control: HTMLInputElement) => void` The hook is called for each input element during form validation. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. Will only be called after the successful validation of all constraints for the input element.
+- `onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>` The async hook is called for each input element during form validation and must return a promise. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. Will only be called after the successful validation of all constraints for the input element and after the `onValidateControl` hook.
 - `onValidateForm?: (form: HTMLFormElement) => void` The hook is called after successful validation of all input elements of the form. The hook can be used to validate input elements in relation to each other.
-- `onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>` The async hook is called after successful validation of all input elements of the form and after the `onValidateForm` hook. Must return a promise. The hook can be used to validate input elements in relation to each other.
+- `onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>` The async hook is called after successful validation of all input elements of the form and after the `onValidateForm` hook. It must return a promise. The hook can be used to validate input elements in relation to each other.
 
 
 ### HTML
@@ -227,7 +226,7 @@ Assigning your constraint violation messages is a good way to have international
 - `{{constraint}}` for the violated constraint, and
 - `{{type}}` for the controls value of the type attribute.
 
-afova will apply English fallback messages in case you do not use your own constraint violation messages,
+afova will apply English fallback messages in case you do not use your owna constraint violation messages,
 
 ## Collecting messages for the form
 

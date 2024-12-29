@@ -1,10 +1,10 @@
 export interface AfovaSettings {
     /**
-     * The selector to identify the forms to validate. Default is form
+     * The selector that is used during construction to identify the forms to validate. Default is form
      */
     selector?: string;
     /**
-     * The optional selector for the form messages container. Default is .afova-form-message-container
+     * The optional selector that is used during construction for the form messages container. Default is .afova-form-message-container
      */
     formMessageSelector?: string;
     /**
@@ -61,7 +61,7 @@ export interface AfovaSettings {
     onValidateForm?: (form: HTMLFormElement) => void;
     /**
      * The async hook is called after successful validation of all input elements of the form and after the onValidateForm hook.
-     * Must return a promise.
+     * It must return a promise.
      * The hook can be used to validate input elements in relation to each other.
      * @param form the form that is validated
      */

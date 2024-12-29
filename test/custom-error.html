@@ -8,7 +8,6 @@
         <title>Custom error</title>
         <link rel="stylesheet" href="/src/style.css" />
     </head>
-    <style></style>
 
     <body>
         <a href="/">Home</a>
@@ -34,11 +33,22 @@
         const afv = afova({
             onSubmit: () => {},
             onValidateControl: (control) => {
-                control.setCustomValidity("A custom message");
+                //control.setCustomValidity("A custom message");
             },
             onAsyncValidateControl: async (control) => {
+                console.log("starting async control validation");
                 await wait(2000);
-                control.setCustomValidity("An async validation");
+                //control.setCustomValidity("An async validation");
+            },
+            onValidateForm: (form) => {
+                console.log("validate the form");
+            },
+            onAsyncValidateForm: async (form) => {
+                console.log("starting async form validation");
+                await wait(2000);
+                const control = document.querySelector("#email-type");
+                control.setCustomValidity("form invalidity");
+                console.log("completing async form validation");
             },
         });
     </script>
