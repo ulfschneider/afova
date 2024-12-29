@@ -1,6 +1,6 @@
 export interface AfovaSettings {
     /**
-     * The selector that is used during construction to identify the forms to validate. Default is form
+     * The selector that is used during construction to identify the forms to validate. Default is form.
      */
     selector?: string;
     /**

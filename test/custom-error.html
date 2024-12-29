@@ -36,7 +36,7 @@
                 //control.setCustomValidity("A custom message");
             },
             onAsyncValidateControl: async (control) => {
-                console.log("starting async control validation");
+                console.log("starting async control validation", control);
                 await wait(2000);
                 //control.setCustomValidity("An async validation");
             },

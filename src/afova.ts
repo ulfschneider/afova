@@ -166,12 +166,12 @@ const VIOLATION_FALLBACK_MESSAGES: Record<Violation, string> = {
   valueMissing: "Please provide the {{type}} value",
 };
 
-const DEFAULT_SELECTOR = "form";
-const DEFAULT_FORM_CONTAINER_SELECTOR = ".afova-form-message-container";
+const DEFAULT_FORM_SELECTOR = "form";
+const DEFAULT_FORM_MESSAGE_CONTAINER_SELECTOR = ".afova-form-message-container";
 
 const DEFAULT_SETTINGS: AfovaSettings = {
-  selector: DEFAULT_SELECTOR,
-  formMessageSelector: DEFAULT_FORM_CONTAINER_SELECTOR,
+  selector: DEFAULT_FORM_SELECTOR,
+  formMessageSelector: DEFAULT_FORM_MESSAGE_CONTAINER_SELECTOR,
   validateOnChange: false,
   focusOnFirstError: true,
 };
@@ -191,6 +191,8 @@ const INPUT_TYPE_WARNINGS = [
 ];
 
 const IGNORE_INPUT_TYPES = ["submit", "reset", "button", "fieldset", "image"];
+
+const blockedFormIds = new Set<string>();
 
 /**
  * Create an afova object and initialize it for forms that are identified by the selector given in the options.
@@ -216,7 +218,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _setFormMessageContainerVisibility(container: HTMLElement): void {
-    if (_isEmpty(container)) {
+    const messageList = _ensureAndGetFormMessageList(container);
+    if (_isEmpty(messageList)) {
+      messageList.remove();
       container.style.display = "none";
     } else {
       container.style.display = "";
@@ -224,9 +228,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _findFormMessageContainer(
-    container: HTMLElement,
+    control: HTMLElement,
   ): HTMLElement | undefined {
-    const form = container.closest("form");
+    const form = control.closest("form");
     if (form) {
       const containerId = form.getAttribute("afova-form-message-container-id");
       if (containerId) {
@@ -236,6 +240,16 @@ export function afova(options?: AfovaSettings): AfovaObject {
         );
       }
     }
+  }
+
+  function _ensureAndGetFormMessageList(container: HTMLElement): HTMLElement {
+    let messageList = container.querySelector(".afova-message-list");
+    if (!messageList) {
+      messageList = document.createElement("UL");
+      messageList.classList.add("afova-message-list");
+      container.appendChild(messageList);
+    }
+    return messageList as HTMLElement;
   }
 
   function _isEmpty(element: HTMLElement): boolean {
@@ -350,15 +364,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
     const messageContainer = _findFormMessageContainer(control);
 
     if (messageContainer) {
-      let collectedMessageElement: HTMLElement;
-      if (
-        messageContainer.tagName == "UL" ||
-        messageContainer.tagName == "OL"
-      ) {
-        collectedMessageElement = document.createElement("LI");
-      } else {
-        collectedMessageElement = document.createElement("DIV");
-      }
+      const messageList = _ensureAndGetFormMessageList(messageContainer);
+      const collectedMessageElement = document.createElement("LI");
+
       collectedMessageElement.setAttribute("afova-message-for", control.id);
       collectedMessageElement.classList.add("afova-collected-message");
 
@@ -369,14 +377,13 @@ export function afova(options?: AfovaSettings): AfovaObject {
         labelElement.classList.add("afova-message-label");
         collectedMessageElement.appendChild(labelElement);
       }
-      const messageElement = document.createElement("DIV") as HTMLElement;
-
+      const messageElement = document.createElement("A") as HTMLAnchorElement;
       messageElement.innerText = message;
-
+      messageElement.href = `#${control.id}`;
       messageElement.classList.add("afova-message");
       collectedMessageElement.appendChild(messageElement);
 
-      messageContainer.appendChild(collectedMessageElement);
+      messageList.appendChild(collectedMessageElement);
 
       _setFormMessageContainerVisibility(messageContainer);
     }
@@ -532,7 +539,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   function _prepareForms(): void {
     const forms = document.querySelectorAll(
-      settings.selector || DEFAULT_SELECTOR,
+      settings.selector || DEFAULT_FORM_SELECTOR,
     );
     for (const form of forms) {
       _ensureId(form as HTMLFormElement);
@@ -547,7 +554,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
       form.setAttribute("novalidate", "");
 
       const formMessageContainer = form.querySelector(
-        settings.formMessageSelector || DEFAULT_FORM_CONTAINER_SELECTOR,
+        settings.formMessageSelector || DEFAULT_FORM_MESSAGE_CONTAINER_SELECTOR,
       ) as HTMLElement;
 
       if (formMessageContainer) {
@@ -564,26 +571,44 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   async function _formSubmitListener(event: Event): Promise<void> {
     event.preventDefault();
-    const formIsValid = await _validateForm(event.target as HTMLFormElement);
-
-    if (!formIsValid) {
-      if (settings.onInvalid) {
-        settings.onInvalid(event as SubmitEvent);
+    const form = event.target as HTMLFormElement;
+    try {
+      if (blockedFormIds.has(form.id)) {
+        //do not submit and validate the form
+        //while it is blocked because of an ongoing
+        //form submit
+        return;
       }
-      return;
-    }
 
-    //form is valid
-    if (settings.onValid) {
-      settings.onValid(event as SubmitEvent);
-    }
+      blockedFormIds.add(form.id);
+      const formIsValid = await _validateForm(form);
 
-    if (!settings.onSubmit) {
-      //a submit hook is not defined and the form is valid
-      //therefore we send the form to the server
-      (event.target as HTMLFormElement).submit();
-    } else {
-      settings.onSubmit(event as SubmitEvent);
+      if (!formIsValid) {
+        if (settings.onInvalid) {
+          settings.onInvalid(event as SubmitEvent);
+        }
+        blockedFormIds.delete(form.id);
+        return;
+      }
+
+      //form is valid
+      if (settings.onValid) {
+        settings.onValid(event as SubmitEvent);
+      }
+
+      if (!settings.onSubmit) {
+        //a submit hook is not defined and the form is valid
+        //therefore we send the form to the server
+        form.submit();
+      } else {
+        settings.onSubmit(event as SubmitEvent);
+      }
+      //ensure the form is cleared from the blocking list
+      blockedFormIds.delete(form.id);
+    } catch (err) {
+      //play it safe
+      blockedFormIds.delete(form.id);
+      throw err;
     }
   }
 

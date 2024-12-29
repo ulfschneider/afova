@@ -7,8 +7,9 @@ afova will allow you to:
 - describe violation messages with corresponding `data` attributes (`data-required`, `data-type`, `data-step`, `data-pattern`, `data-min`, `data-max`, `data-minlength`, and `data-maxlength`, and `data-bad-input`),
 - use placeholders within the violation messages to refer to the current user input (placeholder is `{{input}}`) and to the violated constraint setting (placeholder is `{{constraint}}`),
 - style constraint violation messages with CSS,
-- do custom HTML input element validation (sync and async), and
-- do HTML form validation (sync and async).
+- do custom HTML input element validation (sync and async),
+- do HTML form validation (sync and async), and
+- avoids multiple submits of a form that is already in a submitting process.
 
 Below is an example of how afova allows to define constraint violation messages:
 
@@ -235,7 +236,9 @@ All constraint violation messages of an entire form can be collected and listed 
 ```html
 <form>
 
-    <ul class="afova-form-message-container"></ul>
+    <div class="afova-form-message-container">
+        <strong>The form has validation failures</strong>
+    </div>
 
     <input type="submit" value="Submit the form" />
     <input type="reset" value="Reset the form" />
@@ -266,11 +269,13 @@ It will be transformed by afova into:
     id="afova-HZ9_7J1fJI_VMYGrfJln9"
     afova-form-message-container-id="afova-cMvV7qnlQRK07g71a_Ban"
 >
-    <ul
+    <div
         class="afova-form-message-container"
         id="afova-cMvV7qnlQRK07g71a_Ban"
         style="display: none"
-    ></ul>
+    >
+        <strong>The form has validation failures</strong>
+    </div>
     <input type="submit" value="Submit the form" />
     <input type="reset" value="Reset the form" />
     <label
@@ -310,24 +315,27 @@ The invalid form cannot be submitted and will be prepared by afova as follows:
     id="afova-ZrtiyJtHnlDlNmeTuhu-o"
     afova-form-message-container-id="afova-eBosuZX7IAKictsYD5zfD"
 >
-    <ul
+    <div
         class="afova-form-message-container"
         id="afova-eBosuZX7IAKictsYD5zfD"
     >
-        <li
-            afova-message-for="afova-3EzzZt5d0vHfNFew8ylGT"
-            class="afova-collected-message"
-        >
-            <div class="afova-message-label">A reqired text input</div>
-            <div class="afova-message">Please provide text input</div>
-        </li>
-        <li afova-message-for="min-text-length" class="afova-collected-message">
-            <div class="afova-message-label">A min length text input</div>
-            <div class="afova-message">
-                The text must be at least 5 characters of length
-            </div>
-        </li>
-    </ul>
+        <strong>The form has validation failures</strong>
+        <ul class="afova-message-list">
+            <li
+                afova-message-for="afova-3EzzZt5d0vHfNFew8ylGT"
+                class="afova-collected-message"
+            >
+                <div class="afova-message-label">A reqired text input</div>
+                <div class="afova-message">Please provide text input</div>
+            </li>
+            <li afova-message-for="min-text-length" class="afova-collected-message">
+                <div class="afova-message-label">A min length text input</div>
+                <div class="afova-message">
+                    The text must be at least 5 characters of length
+                </div>
+            </li>
+        </ul>
+    </div>
 
     <input type="submit" value="Submit the form" />
     <input type="reset" value="Reset the form" />
