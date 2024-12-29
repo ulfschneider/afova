@@ -492,22 +492,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
     return result;
   }
 
-  function _isValid(form?: HTMLFormElement): boolean {
-    if (form) {
-      return form.checkValidity();
-    } else {
-      const forms = document.querySelectorAll(settings.selector || "form");
-      for (const form of forms) {
-        if (!(form as HTMLFormElement).checkValidity()) {
-          //form has invalid controls
-          return false;
-        }
-      }
-
-      return true;
-    }
-  }
-
   async function _validateForm(form: HTMLFormElement): Promise<boolean> {
     for (const control of _getFormElements(form)) {
       //do not show the validation message
