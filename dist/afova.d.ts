@@ -16,31 +16,56 @@ export interface AfovaSettings {
      */
     focusOnFirstError?: boolean;
     /**
-     * Callback for submitting the form after successful validation. When this callback is defined, the default form submit behaviour is prevented.
+     * The hook is called when the submit event of the form fired and the form is successfully validated.
+     * When this hook is provided the default form submit behaviour is prevented and the submit needs to be
+     * implemented inside of the hook.
      * @param event the SubmitEvent
      */
     onSubmit?: (event: SubmitEvent) => void;
     /**
-     * Callback for resetting the form
-     * @param event the SubmitEvent
+     * The hook is called when the form is resetted
+     * @param event the reset event of the form
      */
     onReset?: (event: Event) => void;
     /**
-     * Callback when trying to submit an invalid form.
+     * The hook is called when the submit event of the form fired but the form is invalid.
+     * The form will not be submitted in that case.
      * @param event the SubmitEvent
      */
     onInvalid?: (event: SubmitEvent) => void;
     /**
-     * Callback for a valid form during submit. Will be called before the onSubmit callback.
+     * The hook is called when the submit event of the form fired and the form is valid.
+     * Will be called right before the onSubmit hook.
      * @param event the SubmitEvent
      */
     onValid?: (event: SubmitEvent) => void;
     /**
-     * Will be called during validation for each input element and can be used to set custom messages with control.setCustomValidity().
-     * Will only be called when all constraints of the inpout element are fulfilled.
+     * The hook is called for each input element during form validation.
+     * The hook can be used to invalidate the input element by setting a custom validation message with control.setCustomValidity().
+     * Will only be called after the successful validation of all constraints for the input element.
      * @param control the input element that is validated
      */
     onValidateControl?: (control: HTMLInputElement) => void;
+    /**
+     * The async hook is called for each input element during form validation and must return a promise.
+     * The hook can be used to invalidate the input element by setting a custom validation message with control.setCustomValidity().
+     * Will only be called after the successful validation of all constraints for the input element and after the onValidateControl hook.
+     * @param control the input element that is validated
+     */
+    onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>;
+    /**
+     * The hook is called after successful validation of all input elements of the form.
+     * The hook can be used to validate input elements in relation to each other.
+     * @param form the form that is validated
+     */
+    onValidateForm?: (form: HTMLFormElement) => void;
+    /**
+     * The async hook is called after successful validation of all input elements of the form and after the onValidateForm hook.
+     * Must return a promise.
+     * The hook can be used to validate input elements in relation to each other.
+     * @param form the form that is validated
+     */
+    onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>;
 }
 export interface AfovaObject {
     /**
@@ -48,24 +73,6 @@ export interface AfovaObject {
      * will clear all afova messages.
      */
     clear: () => void;
-    /**
-     * check the validity of the given form
-     * @param form the form to get the valid state for. When the form is not provided it is checked if all of the forms addressed by the selector are valid.
-     * @returns true if the form is (or all forms are) valid
-     */
-    isValid: (form?: HTMLFormElement) => boolean;
-    /**
-     * check the validity of the given form
-     * @param form the form to get the invalid state for. When the form is not provided it is checked if any of the forms addressed by the selector is invalid.
-     * @returns true if the form is (or any form) invalid
-     */
-    isInvalid: (form?: HTMLFormElement) => boolean;
-    /**
-     * Do the afova form validation and return whether the form is valid
-     * @param form the form to check. When the form is not provided, all forms addressed by the selector are validated.
-     * @returns true if the form is (or all forms are) valid
-     */
-    validate: (form?: HTMLFormElement) => boolean;
 }
 /**
  * Create an afova object and initialize it for forms that are identified by the selector given in the options.

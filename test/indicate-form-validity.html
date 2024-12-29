@@ -64,6 +64,9 @@
     <script type="module">
         import { afova } from "/src/afova.ts";
         const afv = afova({
+            onSubmit: () => {
+                console.log("This form will never submit");
+            },
             onValid: () => {
                 const validState = document.querySelector("#valid-state");
                 validState.innerText = "valid form";

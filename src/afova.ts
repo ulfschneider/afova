@@ -22,35 +22,63 @@ export interface AfovaSettings {
   focusOnFirstError?: boolean;
 
   /**
-   * Callback for submitting the form after successful validation. When this callback is defined, the default form submit behaviour is prevented.
+   * The hook is called when the submit event of the form fired and the form is successfully validated.
+   * When this hook is provided the default form submit behaviour is prevented and the submit needs to be
+   * implemented inside of the hook.
    * @param event the SubmitEvent
    */
   onSubmit?: (event: SubmitEvent) => void;
 
   /**
-   * Callback for resetting the form
-   * @param event the SubmitEvent
+   * The hook is called when the form is resetted
+   * @param event the reset event of the form
    */
   onReset?: (event: Event) => void;
 
   /**
-   * Callback when trying to submit an invalid form.
+   * The hook is called when the submit event of the form fired but the form is invalid.
+   * The form will not be submitted in that case.
    * @param event the SubmitEvent
    */
   onInvalid?: (event: SubmitEvent) => void;
 
   /**
-   * Callback for a valid form during submit. Will be called before the onSubmit callback.
+   * The hook is called when the submit event of the form fired and the form is valid.
+   * Will be called right before the onSubmit hook.
    * @param event the SubmitEvent
    */
   onValid?: (event: SubmitEvent) => void;
 
   /**
-   * Will be called during validation for each input element and can be used to set custom messages with control.setCustomValidity().
-   * Will only be called when all constraints of the inpout element are fulfilled.
+   * The hook is called for each input element during form validation.
+   * The hook can be used to invalidate the input element by setting a custom validation message with control.setCustomValidity().
+   * Will only be called after the successful validation of all constraints for the input element.
    * @param control the input element that is validated
    */
   onValidateControl?: (control: HTMLInputElement) => void;
+
+  /**
+   * The async hook is called for each input element during form validation and must return a promise.
+   * The hook can be used to invalidate the input element by setting a custom validation message with control.setCustomValidity().
+   * Will only be called after the successful validation of all constraints for the input element and after the onValidateControl hook.
+   * @param control the input element that is validated
+   */
+  onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>;
+
+  /**
+   * The hook is called after successful validation of all input elements of the form.
+   * The hook can be used to validate input elements in relation to each other.
+   * @param form the form that is validated
+   */
+  onValidateForm?: (form: HTMLFormElement) => void;
+
+  /**
+   * The async hook is called after successful validation of all input elements of the form and after the onValidateForm hook.
+   * Must return a promise.
+   * The hook can be used to validate input elements in relation to each other.
+   * @param form the form that is validated
+   */
+  onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>;
 }
 
 export interface AfovaObject {
@@ -59,27 +87,6 @@ export interface AfovaObject {
    * will clear all afova messages.
    */
   clear: () => void;
-
-  /**
-   * check the validity of the given form
-   * @param form the form to get the valid state for. When the form is not provided it is checked if all of the forms addressed by the selector are valid.
-   * @returns true if the form is (or all forms are) valid
-   */
-  isValid: (form?: HTMLFormElement) => boolean;
-
-  /**
-   * check the validity of the given form
-   * @param form the form to get the invalid state for. When the form is not provided it is checked if any of the forms addressed by the selector is invalid.
-   * @returns true if the form is (or any form) invalid
-   */
-  isInvalid: (form?: HTMLFormElement) => boolean;
-
-  /**
-   * Do the afova form validation and return whether the form is valid
-   * @param form the form to check. When the form is not provided, all forms addressed by the selector are validated.
-   * @returns true if the form is (or all forms are) valid
-   */
-  validate: (form?: HTMLFormElement) => boolean;
 }
 
 enum Violation {
@@ -155,7 +162,7 @@ const VIOLATION_FALLBACK_MESSAGES: Record<Violation, string> = {
     "The value {{input}} is too long. It cannot be longer than {{constraint}} characters.",
   tooShort:
     "The value {{input}} is too short. It must be at least {{constraint}} characters long.",
-  typeMismatch: "The value {{input}} must be of type {{constraint}}",
+  typeMismatch: "The value {{input}} must be a {{constraint}}",
   valueMissing: "Please provide the {{type}} value",
 };
 
@@ -339,7 +346,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     return "";
   }
 
-  function _putFormMessage(control: HTMLInputElement, message: string) {
+  function _setFormMessage(control: HTMLInputElement, message: string) {
     const messageContainer = _findFormMessageContainer(control);
 
     if (messageContainer) {
@@ -375,37 +382,13 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
-  function _putMessage(control: HTMLInputElement): void {
-    const messageContainer = _ensureAndGetMessageContainer(control);
-
-    const validity = control.validity;
-    let messageElement: HTMLElement;
-    if (messageContainer.tagName == "UL" || messageContainer.tagName == "OL") {
-      messageElement = document.createElement("LI");
-    } else {
-      messageElement = document.createElement("DIV");
-    }
-    messageElement.classList.add("afova-message");
-    messageElement.setAttribute("afova-message-for", control.id);
-    messageContainer.appendChild(messageElement);
-
-    for (const violation in Violation) {
-      if ((validity as any)[violation]) {
-        //there is an error of type constraint
-        let message = _deriveMessageText(violation as Violation, control);
-        if (message) {
-          messageElement.innerHTML = message;
-          _putFormMessage(control, message);
-        }
-        break;
-      }
-    }
-  }
-
-  function _clearControlMessages(control: HTMLInputElement): void {
+  function _clearMessages(control: HTMLInputElement): void {
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
+    control.setCustomValidity("");
 
+    //clear all messages for the control, no matter if they are
+    //in the controls message container or in the form message container
     const messages = document.querySelectorAll(
       `[afova-message-for="${control.id}"]`,
     );
@@ -413,12 +396,19 @@ export function afova(options?: AfovaSettings): AfovaObject {
       message.remove();
     }
 
+    //clean up the control message container
     const messageContainer = _findMessageContainer(control);
-
     if (messageContainer && _isEmpty(messageContainer)) {
       messageContainer.remove();
     }
 
+    //clean up the form message container
+    const formMessageContainer = _findFormMessageContainer(control);
+    if (formMessageContainer) {
+      _setFormMessageContainerVisibility(formMessageContainer);
+    }
+
+    //clean up the context
     let context = _findAndPrepareContext(control);
     if (context) {
       const invalidControls = document.querySelectorAll(
@@ -428,45 +418,67 @@ export function afova(options?: AfovaSettings): AfovaObject {
         context.classList.remove("afova-active");
       }
     }
-
-    const formMessageContainer = _findFormMessageContainer(control);
-    if (formMessageContainer) {
-      _setFormMessageContainerVisibility(formMessageContainer);
-    }
   }
 
-  function _setControlMessage(
-    control: HTMLInputElement,
-    focus?: boolean,
-  ): void {
-    const context = _findAndPrepareContext(control);
-    if (context) {
-      context.classList.add("afova-active");
-    }
-    control.setAttribute("aria-invalid", "true");
+  function _setMessage(control: HTMLInputElement): void {
+    if (!control.validity.valid && !_isValidatedRadioGroup(control)) {
+      //a message will only be set for an invalid input element
+      //and a group of radio controls should only be validated once
+      const context = _findAndPrepareContext(control);
+      if (context) {
+        context.classList.add("afova-active");
+      }
+      control.setAttribute("aria-invalid", "true");
 
-    if (!_isValidatedRadioGroup(control)) {
-      //a group of radio controls should only be validated once
+      const messageContainer = _ensureAndGetMessageContainer(control);
 
-      _putMessage(control);
+      let messageElement: Element;
+      if (
+        messageContainer.tagName == "UL" ||
+        messageContainer.tagName == "OL"
+      ) {
+        messageElement = document.createElement("LI");
+      } else {
+        messageElement = document.createElement("DIV");
+      }
+      messageElement.classList.add("afova-message");
+      messageElement.setAttribute("afova-message-for", control.id);
+      messageContainer.appendChild(messageElement);
 
-      if (focus) {
-        control.focus();
+      for (const violation in Violation) {
+        if ((control.validity as any)[violation]) {
+          //there is an error of type constraint
+          let message = _deriveMessageText(violation as Violation, control);
+          if (message) {
+            messageElement.innerHTML = message;
+            _setFormMessage(control, message);
+          }
+          break;
+        }
       }
     }
   }
 
-  function _validateControl(
+  async function _validateControl(
     control: HTMLInputElement,
-    focus?: boolean,
-  ): boolean {
-    _clearControlMessages(control);
-    if (control.validity.valid && settings.onValidateControl) {
-      settings.onValidateControl(control);
+    indicateMessage = true,
+  ): Promise<boolean> {
+    _clearMessages(control);
+
+    if (control.validity.valid) {
+      //call the validation hooks only for  valid input elements
+      if (settings.onValidateControl) {
+        settings.onValidateControl(control);
+      }
+      if (settings.onAsyncValidateControl) {
+        await settings.onAsyncValidateControl(control);
+      }
     }
-    if (!control.validity.valid) {
-      _setControlMessage(control, focus);
+
+    if (indicateMessage) {
+      _setMessage(control);
     }
+
     return control.validity.valid;
   }
 
@@ -496,20 +508,31 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
-  function _validateForm(form: HTMLFormElement, event?: Event): boolean {
-    let firstError: HTMLInputElement | undefined;
-
+  async function _validateForm(form: HTMLFormElement): Promise<boolean> {
     for (const control of _getFormElements(form)) {
-      const valid = _validateControl(control);
-      if (!valid) {
-        if (!firstError) {
-          firstError = control;
-        }
+      //do not show the validation message
+      await _validateControl(control, false);
+    }
+
+    if (form.checkValidity()) {
+      //call the form validation hooks only for valid forms
+      if (settings.onValidateForm) {
+        settings.onValidateForm(form);
+      }
+      if (settings.onAsyncValidateForm) {
+        await settings.onAsyncValidateForm(form);
       }
     }
-    if (firstError) {
-      event?.preventDefault();
-      if (settings.focusOnFirstError) {
+
+    let firstError: HTMLInputElement | undefined;
+    for (const control of _getFormElements(form)) {
+      _setMessage(control);
+      if (
+        settings.focusOnFirstError &&
+        !control.validity.valid &&
+        !firstError
+      ) {
+        firstError = control;
         firstError.focus();
       }
     }
@@ -517,24 +540,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
     return form.checkValidity();
   }
 
-  function _validate(form?: HTMLFormElement): boolean {
-    if (form) {
-      return _validateForm(form);
-    } else {
-      let formsAreValid = true;
-      const forms = document.querySelectorAll(settings.selector || "form");
-      for (const form of forms) {
-        if (!_validateForm(form as HTMLFormElement)) {
-          formsAreValid = false;
-        }
-      }
-      return formsAreValid;
-    }
-  }
-
   function _resetForm(form: HTMLFormElement): void {
     for (let control of _getFormElements(form)) {
-      _clearControlMessages(control);
+      _clearMessages(control);
     }
   }
 
@@ -570,11 +578,11 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
-  function _formSubmitListener(event: Event): void {
-    const formIsValid = _validateForm(event.target as HTMLFormElement, event);
+  async function _formSubmitListener(event: Event): Promise<void> {
+    event.preventDefault();
+    const formIsValid = await _validateForm(event.target as HTMLFormElement);
 
     if (!formIsValid) {
-      event.preventDefault();
       if (settings.onInvalid) {
         settings.onInvalid(event as SubmitEvent);
       }
@@ -585,8 +593,12 @@ export function afova(options?: AfovaSettings): AfovaObject {
     if (settings.onValid) {
       settings.onValid(event as SubmitEvent);
     }
-    if (settings.onSubmit) {
-      event.preventDefault();
+
+    if (!settings.onSubmit) {
+      //a submit hook is not defined and the form is valid
+      //therefore we send the form to the server
+      (event.target as HTMLFormElement).submit();
+    } else {
       settings.onSubmit(event as SubmitEvent);
     }
   }
@@ -650,8 +662,11 @@ export function afova(options?: AfovaSettings): AfovaObject {
     _warnMissingMessage(control as HTMLInputElement);
   }
 
-  function _controlChangeListener(event: Event): void {
-    _validateControl(event.target as HTMLInputElement, true);
+  async function _controlChangeListener(event: Event): Promise<void> {
+    const valid = await _validateControl(event.target as HTMLInputElement);
+    if (!valid) {
+      (event.target as HTMLInputElement).focus();
+    }
   }
 
   function _unprepareControl(control: HTMLInputElement): void {
@@ -713,13 +728,5 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   return {
     clear: () => _unprepareForms(),
-
-    isValid: (form?: HTMLFormElement) => _isValid(form),
-
-    isInvalid: (form?: HTMLFormElement) => !_isValid(form),
-
-    validate: (form?: HTMLFormElement) => {
-      return _validate(form);
-    },
   };
 }
