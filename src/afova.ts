@@ -58,6 +58,13 @@ export interface AfovaSettings {
   onValidateControl?: (control: HTMLInputElement) => void;
 
   /**
+   * The hook is called when an error occurs during control validation. When the handler is defined, the error is catched and given to the handler. When the handler is not defined, the error is thrown.
+   * @param control the control being validated
+   * @param error the error that is thrown
+   */
+  onValidateControlError?: (control: HTMLInputElement, error: unknown) => void;
+
+  /**
    * The async hook is called for each input element during form validation and must return a promise.
    * The hook can be used to invalidate the input element by setting a custom validation message with control.setCustomValidity().
    * Will only be called after the successful validation of all constraints for the input element and after the onValidateControl hook.
@@ -71,6 +78,13 @@ export interface AfovaSettings {
    * @param form the form that is validated
    */
   onValidateForm?: (form: HTMLFormElement) => void;
+
+  /**
+   * The hook is called when an error occurs during form validation. When the handler is defined, the error is catched and given to the handler. When the handler is not defined, the error is thrown.
+   * @param form the form being validated
+   * @param error the error that is thrown
+   */
+  onValidateFormError?: (form: HTMLFormElement, error: unknown) => void;
 
   /**
    * The async hook is called after successful validation of all input elements of the form and after the onValidateForm hook.
@@ -470,20 +484,28 @@ export function afova(options?: AfovaSettings): AfovaObject {
     control: HTMLInputElement,
     indicateMessage = true,
   ): Promise<boolean> {
-    _clearMessages(control);
+    try {
+      _clearMessages(control);
 
-    if (control.validity.valid) {
-      //call the validation hooks only for  valid input elements
-      if (settings.onValidateControl) {
-        settings.onValidateControl(control);
+      if (control.validity.valid) {
+        //call the validation hooks only for  valid input elements
+        if (settings.onValidateControl) {
+          settings.onValidateControl(control);
+        }
+        if (settings.onAsyncValidateControl) {
+          await settings.onAsyncValidateControl(control);
+        }
       }
-      if (settings.onAsyncValidateControl) {
-        await settings.onAsyncValidateControl(control);
-      }
-    }
 
-    if (indicateMessage) {
-      _setMessage(control);
+      if (indicateMessage) {
+        _setMessage(control);
+      }
+    } catch (err) {
+      if (settings.onValidateControlError) {
+        settings.onValidateControlError(control, err);
+      } else {
+        throw err;
+      }
     }
 
     return control.validity.valid;
@@ -608,7 +630,12 @@ export function afova(options?: AfovaSettings): AfovaObject {
     } catch (err) {
       //play it safe
       blockedFormIds.delete(form.id);
-      throw err;
+
+      if (settings.onValidateFormError) {
+        settings.onValidateFormError(form, err);
+      } else {
+        throw err;
+      }
     }
   }
 
@@ -672,9 +699,11 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   async function _controlChangeListener(event: Event): Promise<void> {
-    const valid = await _validateControl(event.target as HTMLInputElement);
+    const control = event.target as HTMLInputElement;
+
+    const valid = await _validateControl(control);
     if (!valid) {
-      (event.target as HTMLInputElement).focus();
+      control.focus();
     }
   }
 

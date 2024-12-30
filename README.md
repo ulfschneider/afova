@@ -185,8 +185,10 @@ The afova object can be initialized with an optional settings object:
   onInvalid?: (event: SubmitEvent) => void;
   onValid?: (event: SubmitEvent) => void;
   onValidateControl?: (control: HTMLInputElement) => void
+  onValidateControlError?: (control: HTMLInputElement, error: unknown) => void
   onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>
   onValidateForm?: (form: HTMLFormElement) => void
+  onValidateFormError?: (form: HTMLFormElement, error: unknown) => void
   onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>
 }
 ```
@@ -202,8 +204,10 @@ Properties of the settings object and their meaning:
 - `onInvalid?: (event: SubmitEvent) => void` The hook is called when the submit event of the form fired but the form is invalid. The form will not be submitted in that case.
 - `onValid?: (event: SubmitEvent) => void` The hook is called when the submit event of the form fired and the form is valid. Will be called right before the `onSubmit` hook.
 - `onValidateControl?: (control: HTMLInputElement) => void` The hook is called for each input element during form validation. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. Will only be called after the successful validation of all constraints for the input element.
+- `onValidateControlError?: (control: HTMLInputElement, error: unknown) => void` The error handling hook is called when an exception occurs during control validation. When this handler is defined, the error is catched and given to the handler. When the handler is not defined, the error is thrown.
 - `onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>` The async hook is called for each input element during form validation and must return a promise. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. Will only be called after the successful validation of all constraints for the input element and after the `onValidateControl` hook.
 - `onValidateForm?: (form: HTMLFormElement) => void` The hook is called after successful validation of all input elements of the form. The hook can be used to validate input elements in relation to each other.
+- `onValidateFormError?: (form: HTMLFormElement, error: unknown) => void` The error handling hook is called when an exception occurs during form validation. When this handler is defined, the error is catched and given to the handler. When the handler is not defined, the error is thrown.
 - `onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>` The async hook is called after successful validation of all input elements of the form and after the `onValidateForm` hook. It must return a promise. The hook can be used to validate input elements in relation to each other.
 
 
