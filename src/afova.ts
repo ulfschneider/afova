@@ -403,7 +403,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
   }
 
-  function _clearMessages(control: HTMLInputElement): void {
+  function _clearMessage(control: HTMLInputElement): void {
     control.removeAttribute("aria-invalid");
     control.removeAttribute("aria-errormessage");
     control.setCustomValidity("");
@@ -438,6 +438,12 @@ export function afova(options?: AfovaSettings): AfovaObject {
       if (invalidControls.length == 0) {
         context.classList.remove("afova-active");
       }
+    }
+  }
+
+  function _clearMessages(form: HTMLFormElement): void {
+    for (const control of _getFormControls(form)) {
+      _clearMessage(control);
     }
   }
 
@@ -485,7 +491,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     indicateMessage = true,
   ): Promise<boolean> {
     try {
-      _clearMessages(control);
+      _clearMessage(control);
 
       if (control.validity.valid) {
         //call the validation hooks only for  valid input elements
@@ -511,7 +517,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     return control.validity.valid;
   }
 
-  function _getFormElements(form: HTMLFormElement): HTMLInputElement[] {
+  function _getFormControls(form: HTMLFormElement): HTMLInputElement[] {
     const result: HTMLInputElement[] = [];
     for (const control of form.elements) {
       if (!IGNORE_INPUT_TYPES.includes((control as HTMLInputElement).type)) {
@@ -522,7 +528,9 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   async function _validateForm(form: HTMLFormElement): Promise<boolean> {
-    for (const control of _getFormElements(form)) {
+    _clearMessages(form);
+
+    for (const control of _getFormControls(form)) {
       //do not show the validation message
       await _validateControl(control, false);
     }
@@ -538,7 +546,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
     }
 
     let firstError: HTMLInputElement | undefined;
-    for (const control of _getFormElements(form)) {
+    for (const control of _getFormControls(form)) {
       _setMessage(control);
       if (
         settings.focusOnFirstError &&
@@ -554,9 +562,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
   }
 
   function _resetForm(form: HTMLFormElement): void {
-    for (let control of _getFormElements(form)) {
-      _clearMessages(control);
-    }
+    _clearMessages(form);
   }
 
   function _prepareForms(): void {
@@ -568,7 +574,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
       form.addEventListener("submit", _formSubmitListener);
       form.addEventListener("reset", _formResetListener);
-      for (const control of _getFormElements(form as HTMLFormElement)) {
+      for (const control of _getFormControls(form as HTMLFormElement)) {
         _prepareControl(control);
       }
 
@@ -653,7 +659,7 @@ export function afova(options?: AfovaSettings): AfovaObject {
       form.removeEventListener("submit", _formSubmitListener);
       form.removeEventListener("reset", _formResetListener);
 
-      for (const control of _getFormElements(form as HTMLFormElement)) {
+      for (const control of _getFormControls(form as HTMLFormElement)) {
         _unprepareControl(control);
       }
     }

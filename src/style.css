@@ -44,7 +44,7 @@ label input[type="radio"] {
     padding: 10px;
     margin-left: -13px;
 
-    & > ul.afova-form-message-list {
+    & > ul.afova-message-list {
         margin: 0;
         padding: 0;
         list-style-type: none;

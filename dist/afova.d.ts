@@ -47,6 +47,12 @@ export interface AfovaSettings {
      */
     onValidateControl?: (control: HTMLInputElement) => void;
     /**
+     * The hook is called when an error occurs during control validation. When the handler is defined, the error is catched and given to the handler. When the handler is not defined, the error is thrown.
+     * @param control the control being validated
+     * @param error the error that is thrown
+     */
+    onValidateControlError?: (control: HTMLInputElement, error: unknown) => void;
+    /**
      * The async hook is called for each input element during form validation and must return a promise.
      * The hook can be used to invalidate the input element by setting a custom validation message with control.setCustomValidity().
      * Will only be called after the successful validation of all constraints for the input element and after the onValidateControl hook.
@@ -59,6 +65,12 @@ export interface AfovaSettings {
      * @param form the form that is validated
      */
     onValidateForm?: (form: HTMLFormElement) => void;
+    /**
+     * The hook is called when an error occurs during form validation. When the handler is defined, the error is catched and given to the handler. When the handler is not defined, the error is thrown.
+     * @param form the form being validated
+     * @param error the error that is thrown
+     */
+    onValidateFormError?: (form: HTMLFormElement, error: unknown) => void;
     /**
      * The async hook is called after successful validation of all input elements of the form and after the onValidateForm hook.
      * It must return a promise.
