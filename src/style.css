@@ -3,7 +3,8 @@ body {
     padding: 2em;
 }
 
-label {
+label,
+fieldset {
     display: block;
     font-weight: bold;
     margin: 2em 0;
