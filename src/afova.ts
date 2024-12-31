@@ -50,6 +50,30 @@ export interface AfovaSettings {
   onValid?: (event: SubmitEvent) => void;
 
   /**
+   * The hook is called before validating a control
+   * @param control the control to validate
+   */
+  onBeforeValidateControl?: (control: HTMLInputElement) => void;
+
+  /**
+   * The async hook is called before validating a control
+   * @param control the control to validate
+   */
+  onAsyncBeforeValidateControl?: (control: HTMLInputElement) => Promise<void>;
+
+  /**
+   * The hook is called before validating a form
+   * @param form the form to validate
+   */
+  onBeforeValidateForm?: (form: HTMLFormElement) => void;
+
+  /**
+   * The async hook is called before validating a form
+   * @param form the form to validate
+   */
+  onAsyncBeforeValidateForm?: (form: HTMLFormElement) => void;
+
+  /**
    * The hook is called for each input element during form validation.
    * The hook can be used to invalidate the input element by setting a custom validation message with control.setCustomValidity().
    * Will only be called after the successful validation of all constraints for the input element.
@@ -493,8 +517,15 @@ export function afova(options?: AfovaSettings): AfovaObject {
     try {
       _clearMessage(control);
 
+      if (settings.onBeforeValidateControl) {
+        settings.onBeforeValidateControl(control);
+      }
+      if (settings.onAsyncBeforeValidateControl) {
+        await settings.onAsyncBeforeValidateControl(control);
+      }
+
       if (control.validity.valid) {
-        //call the validation hooks only for  valid input elements
+        //call the validation hooks only for valid input elements
         if (settings.onValidateControl) {
           settings.onValidateControl(control);
         }
@@ -529,6 +560,13 @@ export function afova(options?: AfovaSettings): AfovaObject {
 
   async function _validateForm(form: HTMLFormElement): Promise<boolean> {
     _clearMessages(form);
+
+    if (settings.onBeforeValidateForm) {
+      settings.onBeforeValidateForm(form);
+    }
+    if (settings.onAsyncBeforeValidateForm) {
+      settings.onAsyncBeforeValidateForm(form);
+    }
 
     for (const control of _getFormControls(form)) {
       //do not show the validation message
