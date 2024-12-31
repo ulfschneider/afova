@@ -5,31 +5,30 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta http-equiv="Cache-Control" content="no-store, max-age=0" />
-        <title>Test missing text value</title>
+        <title>Documentation example</title>
         <link rel="stylesheet" href="/src/style.css" />
     </head>
-    <style></style>
 
     <body>
         <a href="/">Home</a>
-        <h1>Test missing text value</h1>
+        <h1>Documentation example</h1>
         <form>
-            <label
-                >A reqired text input
-                <input
-                    type="text"
-                    required
-                    data-required="Please provide text input"
-                />
-            </label>
+            <div class="afova-form-message-container" style="display: none">
+                <strong>The form has validation failures</strong>
+            </div>
 
             <label
-                >A required text input with custom failure message
+                >A min length and max length text input
                 <input
-                    id="required-text-input-custom"
                     type="text"
                     required
-                    data-required="You have to provide a value for this text input field"
+                    data-required="Please provide a value"
+                    minlength="5"
+                    data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
+                    maxlength="8"
+                    data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
+                    pattern="[0-9]*"
+                    data-pattern="Only digits are allowed: {{constraint}}"
                 />
             </label>
 
@@ -37,7 +36,6 @@
             <input type="reset" value="Reset the form" />
         </form>
     </body>
-
     <script type="module">
         import { afova } from "/src/afova.ts";
         const afv = afova();

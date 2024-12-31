@@ -1,118 +1,113 @@
 # afova
 
-afova (accessible form validation) is a progressive enhancement of the [client-side HTML form constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation).
+afova (accessible form validation) is a progressive enhancement of web browsers the [client-side HTML form constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation).
 
 afova will allow you to:
-- pick up any of the constraining attributes of HTML input elements (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, and `maxlength`) and show constraint violation messages to the user,
-- describe violation messages with corresponding `data` attributes (`data-required`, `data-type`, `data-step`, `data-pattern`, `data-min`, `data-max`, `data-minlength`, and `data-maxlength`, and `data-bad-input`),
+- pick up any of the constraining attributes of HTML input elements (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, `maxlength`) and show constraint violation messages to the user,
+- describe violation messages with corresponding `data` attributes (`data-required`, `data-type`, `data-step`, `data-pattern`, `data-min`, `data-max`, `data-minlength`, `data-maxlength`, `data-bad-input`),
 - use placeholders within the violation messages to refer to the current user input (placeholder is `{{input}}`) and to the violated constraint setting (placeholder is `{{constraint}}`),
 - style constraint violation messages with CSS,
+- in addition to showing the violation messages along with the input elements, summarize all violation messages in a separate list inside of the form,
 - do custom HTML input element validation (sync and async),
-- do HTML form validation (sync and async), and
-- avoids multiple submits of a form that is already in a submitting process.
+- do HTML form validation (sync and async) to validate input elements in relation to each other, and
+- prevent multiple submits of a form that is already in an ongoing submitting process.
+
+You can use the afova library as minified version without a bundler on your web page (it´s an ESM import) or for more complex scenarios integrate it with a bundler. Read more about that under [afova usage](#afova-usage).
 
 Below is an example of how afova allows to define constraint violation messages:
 
 ```html
 <form>
-    <label for="min-max"
-        >A min length and max length text input with custom failure
-            message
-            <div class="description">
-                The text must be at least 5 characters of length and must
-                not exceed 8 characters of length, and it can only contain digits.
-            </div>
+    <label
+        >A min length and max length text input
         <input
-            id="min-max"
             type="text"
-            <!-- constraints -->
+            required
+            data-required="Please provide a value"
             minlength="5"
-            maxlength="8"
-            pattern="[0-9]*"
-            <!-- constraint violation messages -->
             data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
+            maxlength="8"
             data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
+            pattern="[0-9]*"
             data-pattern="Only digits are allowed: {{constraint}}"
         />
     </label>
+
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
 </form>
 ```
 
-afova will identify the constraints assigned to input controls, validate the form during submit, and report constraint violations to the user.
+afova will identify the constraints assigned to input elements, validate the form during submit, and report constraint violations to the user.
 
-For example, the following HTML form has a single `required` text input control and a constraint violation message saying "Please provide text input":
-
-```html
-<form>
-    <input type="submit" value="Submit the form" />
-    <input type="reset" value="Reset the form" />
-    <label
-        >A reqired text input
-        <input
-            type="text"
-            <!-- constraint -->
-            required
-            <!-- constraint violation message -->
-            data-required="Please provide text input"
-        />
-    </label>
-</form>
-```
-
-afova will transform the form into:
+The above example will be transformed by afova into the following HTML:
 
 ```html
-<form novalidate="" id="afova-1v4dAnzsS9OjaF3F46igi">
-    <input type="submit" value="Submit the form" />
-    <input type="reset" value="Reset the form" />
+<form id="afova-sJM4xyJx_4JltktdSKg7q" novalidate="">
     <label
-        id="afova-EckT8S1xwG_CQDra0arhS"
+        id="afova-4NznJ3zynpcxg0yF1ZKXI"
         class="afova-context"
-        for="afova-d1qB-B6gUZ-dpFYghmIgp"
-        >A reqired text input
+        for="afova-HS2YEDxawe9CuzVYyZVqd"
+        >A min length and max length text input
         <input
             type="text"
-            required
-            data-required="Please provide text input"
-            id="afova-d1qB-B6gUZ-dpFYghmIgp"
+            required=""
+            data-required="Please provide a value"
+            minlength="5"
+            data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
+            maxlength="8"
+            data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
+            pattern="[0-9]*"
+            data-pattern="Only digits are allowed: {{constraint}}"
+            id="afova-HS2YEDxawe9CuzVYyZVqd"
             class="afova-control"
         />
     </label>
+
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
 </form>
 ```
 
 Trying to submit the form without providing a text value will violate the `required` constraint. afova will prevent the submit and instead provide a constraint violation message in the following form:
 
 ```html
-<form novalidate="" id="afova-1v4dAnzsS9OjaF3F46igi">
-    <input type="submit" value="Submit the form" />
-    <input type="reset" value="Reset the form" />
+<form id="afova-fpVF2baWLLZaRqSGgf9oZ" novalidate="">
     <label
-        id="afova-EckT8S1xwG_CQDra0arhS"
+        id="afova-KDJFSNnl7sJXJMiRqhgvF"
         class="afova-context afova-active"
-        for="afova-d1qB-B6gUZ-dpFYghmIgp"
-        >A reqired text input
+        for="afova-HssNc_nNBlq_vchMx3AG9"
+        >A min length and max length text input
         <div
-            id="afova-d1qB-B6gUZ-dpFYghmIgp-afova-message-container"
+            id="afova-HssNc_nNBlq_vchMx3AG9-afova-message-container"
             class="afova-message-container"
         >
             <div
                 class="afova-message"
-                afova-message-for="afova-d1qB-B6gUZ-dpFYghmIgp"
+                afova-message-for="afova-HssNc_nNBlq_vchMx3AG9"
             >
-                Please provide text input
+                Please provide a value
             </div>
         </div>
         <input
             type="text"
             required=""
-            data-required="Please provide text input"
-            id="afova-d1qB-B6gUZ-dpFYghmIgp"
+            data-required="Please provide a value"
+            minlength="5"
+            data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
+            maxlength="8"
+            data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
+            pattern="[0-9]*"
+            data-pattern="Only digits are allowed: {{constraint}}"
+            id="afova-HssNc_nNBlq_vchMx3AG9"
             class="afova-control"
             aria-invalid="true"
-            aria-errormessage="afova-d1qB-B6gUZ-dpFYghmIgp-afova-message-container"
+            aria-errormessage="afova-HssNc_nNBlq_vchMx3AG9-afova-message-container"
         />
     </label>
+
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
 </form>
 ```
 
@@ -122,7 +117,7 @@ For more details about constraint validation please refer to:
 - [Client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
 
 
-## afova usage
+<h2 id="afova-usage">afova usage</h2>
 
 ### Bundler
 
@@ -137,11 +132,8 @@ Then import afova into your JavaScript/TypeScript setup:
 ```js
 import { afova } from 'afova'
 
-//initialize by creating an afova object with default settings
+//initialize by creating an afova object named afv with default settings
 const afv = afova();
-
-//if required, clear the script and remove all event listeners
-afv.clear()
 ```
 
 ### HTML page without bundler
@@ -154,25 +146,22 @@ Integrate afova into your web pages as follows:
 <script type="module">
     import { afova } from "/assets/afova.min.js";
 
-    //initialize by creating an afova object with default settings
+    //initialize by creating an afova object named afv with default settings
     var afv = afova();
-
-    //if required, clear the script and remove all event listeners
-    afv.clear()
 </script>
 ```
 
 ### The afova object
 
-When creating the afova object by calling `afova()`, all forms that are available on the web page are traversed and afova will take over form validation for those forms during form submit.
+When creating the afova object by calling `afova()`, all forms that are available on the web page are traversed and afova will take over form validation for those forms.
 
-The `clear()` method can be used in situations where you have to remove event listeners and CSS class assignments introduced by afova from the web page.
+The afova object offers a `clear()` method that can be used in situations where you have to remove event listeners and CSS class assignments introduced by afova from the web page.
 
 ## Settings
 
 ### JavaScript
 
-The afova object can be initialized with an optional settings object:
+The afova object can be initialized with an optional settings object, that allows to hook into the form validation process:
 
 ```js
 {
@@ -195,35 +184,35 @@ The afova object can be initialized with an optional settings object:
 
 Properties of the settings object and their meaning:
 
-- `selector?: string` The selector that is used during construction of the afova object to identify the forms to validate. Default is `form`.
-- `formMessageSelector?: string` To show constraint violation messages not only along with the invalid input controls, but also in a list inside of the form, you can have a form message container. The form message container is identified with the CSS class `.afova-form-message-container` during construction of the afova object. afova will search for the container inside of the form and collect all constraint violation messages there. The form message container is optional, because violation messages anyway will be displayed along with the invalid input controls.
-- `focusOnFirstError?: boolean` The default value is `true`, which leads to focusing the first invalid input control during the validation of a form.
-- `validateOnChange?: boolean` The default is `false`. When set to `true`, validation is performed when the `onChange` event of the HTML input elements fire, and not only during form submit.
-- `onSubmit: (event: SubmitEvent) => void` The hook is called when the submit event of the form fired and the form is successfully validated. **When this hook is provided the default form submit behaviour is prevented and the submit needs to be implemented inside of this hook.**
-- `onReset?: (event: Event) => void` The hook is called when the form is resetted.
-- `onInvalid?: (event: SubmitEvent) => void` The hook is called when the submit event of the form fired but the form is invalid. The form will not be submitted in that case.
-- `onValid?: (event: SubmitEvent) => void` The hook is called when the submit event of the form fired and the form is valid. Will be called right before the `onSubmit` hook.
-- `onValidateControl?: (control: HTMLInputElement) => void` The hook is called for each input element during form validation. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. Will only be called after the successful validation of all constraints for the input element.
-- `onValidateControlError?: (control: HTMLInputElement, error: unknown) => void` The error handling hook is called when an exception occurs during control validation. When this handler is defined, the error is catched and given to the handler. When the handler is not defined, the error is thrown.
-- `onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>` The async hook is called for each input element during form validation and must return a promise. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. Will only be called after the successful validation of all constraints for the input element and after the `onValidateControl` hook.
-- `onValidateForm?: (form: HTMLFormElement) => void` The hook is called after successful validation of all input elements of the form. The hook can be used to validate input elements in relation to each other.
-- `onValidateFormError?: (form: HTMLFormElement, error: unknown) => void` The error handling hook is called when an exception occurs during form validation. When this handler is defined, the error is catched and given to the handler. When the handler is not defined, the error is thrown.
-- `onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>` The async hook is called after successful validation of all input elements of the form and after the `onValidateForm` hook. It must return a promise. The hook can be used to validate input elements in relation to each other.
+- `selector?: string` Configure the selector being used during construction of the afova object to identify the forms to validate. Default is `form`.
+- `formMessageSelector?: string` Configure the selector being used during construction of the afova object to identify the form message container. To show constraint violation messages not only along with the invalid input elements of the form, but also in a list inside of the form, you can have a form message container. By default the container is identified with the CSS class `.afova-form-message-container` during construction of the afova object. afova will search for the container inside of the form and summarize all constraint violation messages there. The form message container is optional, because violation messages anyway will be displayed along with the invalid input element.
+- `focusOnFirstError?: boolean` The default value is `true`. afova will focus the first invalid input element during validation of the form in that case.
+- `validateOnChange?: boolean` The default is `false`. When set to `true`, afova will validate each input element of the form when the `onChange` events of the HTML input elements fire, and not only during form submit.
+- `onSubmit: (event: SubmitEvent) => void` The hook is called by afova when the submit event of the form fired and the form is successfully validated. **The `SubmitEvent` is prevented when this hook is defined. The submit needs to be implemented inside of this hook in that case.**
+- `onReset?: (event: Event) => void` afova will call this hook when the reset event of the form fired.
+- `onInvalid?: (event: SubmitEvent) => void` afova will call this hook the submit event of the form fired but the form is invalid. The form will not be submitted in that case.
+- `onValid?: (event: SubmitEvent) => void` afova will call this hook when the submit event of the form fired and the form is valid. The hok is called before the `onSubmit` hook.
+- `onValidateControl?: (control: HTMLInputElement) => void` afova will call this hook hook for each input element during form validation. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. The hook is only called after the successful validation of all constraints of the input element, which means for the hook is not called for an already invalid input element.
+- `onValidateControlError?: (control: HTMLInputElement, error: unknown) => void` afova will call the error handling hook when an exception occurs during input element validation. When this handler is defined, the error is catched bys afova and given to the handler. When the handler is not defined, the error is thrown by afova.
+- `onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>` afova will call this async hook for each input element during form validation. The hook must return a promise. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. The hook will only be called after the successful validation of all constraints for the input element and after the `onValidateControl` hook.
+- `onValidateForm?: (form: HTMLFormElement) => void` afova will call the hook after successful validation of all input elements of the form. The hook can be used to validate input elements in relation to each other.
+- `onValidateFormError?: (form: HTMLFormElement, error: unknown) => void` afova will call this hook hook when an exception occurs during form validation. When this handler is defined, the error is catched by afovaand given to the handler. When the handler is not defined, the error is thrown by afova.
+- `onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>` afova will call this async hook after successful validation of all input elements of the form and after the `onValidateForm` hook. The hook must return a promise. The hook can be used to validate input elements in relation to each other.
 
 
 ### HTML
 
 The following attributes are available to describe constraint violation messages:
 
-- `data-badinput` The browser is unable to handle the input value, for example when the required type of the input control is a number but the user provided a alphabetic characters
-- `data-pattern` The value of a field doesn´t comply to the pattern of the `pattern` attribute
-- `data-max` The number value of a field is greater than the value of the `max` attribute
-- `data-min` The number value of a field is less than the value of the `min` attribute
-- `data-step` The number value of field is not evenly divisable by the value of the `step` attribute
-- `data-maxlength` The value of a field has more characters than defined by the attribute `maxlength`
-- `data-minlength` The value of a field has less characters than defined by the attribute `minlength`
-- `data-type` The value of a field dosn´t comply to the `type` attribute
-- `data-required` A value of a field that is required due to the `required` attribute is missing
+- `data-badinput` The browser is unable to handle the input value, for example when the required type of the input element is a number but the user provided a alphabetic characters.
+- `data-pattern` The value of a field doesn´t comply to the pattern of the `pattern` attribute.
+- `data-max` The number value of a field is greater than the value of the `max` attribute.
+- `data-min` The number value of a field is less than the value of the `min` attribute.
+- `data-step` The number value of field is not evenly divisable by the value of the `step` attribute.
+- `data-maxlength` The value of a field has more characters than defined by the attribute `maxlength`.
+- `data-minlength` The value of a field has less characters than defined by the attribute `minlength`.
+- `data-type` The value of a field dosn´t comply to the `type` attribute.
+- `data-required` A value of a field that is required due to the `required` attribute is missing.
 
 Assigning your constraint violation messages is a good way to have internationalized messages and generally recommended. You can use the placeholders to refer to certain control properties within your violation messages, like:
 
@@ -231,191 +220,127 @@ Assigning your constraint violation messages is a good way to have international
 - `{{constraint}}` for the violated constraint, and
 - `{{type}}` for the controls value of the type attribute.
 
-afova will apply English fallback messages in case you do not use your owna constraint violation messages,
+afova will apply English fallback messages in case you do not use your own constraint violation messages,
 
-## Collecting messages for the form
+## Summarizing messages for the form
 
-All constraint violation messages of an entire form can be collected and listed together inside of a form message container. The form message container must be inside of the validated form and is described to afova by assigning the CSS class `afova-form-message-container`. E.g., when the starting form looks like:
+All constraint violation messages of an entire form can be summarized and listed inside of a form message container. The form message container must be inside of the validated form and is described to afova by assigning the CSS class `afova-form-message-container`.
+
+E.g., when you defined a form message container like in the example below:
 
 ```html
 <form>
-
-    <div class="afova-form-message-container">
+    <div class="afova-form-message-container" style="display: none">
         <strong>The form has validation failures</strong>
     </div>
 
-    <input type="submit" value="Submit the form" />
-    <input type="reset" value="Reset the form" />
     <label
-        >A reqired text input
+        >A min length and max length text input
         <input
             type="text"
             required
-            data-required="Please provide text input"
+            data-required="Please provide a value"
+            minlength="5"
+            data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
+            maxlength="8"
+            data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
+            pattern="[0-9]*"
+            data-pattern="Only digits are allowed: {{constraint}}"
         />
     </label>
-    <label
-        >A min length text input
-        <input
-            id="min-text-length"
-            type="text"
-            minlength="5"
-            data-minlength="The text must be at least 5 characters of length"/>
-    </label>
-</form>
-```
 
-It will be transformed by afova into:
-
-```html
-<form
-    novalidate=""
-    id="afova-HZ9_7J1fJI_VMYGrfJln9"
-    afova-form-message-container-id="afova-cMvV7qnlQRK07g71a_Ban"
->
-    <div
-        class="afova-form-message-container"
-        id="afova-cMvV7qnlQRK07g71a_Ban"
-        style="display: none"
-    >
-        <strong>The form has validation failures</strong>
-    </div>
     <input type="submit" value="Submit the form" />
     <input type="reset" value="Reset the form" />
-    <label
-        id="afova-vFiJd_pfspLE5JEluEX7Y"
-        class="afova-context"
-        for="afova-N55Wepw1mVEheG5c_NpKy"
-        >A reqired text input
-        <input
-            type="text"
-            required=""
-            data-required="Please provide text input"
-            id="afova-N55Wepw1mVEheG5c_NpKy"
-            class="afova-control"
-        />
-    </label>
-    <label
-        id="afova-61HZ-OI0LVId9adC-mNS7"
-        class="afova-context"
-        for="min-text-length"
-        >A min length text input
-        <input
-            id="min-text-length"
-            type="text"
-            minlength="5"
-            data-minlength="The text must be at least 5 characters of length"
-            class="afova-control"
-        />
-    </label>
 </form>
 ```
 
-The invalid form cannot be submitted and will be prepared by afova as follows:
+When trying to submit that form without providing an input value, afova will produce the following HTML:
 
 ```html
 <form
+    id="afova-K9OUvdZfjcP2wW24A0ZlA"
     novalidate=""
-    id="afova-ZrtiyJtHnlDlNmeTuhu-o"
-    afova-form-message-container-id="afova-eBosuZX7IAKictsYD5zfD"
+    afova-form-message-container-id="afova-xDRp9MC3iiVLh7ZOC2IJZ"
 >
     <div
         class="afova-form-message-container"
-        id="afova-eBosuZX7IAKictsYD5zfD"
+        style=""
+        id="afova-xDRp9MC3iiVLh7ZOC2IJZ"
     >
         <strong>The form has validation failures</strong>
         <ul class="afova-message-list">
             <li
-                afova-message-for="afova-3EzzZt5d0vHfNFew8ylGT"
+                afova-message-for="afova-Iiw91SPozRG0mwbemqhWz"
                 class="afova-collected-message"
             >
-                <div class="afova-message-label">A reqired text input</div>
-                <div class="afova-message">Please provide text input</div>
-            </li>
-            <li afova-message-for="min-text-length" class="afova-collected-message">
-                <div class="afova-message-label">A min length text input</div>
-                <div class="afova-message">
-                    The text must be at least 5 characters of length
+                <div class="afova-message-label">
+                    A min length and max length text input
                 </div>
+                <a href="#afova-Iiw91SPozRG0mwbemqhWz" class="afova-message"
+                    >Please provide a value</a
+                >
             </li>
         </ul>
     </div>
 
-    <input type="submit" value="Submit the form" />
-    <input type="reset" value="Reset the form" />
     <label
-        id="afova-MAvRodIUKgsJR8ccXUQyG"
+        id="afova-t9h439TQ-TeH4vWFOcGTi"
         class="afova-context afova-active"
-        for="afova-3EzzZt5d0vHfNFew8ylGT"
-        >A reqired text input
+        for="afova-Iiw91SPozRG0mwbemqhWz"
+        >A min length and max length text input
         <div
-            id="afova-3EzzZt5d0vHfNFew8ylGT-afova-message-container"
+            id="afova-Iiw91SPozRG0mwbemqhWz-afova-message-container"
             class="afova-message-container"
         >
             <div
                 class="afova-message"
-                afova-message-for="afova-3EzzZt5d0vHfNFew8ylGT"
+                afova-message-for="afova-Iiw91SPozRG0mwbemqhWz"
             >
-                Please provide text input
+                Please provide a value
             </div>
         </div>
         <input
             type="text"
             required=""
-            data-required="Please provide text input"
-            id="afova-3EzzZt5d0vHfNFew8ylGT"
-            class="afova-control"
-            aria-invalid="true"
-            aria-errormessage="afova-3EzzZt5d0vHfNFew8ylGT-afova-message-container"
-        />
-    </label>
-    <label
-        id="afova-rBW0jMtZXY943cO6urEn2"
-        class="afova-context afova-active"
-        for="min-text-length"
-        >A min length text input
-        <div
-            id="min-text-length-afova-message-container"
-            class="afova-message-container"
-        >
-            <div class="afova-message" afova-message-for="min-text-length">
-                The text must be at least 5 characters of length
-            </div>
-        </div>
-        <input
-            id="min-text-length"
-            type="text"
+            data-required="Please provide a value"
             minlength="5"
-            data-minlength="The text must be at least 5 characters of length"
+            data-minlength="Hey, {{input}} is not long enough. Your input should have at least {{constraint}} characters."
+            maxlength="8"
+            data-maxlength="Sorry, {{input}} is too long. Please do not enter text with more than {{constraint}} characters."
+            pattern="[0-9]*"
+            data-pattern="Only digits are allowed: {{constraint}}"
+            id="afova-Iiw91SPozRG0mwbemqhWz"
             class="afova-control"
             aria-invalid="true"
-            aria-errormessage="min-text-length-afova-message-container"
+            aria-errormessage="afova-Iiw91SPozRG0mwbemqhWz-afova-message-container"
         />
     </label>
+
+    <input type="submit" value="Submit the form" />
+    <input type="reset" value="Reset the form" />
 </form>
 ```
 
-Notice the label text of each control is extracted and displayed along with the constraint violation message inside of the form message container. To have more control over what label information is shown in the form message container you can put a marker on the desired text with the CSS class `afova-label`.
+Notice the label text of each control is extracted and displayed along with the constraint violation message inside of the form message container. To have more control over what label information is shown in the form message container you can put a marker on the desired text in your form by assigning the CSS class `afova-label`.
 
 ## Styling and identifiying
 
 afova does not come with any CSS styles. The following CSS class names are assigned during validation processing or can be used to activate afova functionality:
 
-- `:invalid` Every invalid control can be styled with the `:invalid` selector.
-- `.afova-context` afova searches for a context for every validated input control. By default this is the `label` element wrapping the control. afova assigns the CSS class `afova-context` to the context element. You can decide to use a different wrapping context by assigning the `afova-context` class yourself, which can make sense for fieldsets of radio buttons or checkboxes.
-- `.afova-group` The CSS class `afova-group` can be used to bundle constraint violation messages in front of a group of input controls. A good use case are radio buttons or checkboxes that belong together. In that case the controls should be wrapped into a `div` with the CSS classs `afova-group` group assigned.
-- `.afova-active` A context with an invalid input control has the CSS class `afova-active` assigned to it. The class is removed once the control becomes valid again.
-- `.afova-message-container` When an input control becomes invalid because of a constraint violation, a container for violation messages is inserted right before the control. The container will have the CSS class afova-message-container`. Once the input control becomes valid again, the message container is removed.
+- `.afova-context` afova searches for a context for every validated input element. By default this is the `label` element wrapping the control. afova assigns the CSS class `afova-context` to the context element. You can decide to use a different wrapping context by assigning the `afova-context` class yourself, which can make sense for fieldsets of radio buttons or checkboxes.
+- `.afova-group` The CSS class `afova-group` can be used to bundle constraint violation messages in front of a group of input elements. A good use case are radio buttons or checkboxes that belong together. Do it wrapping the input elements into a `div` and assign the CSS class `afova-group` to the `div`.
+- `.afova-active` A context with an invalid input element has the CSS class `afova-active` assigned to it. The class is removed once the control becomes valid again.
+- `.afova-message-container` When an input element becomes invalid because of a constraint violation, a container for violation messages is inserted right before the control. The container will have the CSS class `afova-message-container`. Once the input element becomes valid again, the message container is removed.
 - `.afova-message` Each violation message inside of the message container has the CSS class `afova-message` assigned to it.
-- `.afova-control` Every input control validated by afova has the CSS class `afova-control` assigned to it.
-- `.afova-form-message-container` Define a collector for all constraint violation messages of a form by assigning the CSS class `afova-form-message-container`.
-- `.afova-label` The message collector will show the control´s label together with the constrain violation message. By default the label text is the text content of the `label` element. To have more control over what text is shown in the collector, assign the class `afova-label` to any text content along with the validated control.
+- `.afova-control` Every input element validated by afova has the CSS class `afova-control` assigned to it.
+- `.afova-form-message-container` Define a collector for summarizing all constraint violation messages of a form by assigning the CSS class `afova-form-message-container`.
+- `.afova-label` The message collector will show the control´s label together with the constraint violation message. By default the complete label text will be extracted by afova. To have more control over what text is shown in the collector, assign the class `afova-label` to any text content along with the validated input element.
 - `.afova-message-label` The label information inside of the message collector will have the CSS class `afova-message-label` assigned to it.
 
 
 ## Accessibility
 
-- `id` Every input control observed by afova will get an `id` assigned if it doesn´t have one.
-- `for` When a wrapping label of an input control does not have the `for` attribute pointing to the `id` of the control, the `for` attribute will be assigned by afova.
-- `aria-invalid` An invalid control has the attribute `aria-invalid` assigned to it.
-- `aria-errormessage` An invalid control has the attribute `aria-errormessage` pointing to the `id` of the associated message container.
+- `id` Every input element and every form observed by afova will get an `id` assigned if it doesn´t have one (you can use your own ids).
+- `for` When a wrapping label of an input element does not have the `for` attribute pointing to the `id` of the input element, the `for` attribute will be assigned by afova.
+- `aria-invalid` An invalid input element has the attribute `aria-invalid` assigned to it.
+- `aria-errormessage` An invalid input element has the attribute `aria-errormessage` pointing to the `id` of the associated message container.

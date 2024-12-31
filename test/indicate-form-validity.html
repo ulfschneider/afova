@@ -15,9 +15,6 @@
         <h1>Indicate form validity</h1>
         <div id="valid-state" class="afova-message"></div>
         <form>
-            <input type="submit" value="Submit the form" />
-            <input type="reset" value="Reset the form" />
-
             <label for="min-text-length"
                 >A min length text input
                 <div class="description">
@@ -59,6 +56,9 @@
                     data-too-long="Hey, this should have at max {{constraint}} characters"
                 />
             </label>
+
+            <input type="submit" value="Submit the form" />
+            <input type="reset" value="Reset the form" />
         </form>
     </body>
     <script type="module">

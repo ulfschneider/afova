@@ -6,7 +6,7 @@ body {
 label {
     display: block;
     font-weight: bold;
-    margin: 1em 0;
+    margin: 2em 0;
 
     .description {
         display: block;
@@ -16,6 +16,15 @@ label {
     input,
     textarea {
         display: block;
+        padding: 5px;
+        appearance: none;
+        font-size: inherit;
+        border: 1px solid black;
+
+        &:focus {
+            border: 1px solid transparent;
+            outline: 3px solid black;
+        }
     }
 }
 
@@ -29,6 +38,11 @@ label input[type="radio"] {
     border-left: 3px solid red;
     padding-left: 10px;
     margin-left: -13px;
+
+    [aria-invalid]:focus {
+        outline: 3px solid red;
+        border: 1px solid transparent;
+    }
 }
 
 .afova-message,
@@ -49,8 +63,8 @@ label input[type="radio"] {
         padding: 0;
         list-style-type: none;
 
-        & > li + li {
-            margin-top: 0.5em;
+        & > li {
+            margin: 0.5em 0;
         }
     }
 }
