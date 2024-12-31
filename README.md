@@ -325,7 +325,7 @@ Notice the label text of each control is extracted and displayed along with the 
 
 ## Styling and identifiying
 
-afova does not come with any CSS styles. The following CSS class names are assigned during validation processing or can be used to activate afova functionality:
+afova does not come with any CSS styles, you have to do the styling yourself. The following CSS class names are assigned during validation processing or can be used to activate afova functionality:
 
 - `.afova-context` afova searches for a context for every validated input element. By default this is the `label` element wrapping the control. afova assigns the CSS class `afova-context` to the context element. You can decide to use a different wrapping context by assigning the `afova-context` class yourself, which can make sense for fieldsets of radio buttons or checkboxes.
 - `.afova-group` The CSS class `afova-group` can be used to bundle constraint violation messages in front of a group of input elements. A good use case are radio buttons or checkboxes that belong together. Do it wrapping the input elements into a `div` and assign the CSS class `afova-group` to the `div`.
