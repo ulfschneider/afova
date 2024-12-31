@@ -173,13 +173,10 @@ The afova object can be initialized with an optional settings object, that allow
   onReset?: (event: Event) => void;
   onInvalid?: (event: SubmitEvent) => void;
   onValid?: (event: SubmitEvent) => void;
-  onBeforeValidateControl?: (control: HTMLInputElement) => void
-  onAsyncBeforeValidateControl?: (control HTMLInputElement) => Promise<void>
   onValidateControl?: (control: HTMLInputElement) => void
   onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>
   onValidateControlError?: (control: HTMLInputElement, error: unknown) => void
   onBeforeValidateForm?: (form: HTMLFormElement) => void
-  onAsyncBeforeValidateForm?: (form: HTMLFormElement) => Promise<void>
   onValidateForm?: (form: HTMLFormElement) => void
   onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>
   onValidateFormError?: (form: HTMLFormElement, error: unknown) => void
@@ -196,13 +193,10 @@ Properties of the settings object and their meaning:
 - `onReset?: (event: Event) => void` afova will call this hook when the reset event of the form fired.
 - `onInvalid?: (event: SubmitEvent) => void` afova will call this hook the submit event of the form fired but the form is invalid. The form will not be submitted in that case.
 - `onValid?: (event: SubmitEvent) => void` afova will call this hook when the submit event of the form fired and the form is valid. The hok is called before the `onSubmit` hook.
-- `onBeforeValidateControl?: (control: HTMLInputElement) => void` afova will call this hook before doing the custom validation of each input element.
-- `onAsyncBeforeValidateControl?: (control: HTMLInputElement) => Promise<void>` afova will call this async hook before doing the custom validation of each input element and after the corresponding `onBeforeValidateControl`.
 - `onValidateControl?: (control: HTMLInputElement) => void` afova will call this hook for each input element during form validation. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. The hook is only called after the successful validation of all constraints of the input element, which means for the hook is not called for an already invalid input element.
 - `onAsyncValidateControl?: (control: HTMLInputElement) => Promise<void>` afova will call this async hook for each input element during form validation. The hook must return a promise. The hook can be used to invalidate the input element by setting a custom validation message with `control.setCustomValidity()`. The hook will only be called after the successful validation of all constraints for the input element and after the `onValidateControl` hook.
 - `onValidateControlError?: (control: HTMLInputElement, error: unknown) => void` afova will call the error handling hook when an exception occurs during input element validation. When this handler is defined, the error is catched bys afova and given to the handler. When the handler is not defined, the error is thrown by afova.
 - `onBeforeValidateForm?: (form: HTMLFormElement) => void` afova will call this hook before starting to validate a form.
-- `onAsynBeforeValidateForm?: (form: HTMLFormElement) => Promise<void>` afova will call this async hook before starting to validate a form and right after the corresponding `onBeforeValidateForm` hook.
 - `onValidateForm?: (form: HTMLFormElement) => void` afova will call the hook after successful validation of all input elements of the form. The hook can be used to validate input elements in relation to each other.
 - `onAsyncValidateForm?: (form: HTMLFormElement) => Promise<void>` afova will call this async hook after successful validation of all input elements of the form and after the `onValidateForm` hook. The hook must return a promise. The hook can be used to validate input elements in relation to each other.
 - `onValidateFormError?: (form: HTMLFormElement, error: unknown) => void` afova will call this hook hook when an exception occurs during form validation. When this handler is defined, the error is catched by afovaand given to the handler. When the handler is not defined, the error is thrown by afova.

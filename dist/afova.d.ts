@@ -40,25 +40,10 @@ export interface AfovaSettings {
      */
     onValid?: (event: SubmitEvent) => void;
     /**
-     * The hook is called before validating a control
-     * @param control the control to validate
-     */
-    onBeforeValidateControl?: (control: HTMLInputElement) => void;
-    /**
-     * The async hook is called before validating a control
-     * @param control the control to validate
-     */
-    onAsyncBeforeValidateControl?: (control: HTMLInputElement) => Promise<void>;
-    /**
-     * The hook is called before validating a form
+     * The hook is called before validating the form
      * @param form the form to validate
      */
     onBeforeValidateForm?: (form: HTMLFormElement) => void;
-    /**
-     * The async hook is called before validating a form
-     * @param form the form to validate
-     */
-    onAsyncBeforeValidateForm?: (form: HTMLFormElement) => void;
     /**
      * The hook is called for each input element during form validation.
      * The hook can be used to invalidate the input element by setting a custom validation message with control.setCustomValidity().
