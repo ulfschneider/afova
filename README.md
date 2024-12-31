@@ -9,7 +9,7 @@ afova will allow you to:
 - style constraint violation messages with CSS,
 - in addition to showing the violation messages along with the input elements, summarize all violation messages in a separate list inside of the form,
 - do custom HTML input element validation (sync and async),
-- do HTML form validation (sync and async) to validate input elements in relation to each other, and
+- do HTML form validation (sync and async) to validate input elements of a form in relation to each other, and
 - prevent multiple submits of a form that is already in an ongoing submitting process.
 
 You can use the afova library as minified version without a bundler on your web page (it´s an ESM import) or for more complex scenarios integrate it with a bundler. Read more about that under [afova usage](#afova-usage).
