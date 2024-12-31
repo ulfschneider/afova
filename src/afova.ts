@@ -498,7 +498,6 @@ export function afova(options?: AfovaSettings): AfovaObject {
   ): Promise<boolean> {
     try {
       _clearMessage(control);
-
       if (control.validity.valid) {
         //call the validation hooks only for valid input elements
         if (settings.onValidateControl) {
