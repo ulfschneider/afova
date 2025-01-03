@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="Cache-Control" content="no-store, max-age=0" />
+        <title>Error hooks</title>
+        <link rel="stylesheet" href="/src/style.css" />
+    </head>
+
+    <body>
+        <a href="/">Home</a>
+        <h1>Error Hooks</h1>
+        <form>
+            <label for="url-type"
+                >A url input
+                <div class="description">Please provide a url address</div>
+                <input id="url-type" type="url" required />
+            </label>
+
+            <input type="submit" value="Submit the form" />
+            <input type="reset" value="Reset the form" />
+        </form>
+    </body>
+    <script type="module">
+        import { afova } from "/src/afova.ts";
+        const afv = afova({
+            onSubmit: () => {},
+            onBeforeValidateForm: (form) => {
+                console.log("Before validating the form", form);
+            },
+            onValidateControl: (control) => {
+                console.log("validating the control", control);
+            },
+        });
+    </script>
+</html>
