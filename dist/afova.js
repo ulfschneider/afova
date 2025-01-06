@@ -1,6 +1,6 @@
 const B = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
 let Y = (s = 21) => {
-  let c = "", d = crypto.getRandomValues(new Uint8Array(s));
+  let c = "", d = crypto.getRandomValues(new Uint8Array(s |= 0));
   for (; s--; )
     c += B[d[s] & 63];
   return c;
@@ -64,7 +64,7 @@ const X = {
   "time",
   "url",
   "week"
-], Z = ["submit", "reset", "button", "fieldset", "image"], m = /* @__PURE__ */ new Set();
+], Z = ["submit", "reset", "button", "fieldset", "image"], u = /* @__PURE__ */ new Set();
 function z(s) {
   function c(e) {
     e.id || (e.id = `afova-${Y()}`);
@@ -79,7 +79,7 @@ function z(s) {
     const t = h(e);
     y(t) ? (t.remove(), e.style.display = "none") : e.style.display = "";
   }
-  function p(e) {
+  function v(e) {
     const t = e.closest("form");
     if (t) {
       const a = t.getAttribute("afova-form-message-container-id");
@@ -126,42 +126,42 @@ function z(s) {
         t.dataset[a || e.toLowerCase()] || t.dataset[e.toLowerCase()] || // fallback message has last prio
         X[e]
       );
-      const o = t.getAttribute(a || "");
-      if (o) {
+      const r = t.getAttribute(a || "");
+      if (r) {
         let l = new RegExp("{{\\s*constraint\\s*}}", "ig");
-        n = n.replace(l, o);
+        n = n.replace(l, r);
       }
-      let r = new RegExp("{{\\s*input\\s*}}", "ig");
-      return n = n.replace(r, t.value), r = new RegExp("{{\\s*type\\s*}}", "ig"), n = n.replace(r, t.type), n;
+      let o = new RegExp("{{\\s*input\\s*}}", "ig");
+      return n = n.replace(o, t.value), o = new RegExp("{{\\s*type\\s*}}", "ig"), n = n.replace(o, t.type), n;
     }
     return t.validationMessage;
   }
   function V(e) {
     var a, n;
-    const t = u(e);
+    const t = m(e);
     if (t) {
-      let o = t.querySelector(".afova-label");
-      if (!o && t.tagName != "LABEL" && (o = t.querySelector("label")), o || (o = t), o) {
-        let r = "";
-        for (const l of o.childNodes)
-          l.nodeType == Node.TEXT_NODE && (r && ((a = l.textContent) != null && a.trim()) && (r += " "), (n = l.textContent) != null && n.trim() && (r += l.textContent.trim()));
-        return r;
+      let r = t.querySelector(".afova-label");
+      if (!r && t.tagName != "LABEL" && (r = t.querySelector("label")), r || (r = t), r) {
+        let o = "";
+        for (const l of r.childNodes)
+          l.nodeType == Node.TEXT_NODE && (o && ((a = l.textContent) != null && a.trim()) && (o += " "), (n = l.textContent) != null && n.trim() && (o += l.textContent.trim()));
+        return o;
       }
     }
     return "";
   }
   function $(e, t) {
-    const a = p(e);
+    const a = v(e);
     if (a) {
-      const n = h(a), o = document.createElement("LI");
-      o.setAttribute("afova-message-for", e.id), o.classList.add("afova-collected-message");
-      const r = V(e);
-      if (r) {
-        const v = document.createElement("DIV");
-        v.innerText = r, v.classList.add("afova-message-label"), o.appendChild(v);
+      const n = h(a), r = document.createElement("LI");
+      r.setAttribute("afova-message-for", e.id), r.classList.add("afova-collected-message");
+      const o = V(e);
+      if (o) {
+        const p = document.createElement("DIV");
+        p.innerText = o, p.classList.add("afova-message-label"), r.appendChild(p);
       }
       const l = document.createElement("A");
-      l.innerText = t, l.href = `#${e.id}`, l.classList.add("afova-message"), o.appendChild(l), n.appendChild(o), g(a);
+      l.innerText = t, l.href = `#${e.id}`, l.classList.add("afova-message"), r.appendChild(l), n.appendChild(r), g(a);
     }
   }
   function b(e) {
@@ -169,16 +169,16 @@ function z(s) {
     const t = document.querySelectorAll(
       `[afova-message-for="${e.id}"]`
     );
-    for (const r of t)
-      r.remove();
+    for (const o of t)
+      o.remove();
     const a = d(e);
     a && y(a) && a.remove();
-    const n = p(e);
+    const n = v(e);
     n && g(n);
-    let o = u(e);
-    o && document.querySelectorAll(
-      `#${o.id} [aria-invalid].afova-control`
-    ).length == 0 && o.classList.remove("afova-active");
+    let r = m(e);
+    r && document.querySelectorAll(
+      `#${r.id} [aria-invalid].afova-control`
+    ).length == 0 && r.classList.remove("afova-active");
   }
   function L(e) {
     for (const t of f(e))
@@ -186,15 +186,15 @@ function z(s) {
   }
   function E(e) {
     if (!e.validity.valid && !O(e)) {
-      const t = u(e);
+      const t = m(e);
       t && t.classList.add("afova-active"), e.setAttribute("aria-invalid", "true");
       const a = F(e);
       let n;
       a.tagName == "UL" || a.tagName == "OL" ? n = document.createElement("LI") : n = document.createElement("DIV"), n.classList.add("afova-message"), n.setAttribute("afova-message-for", e.id), a.appendChild(n);
-      for (const o in w)
-        if (e.validity[o]) {
-          let r = N(o, e);
-          r && (n.innerHTML = r, $(e, r));
+      for (const r in w)
+        if (e.validity[r]) {
+          let o = N(r, e);
+          o && (n.innerHTML = o, $(e, o));
           break;
         }
     }
@@ -251,15 +251,15 @@ function z(s) {
     e.preventDefault();
     const t = e.target;
     try {
-      if (m.has(t.id))
+      if (u.has(t.id))
         return;
-      if (m.add(t.id), !await q(t)) {
-        i.onInvalid && i.onInvalid(e), m.delete(t.id);
+      if (u.add(t.id), !await q(t)) {
+        i.onInvalid && i.onInvalid(e), u.delete(t.id);
         return;
       }
-      i.onValid && i.onValid(e), i.onSubmit ? i.onSubmit(e) : t.submit(), m.delete(t.id);
+      i.onValid && i.onValid(e), i.onSubmit ? i.onSubmit(e) : t.submit(), u.delete(t.id);
     } catch (a) {
-      if (m.delete(t.id), i.onValidateFormError)
+      if (u.delete(t.id), i.onValidateFormError)
         i.onValidateFormError(t, a);
       else
         throw a;
@@ -289,7 +289,7 @@ function z(s) {
       }
   }
   function D(e) {
-    c(e), u(e), e.classList.add("afova-control"), i.validateOnChange && e.addEventListener("change", T), P(e);
+    c(e), m(e), e.classList.add("afova-control"), i.validateOnChange && e.addEventListener("change", T), P(e);
   }
   async function T(e) {
     const t = e.target;
@@ -298,7 +298,7 @@ function z(s) {
   function k(e) {
     e.classList.remove("afova-control"), e.removeEventListener("change", T);
   }
-  function u(e) {
+  function m(e) {
     let t = e.closest(".afova-context");
     return t || (t = e.closest("label")), t && (c(t), t.classList.add("afova-context"), t.tagName == "LABEL" && !t.htmlFor && (t.htmlFor = e.id)), t || void 0;
   }
