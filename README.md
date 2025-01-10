@@ -1,6 +1,6 @@
 # afova
 
-afova (accessible form validation) is a progressive enhancement of web browsers the [client-side HTML form constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation).
+afova (accessible form validation) is a progressive enhancement of the web browsers [client-side HTML form constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation).
 
 afova will allow you to:
 - pick up any of the constraining attributes of HTML input elements (`required`, `type`, `step`, `pattern`, `min`, `max`, `minlength`, `maxlength`) and show constraint violation messages to the user,
@@ -12,7 +12,7 @@ afova will allow you to:
 - do HTML form validation (sync and async) to validate input elements of a form in relation to each other, and
 - prevent multiple submits of a form that is already in an ongoing submitting process.
 
-You can use the afova library as minified version without a bundler on your web page (it´s an ESM import) or for more complex scenarios integrate it with a bundler. Read more about that under [afova usage](#afova-usage).
+You can use the afova library as a minified version without a bundler on your web page (it´s an ESM import), or for more complex scenarios integrate it with a bundler. Read more about that under [afova usage](#afova-usage).
 
 Below is an example of how afova allows to define constraint violation messages:
 
