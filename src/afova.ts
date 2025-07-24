@@ -1,4 +1,5 @@
-import { nanoid } from "nanoid";
+import { customAlphabet } from "nanoid";
+const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz", 12);
 
 export interface AfovaSettings {
   /**

@@ -1,6 +1,6 @@
 {
   "name": "afova",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Accessible client-side HTML form validation with the constraint validation API.",
   "keywords": [
     "form",
